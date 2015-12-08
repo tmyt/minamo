@@ -48,3 +48,10 @@
 ## めも
 
 - Nginxのリバースプロキシの設定はRedisから動的に参照できるらしい
+
+## setup
+
+- install redis-server, docker.io, nginx, lua-nginx-redis
+- add include to your nginx.conf
+- start nginx, docker, redis
+
