@@ -44,3 +44,11 @@ rm /tmp/$$/Dockerfile
 rm /tmp/$$/created_at
 rm /tmp/$$/hosts
 rmdir /tmp/$$
+
+# update host mapping
+while [ "x$REMOTEADDR" = "x" ]; do
+  sleep 1
+  REMOTEADDR=$(docker inspect --format '{{.NetworkSettings.IPAddress}}' ${NAME})
+done
+redis-cli SET "${NAME}.${DOMAIN}" "http://${REMOTEADDR}:${PORT}/"
+
