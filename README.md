@@ -55,3 +55,5 @@
 - add include to your nginx.conf
 - start nginx, docker, redis
 
+## tips
+- may be require this patch. https://github.com/openresty/lua-resty-redis/commit/688f932514033276462c2b97f2d7cf9db967d462
