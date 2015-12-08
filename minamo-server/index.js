@@ -20,6 +20,10 @@ let expressGit = require('express-git');
 var git = express();
 git.use('/', expressGit.serve(config.repo_path, {
     auto_init: false
+}));
+
+git.on('post-receive', function(repo, changes){
+    console.log(repo);
 });
 
 // listen
