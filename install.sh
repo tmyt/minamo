@@ -1,3 +1,3 @@
 #!/bin/sh
 
-apt-get install git redis-server redis-tools docker.io nginx
+apt-get install git redis-server redis-tools docker.io nginx lua-nginx-redis
