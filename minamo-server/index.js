@@ -16,11 +16,11 @@ let api = require('./api');
 app.use('/api', new api(express.Router()));
 
 // git
-let pushover = require('pushover');
-let repos = pushover(config.repo_path, {autoCreate: false});
-
-let http = require('http');
-let git = http.createServer(repos.handle);
+let expressGit = require('express-git');
+var git = express();
+git.use('/', expressGit.serve(config.repo_path, {
+    auto_init: false
+});
 
 // listen
 app.listen(3000);
