@@ -9,10 +9,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "dockerode": "^2.2.6",
+    "docker-ps": "^1.0.1",
     "express": "^4.13.3",
     "express-git": "^0.7.0",
-    "hiredis": "^0.4.1",
-    "git-init": "tmyt/git-init#aed5436"
+    "git-init": "tmyt/git-init#aed5436",
+    "hiredis": "^0.4.1"
   }
 }

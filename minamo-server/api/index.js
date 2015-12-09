@@ -7,8 +7,6 @@ let exec = require('child_process').exec;
 
 let config = require('../config');
 
-let docker = new Docker({sockerPath: "/var/run/docker.sock"});
-
 class api {
     constructor(app){
         app.get('/create', this.create);
@@ -45,9 +43,21 @@ class api {
     }
 
     status(req, res){
-        docker.listContainers(function(err, containers){
-console.log(err);
-           res.send(containers);
+        let ps = require('docker-ps');
+        ps(function(err, containers){
+            let statuses = {};
+            fs.readdir(config.repo_path, function(err, files){
+                for(let i = 0; i < files.length; ++i){
+                    statuses[files[i]] = 'stopped';
+                    for(let j = 0; j < containers.length; ++j){
+                        if(containers[j].names[0] === ('/' + files[i])){
+                            statuses[files[i]] = 'running';
+                            break;
+                        }
+                    }
+                }
+                res.send(statuses);
+            });
         });
     }
 };
