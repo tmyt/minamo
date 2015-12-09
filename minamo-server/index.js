@@ -24,9 +24,8 @@ let git = expressGit.serve(config.repo_path, {
 githttp.use('/', git);
 git.on('post-receive', function(repo, changes){
     let name = repo.name.split('/').reverse()[0];
-    let exec = require('child_process').exec;
-    let path = require('path');
-    exec(path.resolve('../build.sh') + ' ' + name, function(err, sin, sout){ });
+    let tools = require('./tools');
+    tools.build(name);
 });
 
 // listen

@@ -6,6 +6,7 @@ let init = require('git-init');
 let exec = require('child_process').exec;
 
 let config = require('../config');
+let tools = require('../tools');
 
 class api {
     constructor(app){
@@ -33,7 +34,19 @@ class api {
     }
 
     destroy(req, res){
-        res.send('destroy OK');
+        if(!req.param('service')){
+            res.send('error: no service');
+            return;
+        }
+        // .git is no required. its seems library bug.
+        let repo = path.join(config.repo_path, req.param('service'));
+        if(!pathExists(repo)){
+            res.send('error: service not found');
+        }else{
+            tools.terminate(req.param('service'));
+            exec('rm -rf ' + repo); 
+            res.send('destroy OK');
+        }
     }
 
     list(req, res){
