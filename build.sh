@@ -30,8 +30,8 @@ EXPOSE ${PORT}
 ADD created_at /tmp/created_at
 ADD hosts /etc/hosts
 RUN node --version
-# RUN git clone http://git.${DOMAIN}/${NAME}.git
-RUN git clone https://github.com/tmyt/${NAME}.git
+RUN git clone http://git.${DOMAIN}/${NAME}.git
+# RUN git clone https://github.com/tmyt/${NAME}.git
 WORKDIR ${NAME}
 RUN npm install
 RUN ls -l
@@ -54,6 +54,9 @@ rmdir /tmp/$$
 while [ "x$REMOTEADDR" = "x" ]; do
   sleep 1
   REMOTEADDR=$(docker inspect --format '{{.NetworkSettings.IPAddress}}' ${NAME})
+  if [ "$?" -ne "0" ]; then
+    break
+  fi
 done
-redis-cli SET "${NAME}.${DOMAIN}" "http://${REMOTEADDR}:${PORT}/"
+redis-cli SET "${NAME}.${DOMAIN}" "http://${REMOTEADDR}:${PORT}"
 
