@@ -18,7 +18,7 @@
         var name = document.new_container.service.value;
         if(!name.match(/^[a-zA-Z0-9-]+$/)){
           $('#errmsg').text('service name should be [a-zA-Z0-9-]+');
-          return;
+          return false;
         }
         $.get('/api/create', {'service': name}, function(){
           updateStatus();
