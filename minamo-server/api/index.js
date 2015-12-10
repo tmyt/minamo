@@ -19,12 +19,17 @@ class api {
     }
 
     create(req, res){
-        if(!req.param('service')){
+        var name = req.param('service');
+        if(!name){
             res.send('error: no service');
             return;
         }
+        if(!name.match(/^[a-zA-Z0-9-]+$/)){
+            res.send('error: service should be [a-zA-Z0-9-]+');
+            return;
+        }
         // .git is no required. its seems library bug.
-        let repo = path.join(config.repo_path, req.param('service'));
+        let repo = path.join(config.repo_path, name);
         if(pathExists(repo)){
             res.send('error: service already exists');
         }else{
@@ -35,16 +40,21 @@ class api {
     }
 
     destroy(req, res){
-        if(!req.param('service')){
+        var name = req.param('service');
+        if(!name){
             res.send('error: no service');
             return;
         }
+        if(!name.match(/^[a-zA-Z0-9-]+$/)){
+            res.send('error: service should be [a-zA-Z0-9-]+');
+            return;
+        }
         // .git is no required. its seems library bug.
-        let repo = path.join(config.repo_path, req.param('service'));
+        let repo = path.join(config.repo_path, name);
         if(!pathExists(repo)){
             res.send('error: service not found');
         }else{
-            tools.terminate(req.param('service'));
+            tools.terminate(name);
             exec('rm -rf ' + repo); 
             res.send('destroy OK');
         }

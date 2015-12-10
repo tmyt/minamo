@@ -16,6 +16,10 @@
 
       function createNew(){
         var name = document.new_container.service.value;
+        if(!name.match(/^[a-zA-Z0-9-]+$/)){
+          $('#errmsg').text('service name should be [a-zA-Z0-9-]+');
+          return;
+        }
         $.get('/api/create', {'service': name}, function(){
           updateStatus();
         });
@@ -64,6 +68,7 @@
     <h2>Create container</h2>
     <form name="new_container" id="newform">
       Name: <input type="text" name="service">
+      <span style="color: red" id="errmsg"></span><br>
       <input type="submit" value="create">
     </form>
   </body>
