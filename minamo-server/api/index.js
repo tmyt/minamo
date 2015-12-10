@@ -19,7 +19,7 @@ class api {
     }
 
     create(req, res){
-        var name = req.param('service');
+        var name = req.query.service;
         if(!name){
             res.send('error: no service');
             return;
@@ -40,7 +40,7 @@ class api {
     }
 
     destroy(req, res){
-        var name = req.param('service');
+        var name = req.query.service;
         if(!name){
             res.send('error: no service');
             return;
