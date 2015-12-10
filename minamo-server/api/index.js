@@ -3,6 +3,7 @@
 let path = require('path');
 let fs = require('fs');
 let init = require('git-init');
+let head = require('githead');
 let exec = require('child_process').exec;
 
 let config = require('../config');
@@ -61,10 +62,18 @@ class api {
             let statuses = {};
             fs.readdir(config.repo_path, function(err, files){
                 for(let i = 0; i < files.length; ++i){
-                    statuses[files[i]] = 'stopped';
+                    if(files[i][0] === '.') continue;
+                    statuses[files[i]] = {
+                        'status': 'stopped',
+                        'uptime': '',
+                        'created': '',
+                        'head': head(path.join(config.repo_path, files[i]))
+                    };
                     for(let j = 0; j < containers.length; ++j){
                         if(containers[j].names[0] === ('/' + files[i])){
-                            statuses[files[i]] = 'running';
+                            statuses[files[i]].status = 'running';
+                            statuses[files[i]].uptime = containers[j].status;
+                            statuses[files[i]].created = containers[j].created;
                             break;
                         }
                     }
