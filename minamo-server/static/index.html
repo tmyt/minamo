@@ -4,6 +4,10 @@
     <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     <title>Minamo</title>
     <script>
+      function rootDomain(){
+        return window.location.hostname;
+      }
+
       function removeHandler(name){
         return function(){
           if(window.confirm('This container permanently removed. Are you sure?')){
@@ -17,7 +21,7 @@
       function createNew(){
         var name = document.new_container.service.value;
         if(!name.match(/^[a-zA-Z0-9-]+$/)){
-          $('#errmsg').text('service name should be [a-zA-Z0-9-]+');
+          $('#errmsg').text('error: service name should be [a-zA-Z0-9-]+');
           return false;
         }
         $.get('/api/create', {'service': name}, function(){
@@ -35,17 +39,19 @@
               .append($('<th>').text('head'))
               .append($('<th>').text('created'))
               .append($('<th>').text('uptime'))
+              .append($('<th>').text('repo'))
               .append($('<th>').text('remove'))
           );
           var keys = Object.keys(json);
           for(var i = 0; i < keys.length; ++i){
             table.append($('<tr>')
-              .append($('<td>').text(keys[i]))
+              .append($('<td>').append($('<a>').attr('href', '//' + keys[i] + '.' + rootDomain()).text(keys[i])))
               .append($('<td>').text(json[keys[i]].status))
               .append($('<td>').text(json[keys[i]].head))
               .append($('<td>').text(json[keys[i]].created))
               .append($('<td>').text(json[keys[i]].uptime))
-              .append($('<button>').text('remove').click(removeHandler(keys[i])))
+              .append($('<td>').append($('<input>').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
+              .append($('<td>').append($('<button>').text('remove').click(removeHandler(keys[i]))))
             );
           }
           $('#statuses').children().remove();
@@ -68,8 +74,8 @@
     <h2>Create container</h2>
     <form name="new_container" id="newform">
       Name: <input type="text" name="service">
-      <span style="color: red" id="errmsg"></span><br>
-      <input type="submit" value="create">
+      <input type="submit" value="create"><br>
+      <span style="color: red" id="errmsg"></span>
     </form>
   </body>
 </html>
