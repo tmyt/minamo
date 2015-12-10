@@ -33,7 +33,9 @@ RUN node --version
 RUN git clone http://git.${DOMAIN}/${NAME}.git
 # RUN git clone https://github.com/tmyt/${NAME}.git
 WORKDIR ${NAME}
+RUN npm run minamo-preinstall
 RUN npm install
+RUN npm run minamo-postinstall
 RUN ls -l
 RUN pwd
 CMD npm start" > Dockerfile
