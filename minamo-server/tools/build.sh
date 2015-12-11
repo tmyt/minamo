@@ -30,12 +30,17 @@ EXPOSE ${PORT}
 ADD created_at /tmp/created_at
 ADD hosts /etc/hosts
 RUN node --version
+RUN adduser minamo
+RUN mkdir -p /service/
+RUN chown minamo:minamo /service/
+USER minamo
+WORKDIR /service/
 RUN git clone http://git.${DOMAIN}/${NAME}.git
 # RUN git clone https://github.com/tmyt/${NAME}.git
 WORKDIR ${NAME}
-RUN npm run minamo-preinstall
+RUN npm run minamo-preinstall || true
 RUN npm install
-RUN npm run minamo-postinstall
+RUN npm run minamo-postinstall || true
 RUN ls -l
 RUN pwd
 CMD npm start" > Dockerfile
