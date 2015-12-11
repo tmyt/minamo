@@ -1,59 +1,88 @@
-# Minamo
+Minamo private PaaS
+===
 
-## やりたいこと
-- WEbGUIからサービスの追加削除できる
-- AzureMobileServicesのカスタムAPIみたいなん作れる
-- Gitでデプロイできる
-- index.js をnodejs で実行してくれる
-- 自宅クラウドとか、さくらVPSとかにセットアップして使いたい
+Concept
+---
 
-## 使うもの
+- Build private PaaS on your Server.
+- Minamo built on these OpenSource Technologies.
+    - Git
+    - NodeJS
+    - Docker
+    - Redis
+    - Nginx
 
-- Nginx
-- Docker
-- NodeJS
-- Git
-- Redis
+```
 
-## ライブラリとか
+*--------*  git push   *---------------*  Deploy   *--------*
+| Client | ----------> | Minamo Server | --------> | Docker |
+*--------*             *---------------*           *--------*
 
-- https://github.com/stackdot/NodeJS-Git-Server
-- https://github.com/apocas/dockerode
-- https://github.com/redis/hiredis
-- express.js
+```
 
-## エンドポイント
+Install
+---
 
-- ://domain/repos/[ServiceName].git
-- ://domain/manage/
-- ://[ServiceName].domain/
+1. Install dependency packages.
+    - refer install.sh
+2. Configure nginx
+    - setup your domain in nginx.conf
+    - include nginx.conf from /etc/nginx/nginx.conf
+3. Configure your access rights.
+    - your unix account need to access docker server.
+4. Run services
+    - Nginx
+    - Redis
+    - Docker
+5. Install dependency npm packages.
+    - ``npm install``
+6. Run Minamo engine.
+    - ``node index.js``
 
-## 構成
+How to Use
+---
 
-### Frontend
+1. Open management console.
+    - ``http://your.domain/console``
+2. Create first container.
+3. Clone repository.
+    - ``http://git.your.domain/name.git``
+4. Add package.json and index.js to your repository.
+    - package.json requires scripts.start.
+5. Push repository to Minamo.
+6. Have a coffee.
+7. Access to your service!
+    - ``http://name.your.domain/``
 
-- Nginx + NodeJS + Redis
-- Nginxでリクエストを受けてNodeJSで処理。
-- サブドメインで分けたサービスに対してNginxでリバースプロキシ
-- リバースプロキシの設定はRedisにおけるらしい
-- プロキシした先のアプリケーションサーバはDocker内で実行されているNodeJS
-- WebGUIからアプリケーションサーバの作成、削除、起動、停止
+Samples
+---
 
-### Backend
-- Docker上のNodeJSでホスト
-- 各アプリケーションサーバごとに独立したGitリポジトリを持つ
-- GitリポジトリへPushされたらpost-receive-hook でDockerコンテナへデプロイ
-- Nginxがプロキシ先として使うポートは環境変数で提供する
+### package.json
 
-## めも
+```javascript
+{
+  "name": "SampleService",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "*"
+  },
+  "scripts":{
+    "start": "node index.js"
+  }
+}
+```
 
-- Nginxのリバースプロキシの設定はRedisから動的に参照できるらしい
+### index.js
 
-## setup
+```javascript
+let express = require('express');
+let app = express();
 
-- install redis-server, docker.io, nginx, lua-nginx-redis
-- add include to your nginx.conf
-- start nginx, docker, redis
+app.get('/', function(req, res){
+  res.send('Hello from Minamo!');
+});
 
-## tips
-- may be require this patch. https://github.com/openresty/lua-resty-redis/commit/688f932514033276462c2b97f2d7cf9db967d462
+app.listen(process.env.PORT); // you needs to listen on process.env.PORT.
+```
+
+
