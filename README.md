@@ -47,7 +47,7 @@ How to Use
 2. Create first container.
 3. Clone repository.
     - ``http://git.your.domain/name.git``
-4. Add package.json and index.js to your repository.
+4. Add package.json and server.js to your repository.
     - package.json requires scripts.start.
 5. Push repository to Minamo.
 6. Have a coffee.
@@ -65,14 +65,11 @@ Samples
   "version": "0.0.1",
   "dependencies": {
     "express": "*"
-  },
-  "scripts":{
-    "start": "node index.js"
   }
 }
 ```
 
-### index.js
+### server.js
 
 ```javascript
 let express = require('express');
@@ -84,5 +81,4 @@ app.get('/', function(req, res){
 
 app.listen(process.env.PORT); // you needs to listen on process.env.PORT.
 ```
-
 
