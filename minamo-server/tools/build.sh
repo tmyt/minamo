@@ -44,7 +44,7 @@ RUN npm run minamo-postinstall || true
 RUN ls -l
 RUN pwd
 CMD npm start" > Dockerfile
-docker build --rm=true -t minamo/${NAME} .
+docker build --force-rm=true --rm=true -t minamo/${NAME}:1.0 .
 
 # run container
 docker run --name ${NAME} minamo/${NAME} &
