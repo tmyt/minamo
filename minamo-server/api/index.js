@@ -13,6 +13,7 @@ class api {
     constructor(app){
         app.get('/create', this.create);
         app.get('/destroy', this.destroy);
+        app.get('/restart', this.restart);
         app.get('/list', this.list);
         app.get('/status', this.status);
         return app;
@@ -57,6 +58,26 @@ class api {
             tools.terminate(name);
             exec('rm -rf ' + repo); 
             res.send('destroy OK');
+        }
+    }
+
+    restart(req, res){
+        var name = req.query.service;
+        if(!name){
+            res.send('error: no service');
+            return;
+        }
+        if(!name.match(/^[a-zA-Z0-9-]+$/)){
+            res.send('error: service should be [a-zA-Z0-9-]+');
+            return;
+        }
+        // .git is no required. its seems library bug.
+        let repo = path.join(config.repo_path, name);
+        if(!pathExists(repo)){
+            res.send('error: service not found');
+        }else{
+            tools.build(name);
+            res.send('create OK: ' + err);
         }
     }
 
