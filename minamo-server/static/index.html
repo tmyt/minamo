@@ -51,6 +51,7 @@
           return false;
         }
         $.get('/api/create', {'service': name}, function(){
+          document.new_container.service.value = "";
           updateStatus();
         });
         return false;
