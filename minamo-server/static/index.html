@@ -83,7 +83,7 @@
               .append($('<td>').append($('<a>').attr('href', '//' + keys[i] + '.' + rootDomain()).text(keys[i])))
               .append($('<td>').text(json[keys[i]].status))
               .append($('<td>').text(json[keys[i]].head))
-              .append($('<td>').text(json[keys[i]].created))
+              .append($('<td>').text(json[keys[i]].created ? new Date(json[keys[i]].created).toLocaleString() : ""))
               .append($('<td>').text(json[keys[i]].uptime))
               .append($('<td>').append($('<input>').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
               .append($('<td>').append(actions))
