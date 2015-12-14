@@ -2,7 +2,10 @@
 
 NAME=$1
 PORT=$(($RANDOM + 3000))
-DOMAIN=onsen.tech
+if [ "x$DOMAIN" = "x" ]; then
+  echo "[ERROR] domain not found"
+  exit 1
+fi
 
 if [ "x$NAME" = "x" ]; then
   echo "[ERROR] name not found"
@@ -44,7 +47,7 @@ RUN npm run minamo-postinstall || true
 RUN ls -l
 RUN pwd
 CMD npm start" > Dockerfile
-docker build --force-rm=true --rm=true -t minamo/${NAME}:1.0 .
+docker build --force-rm=true --rm=true -t minamo/${NAME} .
 
 # run container
 docker run --name ${NAME} minamo/${NAME} &
