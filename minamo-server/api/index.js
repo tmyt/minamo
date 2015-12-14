@@ -13,13 +13,15 @@ class api {
     constructor(app){
         app.get('/create', this.create);
         app.get('/destroy', this.destroy);
+        app.get('/start', this.start);
+        app.get('/stop', this.stop);
         app.get('/restart', this.restart);
         app.get('/list', this.list);
         app.get('/status', this.status);
         return app;
     }
 
-    create(req, res){
+    checkParams(req, res){
         var name = req.query.service;
         if(!name){
             res.send('error: no service');
@@ -29,6 +31,11 @@ class api {
             res.send('error: service should be [a-zA-Z0-9-]+');
             return;
         }
+        return name;
+    }
+
+    create(req, res){
+        var name = this.checkParams(req, res);
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
         if(pathExists(repo)){
@@ -41,15 +48,7 @@ class api {
     }
 
     destroy(req, res){
-        var name = req.query.service;
-        if(!name){
-            res.send('error: no service');
-            return;
-        }
-        if(!name.match(/^[a-zA-Z0-9-]+$/)){
-            res.send('error: service should be [a-zA-Z0-9-]+');
-            return;
-        }
+        var name = this.checkParams(req, res);
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
         if(!pathExists(repo)){
@@ -62,15 +61,7 @@ class api {
     }
 
     restart(req, res){
-        var name = req.query.service;
-        if(!name){
-            res.send('error: no service');
-            return;
-        }
-        if(!name.match(/^[a-zA-Z0-9-]+$/)){
-            res.send('error: service should be [a-zA-Z0-9-]+');
-            return;
-        }
+        var name = this.checkParams(req, res);
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
         if(!pathExists(repo)){
