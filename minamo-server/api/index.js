@@ -60,6 +60,30 @@ class api {
         }
     }
 
+    start(req, res){
+        var name = this.checkParams(req, res);
+        // .git is no required. its seems library bug.
+        let repo = path.join(config.repo_path, name);
+        if(!pathExists(repo)){
+            res.send('error: service not found');
+        }else{
+            tools.build(name);
+            res.send('start OK: ' + err);
+        }
+    }
+
+    stop(req, res){
+        var name = this.checkParams(req, res);
+        // .git is no required. its seems library bug.
+        let repo = path.join(config.repo_path, name);
+        if(!pathExists(repo)){
+            res.send('error: service not found');
+        }else{
+            tools.terminate(name);
+            res.send('stop OK: ' + err);
+        }
+    }
+
     restart(req, res){
         var name = this.checkParams(req, res);
         // .git is no required. its seems library bug.
@@ -68,7 +92,7 @@ class api {
             res.send('error: service not found');
         }else{
             tools.build(name);
-            res.send('create OK: ' + err);
+            res.send('restart OK: ' + err);
         }
     }
 
