@@ -15,8 +15,8 @@ function checkParams(req, res){
         res.send('error: no service');
         return;
     }
-    if(!name.match(/^[a-zA-Z0-9-]+$/)){
-        res.send('error: service should be [a-zA-Z0-9-]+');
+    if(!name.match(/^[a-z0-9-]+$/)){
+        res.send('error: service should be [a-z0-9-]+');
         return;
     }
     return name;
