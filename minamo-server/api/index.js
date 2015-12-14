@@ -9,6 +9,20 @@ let exec = require('child_process').exec;
 let config = require('../config');
 let tools = require('../tools');
 
+function checkParams(req, res){
+    var name = req.query.service;
+    if(!name){
+        res.send('error: no service');
+        return;
+    }
+    if(!name.match(/^[a-zA-Z0-9-]+$/)){
+        res.send('error: service should be [a-zA-Z0-9-]+');
+        return;
+    }
+    return name;
+}
+
+
 class api {
     constructor(app){
         app.get('/create', this.create);
@@ -21,21 +35,9 @@ class api {
         return app;
     }
 
-    checkParams(req, res){
-        var name = req.query.service;
-        if(!name){
-            res.send('error: no service');
-            return;
-        }
-        if(!name.match(/^[a-zA-Z0-9-]+$/)){
-            res.send('error: service should be [a-zA-Z0-9-]+');
-            return;
-        }
-        return name;
-    }
-
     create(req, res){
-        var name = this.checkParams(req, res);
+        var name = checkParams(req, res);
+        if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
         if(pathExists(repo)){
@@ -48,7 +50,8 @@ class api {
     }
 
     destroy(req, res){
-        var name = this.checkParams(req, res);
+        var name = checkParams(req, res);
+        if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
         if(!pathExists(repo)){
@@ -61,38 +64,41 @@ class api {
     }
 
     start(req, res){
-        var name = this.checkParams(req, res);
+        var name = checkParams(req, res);
+        if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
         if(!pathExists(repo)){
             res.send('error: service not found');
         }else{
             tools.build(name);
-            res.send('start OK: ' + err);
+            res.send('start OK');
         }
     }
 
     stop(req, res){
-        var name = this.checkParams(req, res);
+        var name = checkParams(req, res);
+        if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
         if(!pathExists(repo)){
             res.send('error: service not found');
         }else{
             tools.terminate(name);
-            res.send('stop OK: ' + err);
+            res.send('stop OK');
         }
     }
 
     restart(req, res){
-        var name = this.checkParams(req, res);
+        var name = checkParams(req, res);
+        if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
         if(!pathExists(repo)){
             res.send('error: service not found');
         }else{
             tools.build(name);
-            res.send('restart OK: ' + err);
+            res.send('restart OK');
         }
     }
 
