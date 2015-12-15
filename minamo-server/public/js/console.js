@@ -75,20 +75,25 @@ function updateStatus(){
       //var actions = $('<select>').addClass('form-control');
       var cont = json[keys[i]];
       var status = cont.status;
+      var created = cont.created ? new Date(cont.created).toLocaleString() : "";
       var action = $('<div></div>').addClass('btn-group');
       var actions = $('<ul></ul>').addClass('dropdown-menu');
       action
         .append($('<button></button>', {'data-toggle':'dropdown', 'class':'btn dropdown-toggle'}).text('Action ').append($('<span>').addClass('caret')))
         .append(actions);
+      if(isRunning(status)){
       actions
-        .append($('<li>').append($('<a>', {'href':'#'}).text('start').click(startContainer(keys[i])).attr(toEnabled(!isRunning(status)),'')))
-        .append($('<li>').append($('<a>', {'href':'#'}).text('stop').click(stopContainer(keys[i])).attr(toEnabled(isRunning(status)), '')))
-        .append($('<li>').append($('<a>', {'href':'#'}).text('restart').click(restartContainer(keys[i])).attr(toEnabled(isRunning(status)), '')))
+        .append($('<li>').append(dom.a('stop', '#', stopContainer(keys[i]))))
+        .append($('<li>').append(dom.a('restart', '#', restartContainer(keys[i]))))
+      }else{
+      actions
+        .append($('<li>').append(dom.a('start', '#', startContainer(keys[i]))))
+      }
       table.append($('<tr>')
-        .append($('<td>').append($('<a>').attr('href', '//' + keys[i] + '.' + rootDomain()).text(keys[i])))
+        .append($('<td>').append(dom.a(keys[i], '//' + keys[i] + '.' + rootDomain())))
         .append($('<td>').append($('<span></span>').text(status).addClass(isRunning(status)?'label label-success':'label label-danger')))
         .append($('<td>').text(cont.head))
-        .append($('<td>').append($('<span>',{'data-toggle':'tooltip',title:(cont.created ? new Date(cont.created).toLocaleString() : "")}).text(cont.uptime).tooltip()))
+        .append($('<td>').append($('<span>',{'data-toggle':'tooltip',title:created}).text(cont.uptime).tooltip()))
         .append($('<td>').append($('<input>').addClass('form-control').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
         .append($('<td>').append(action))
         .append($('<td>').append($('<button>', {'class': 'btn btn-danger'}).text('remove').click(removeHandler(keys[i]))))
