@@ -14,7 +14,7 @@ app.get('/', function(req, res){
 // routers
 let api = require('./api');
 app.use('/api', new api(express.Router()));
-app.use('/console', express.static('./static'));
+app.use('/console', express.static('./public'));
 
 // git
 let expressGit = require('express-git');
