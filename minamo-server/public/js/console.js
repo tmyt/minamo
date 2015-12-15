@@ -12,32 +12,6 @@ function removeHandler(name){
   }
 }
 
-function performAction(name, actions){
-  return function(){
-    if(actions.val() === '-'){
-      return;
-    }else if(actions.val() === 'start'){
-      actions.val('-');
-      $.get('/api/start', {'service': name}, function(){
-        updateStatus();
-      });
-      return;
-    }else if(actions.val() === 'stop'){
-      actions.val('-');
-      $.get('/api/stop', {'service': name}, function(){
-        updateStatus();
-      });
-      return;
-    }else if(actions.val() === 'restart'){
-      actions.val('-');
-      $.get('/api/restart', {'service': name}, function(){
-        updateStatus();
-      });
-      return;
-    }
-  }
-}
-
 function createNew(){
   var name = document.new_container.service.value;
   if(!name.match(/^[a-z0-9-]+$/)){
@@ -59,6 +33,30 @@ function toEnabled(state){
   return state ? 'enabled' : 'disabled';
 }
 
+function startContainer(name){
+  return function(){
+    $.get('/api/start', {'service': name}, function(){
+      updateStatus();
+    });
+    return false;
+  }
+}
+function stopContainer(name){
+  return function(){
+    $.get('/api/stop', {'service': name}, function(){
+      updateStatus();
+    });
+    return false;
+  }
+}
+function restartContainer(name){
+  return function(){
+    $.get('/api/restart', {'service': name}, function(){
+      updateStatus();
+    });
+    return false;
+  }
+}
 function updateStatus(){
   $.get('/api/status', function(json){
     var dom = new Dom();
@@ -75,14 +73,18 @@ function updateStatus(){
     );
     var keys = Object.keys(json);
     for(var i = 0; i < keys.length; ++i){
-      var actions = $('<select>').addClass('form-control');
+      //var actions = $('<select>').addClass('form-control');
       var cont = json[keys[i]];
       var status = cont.status;
-      actions.change(performAction(keys[i], actions))
-        .append($('<option>').text('---').attr('value', '-'))
-        .append($('<option>').text('start').attr('value', 'start').attr(toEnabled(!isRunning(status)),''))
-        .append($('<option>').text('stop').attr('value', 'stop').attr(toEnabled(isRunning(status)), ''))
-        .append($('<option>').text('restart').attr('value', 'restart').attr(toEnabled(isRunning(status)), ''))
+      var action = $('<div></div>').addClass('btn-group');
+      var actions = $('<ul></ul>').addClass('dropdown-menu');
+      action
+        .append($('<button></button>', {'data-toggle':'dropdown', 'class':'btn dropdown-toggle'}).text('Action ').append($('<span>').addClass('caret')))
+        .append(actions);
+      actions
+        .append($('<li>').append($('<a>', {'href':'#'}).text('start').click(startContainer(keys[i])).attr(toEnabled(!isRunning(status)),'')))
+        .append($('<li>').append($('<a>', {'href':'#'}).text('stop').click(stopContainer(keys[i])).attr(toEnabled(isRunning(status)), '')))
+        .append($('<li>').append($('<a>', {'href':'#'}).text('restart').click(restartContainer(keys[i])).attr(toEnabled(isRunning(status)), '')))
       table.append($('<tr>')
         .append($('<td>').append($('<a>').attr('href', '//' + keys[i] + '.' + rootDomain()).text(keys[i])))
         .append($('<td>').append($('<span></span>').text(status).addClass(isRunning(status)?'label label-success':'label label-danger')))
@@ -90,7 +92,7 @@ function updateStatus(){
         .append($('<td>').text(cont.created ? new Date(cont.created).toLocaleString() : ""))
         .append($('<td>').text(cont.uptime))
         .append($('<td>').append($('<input>').addClass('form-control').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
-        .append($('<td>').append(actions))
+        .append($('<td>').append(action))
         .append($('<td>').append($('<button>', {'class': 'btn btn-danger'}).text('remove').click(removeHandler(keys[i]))))
       );
     }
