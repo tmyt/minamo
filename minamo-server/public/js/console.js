@@ -51,37 +51,47 @@ function createNew(){
   return false;
 }
 
+function isRunning(text){
+  return text === 'running';
+}
+
+function toEnabled(state){
+  return state ? 'enabled' : 'disabled';
+}
+
 function updateStatus(){
   $.get('/api/status', function(json){
-    var table = $('<table>').attr('border', '1')
-      .append($('<tr>')
-        .append($('<th>').text('name'))
-        .append($('<th>').text('status'))
-        .append($('<th>').text('head'))
-        .append($('<th>').text('created'))
-        .append($('<th>').text('uptime'))
-        .append($('<th>').text('repo'))
-        .append($('<th>').text('action'))
-        .append($('<th>').text('remove'))
+    var dom = new Dom();
+    var table = $('<table></table>').addClass('table table-hover')
+      .append($('<tr></td>')
+        .append(dom.th('name'))
+        .append(dom.th('status'))
+        .append(dom.th('head'))
+        .append(dom.th('created'))
+        .append(dom.th('uptime'))
+        .append(dom.th('repo'))
+        .append(dom.th('action'))
+        .append(dom.th('remove'))
     );
     var keys = Object.keys(json);
     for(var i = 0; i < keys.length; ++i){
       var actions = $('<select>');
-      var status = json[keys[i]].status;
+      var cont = json[keys[i]];
+      var status = cont.status;
       actions.change(performAction(keys[i], actions))
         .append($('<option>').text('---').attr('value', '-'))
-        .append($('<option>').text('start').attr('value', 'start').attr(status==='running'?'disabled':'enabled',''))
-        .append($('<option>').text('stop').attr('value', 'stop').attr(status==='running'?'enabled':'disabled',''))
-        .append($('<option>').text('restart').attr('value', 'restart').attr(status==='running'?'enabled':'disabled',''));
+        .append($('<option>').text('start').attr('value', 'start').attr(toEnabled(!isRunning(status)),''))
+        .append($('<option>').text('stop').attr('value', 'stop').attr(toEnabled(isRunning(status)), ''))
+        .append($('<option>').text('restart').attr('value', 'restart').attr(toEnabled(isRunning(status)), ''))
       table.append($('<tr>')
         .append($('<td>').append($('<a>').attr('href', '//' + keys[i] + '.' + rootDomain()).text(keys[i])))
-        .append($('<td>').text(json[keys[i]].status))
-        .append($('<td>').text(json[keys[i]].head))
-        .append($('<td>').text(json[keys[i]].created ? new Date(json[keys[i]].created).toLocaleString() : ""))
-        .append($('<td>').text(json[keys[i]].uptime))
+        .append($('<td>').text(status).addClass(isRunning(status)?'text-success':'text-danger'))
+        .append($('<td>').text(cont.head))
+        .append($('<td>').text(cont.created ? new Date(cont.created).toLocaleString() : ""))
+        .append($('<td>').text(cont.uptime))
         .append($('<td>').append($('<input>').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
         .append($('<td>').append(actions))
-        .append($('<td>').append($('<button>').text('remove').click(removeHandler(keys[i]))))
+        .append($('<td>').append($('<button>', {'class': 'btn btn-danger'}).text('remove').click(removeHandler(keys[i]))))
       );
     }
     $('#statuses').children().remove();
