@@ -75,7 +75,7 @@ function updateStatus(){
     );
     var keys = Object.keys(json);
     for(var i = 0; i < keys.length; ++i){
-      var actions = $('<select>');
+      var actions = $('<select>').addClass('form-control');
       var cont = json[keys[i]];
       var status = cont.status;
       actions.change(performAction(keys[i], actions))
@@ -85,11 +85,11 @@ function updateStatus(){
         .append($('<option>').text('restart').attr('value', 'restart').attr(toEnabled(isRunning(status)), ''))
       table.append($('<tr>')
         .append($('<td>').append($('<a>').attr('href', '//' + keys[i] + '.' + rootDomain()).text(keys[i])))
-        .append($('<td>').text(status).addClass(isRunning(status)?'text-success':'text-danger'))
+        .append($('<td>').append($('<span></span>').text(status).addClass(isRunning(status)?'label label-success':'label label-danger')))
         .append($('<td>').text(cont.head))
         .append($('<td>').text(cont.created ? new Date(cont.created).toLocaleString() : ""))
         .append($('<td>').text(cont.uptime))
-        .append($('<td>').append($('<input>').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
+        .append($('<td>').append($('<input>').addClass('form-control').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
         .append($('<td>').append(actions))
         .append($('<td>').append($('<button>', {'class': 'btn btn-danger'}).text('remove').click(removeHandler(keys[i]))))
       );
@@ -102,4 +102,16 @@ function updateStatus(){
 function load(){
   updateStatus();
   $('#newform').submit(createNew);
+  $('#service_name').keyup(function(){
+    if($('#service_name').val() === ""){
+      $('#service_name_group').removeClass('has-success').removeClass('has-error');
+      $('#service_name_glyph').removeClass('glyphicon-ok').removeClass('glyphicon-remove');
+    }else if($('#service_name').val().match(/^[a-z0-9-]+$/)){
+      $('#service_name_group').addClass('has-success').removeClass('has-error');
+      $('#service_name_glyph').addClass('glyphicon-ok').removeClass('glyphicon-remove');
+    }else{
+      $('#service_name_group').addClass('has-error').removeClass('has-success');
+      $('#service_name_glyph').addClass('glyphicon-remove').removeClass('glyphicon-ok');
+    }
+  });
 }

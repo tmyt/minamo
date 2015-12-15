@@ -11,17 +11,23 @@
     <title>Minamo</title>
   </head>
   <body onload="load()">
-    <h1>Minamo management console</h1>
+    <div class="container">
+      <h1>Minamo management console</h1>
 
-    <h2>Container status</h2>
-    <div id="statuses"></div>
+      <h2>Container status</h2>
+      <div id="statuses"></div>
 
-    <h2>Create container</h2>
-    <form name="new_container" id="newform">
-      Name: <input type="text" name="service">
-      <input type="submit" value="create"><br>
-      <span style="color: red" id="errmsg"></span>
-    </form>
+      <h2>Create container</h2>
+      <form name="new_container" id="newform">
+        <div id="service_name_group" class="form-group has-feedback">
+          <label for="service_name">Name</label>
+          <input type="text" name="service" id="service_name" class="form-control">
+          <span id="service_name_glyph" class="glyphicon form-control-feedback"></span>
+          <span class="help-block text-danger" id="errmsg"></span>
+        </div>
+        <input type="submit" value="create" class="btn btn-primary">
+      </form>
+    </div>
 
     <script src="components/Umi/dist/js/bootstrap.min.js"></script>
   </body>
