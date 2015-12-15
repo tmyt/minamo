@@ -1,0 +1,22 @@
+{
+  "name": "minamo-server",
+  "description": "Minamo is WebAPI management system",
+  "main": "index.js",
+  "authors": [
+    "yutaka <shigure@refy.net>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/tmyt/minamo",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Umi": "~3.3.6-1"
+  }
+}
