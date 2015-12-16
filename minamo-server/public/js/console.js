@@ -41,6 +41,7 @@ function startContainer(name){
     return false;
   }
 }
+
 function stopContainer(name){
   return function(){
     $.get('/api/stop', {'service': name}, function(){
@@ -49,6 +50,7 @@ function stopContainer(name){
     return false;
   }
 }
+
 function restartContainer(name){
   return function(){
     $.get('/api/restart', {'service': name}, function(){
@@ -57,6 +59,26 @@ function restartContainer(name){
     return false;
   }
 }
+
+function actionButton(name, status){
+  var dom = new Dom();
+  var action = $('<div></div>').addClass('btn-group');
+  var actions = $('<ul></ul>').addClass('dropdown-menu');
+  action
+    .append($('<button></button>', {'data-toggle':'dropdown', 'class':'btn dropdown-toggle'}).text('Action ')
+      .append($('<span>').addClass('caret')))
+    .append(actions);
+  if(isRunning(status)){
+    actions
+      .append($('<li>').append(dom.a('stop', '#', stopContainer(name))))
+      .append($('<li>').append(dom.a('restart', '#', restartContainer(name))))
+  }else{
+    actions
+      .append($('<li>').append(dom.a('start', '#', startContainer(name))))
+  }
+  return action;
+}
+
 function updateStatus(){
   $.get('/api/status', function(json){
     var dom = new Dom();
@@ -77,27 +99,13 @@ function updateStatus(){
       var cont = json[keys[i]];
       var status = cont.status;
       var created = cont.created ? new Date(cont.created).toLocaleString() : "";
-      var action = $('<div></div>').addClass('btn-group');
-      var actions = $('<ul></ul>').addClass('dropdown-menu');
-      action
-        .append($('<button></button>', {'data-toggle':'dropdown', 'class':'btn dropdown-toggle'}).text('Action ')
-          .append($('<span>').addClass('caret')))
-        .append(actions);
-      if(isRunning(status)){
-      actions
-        .append($('<li>').append(dom.a('stop', '#', stopContainer(keys[i]))))
-        .append($('<li>').append(dom.a('restart', '#', restartContainer(keys[i]))))
-      }else{
-      actions
-        .append($('<li>').append(dom.a('start', '#', startContainer(keys[i]))))
-      }
       table.append($('<tr>')
         .append($('<td>').append(dom.a(keys[i], '//' + keys[i] + '.' + rootDomain())))
         .append($('<td>').append($('<span class="label" />').text(status).addClass(isRunning(status)?'label-success':'label-danger')))
         .append($('<td>').text(cont.head))
         .append($('<td>').append($('<span>',{'data-toggle':'tooltip',title:created}).text(cont.uptime).tooltip()))
         .append($('<td>').append($('<input>').addClass('form-control').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
-        .append($('<td>').append(action))
+        .append($('<td>').append(actionButton(keys[i], status)))
         .append($('<td>').append($('<button>', {'class': 'btn btn-danger'}).text('remove').click(removeHandler(keys[i]))))
       );
       // xs panel
@@ -120,7 +128,7 @@ function updateStatus(){
             .append($('<dd>').append($('<span>',{'data-toggle':'tooltip',title:created}).text(cont.uptime).tooltip()))
             .append($('<dt>').text('repo'))
             .append($('<dd>').append($('<input>').addClass('form-control').val('http://git.' + rootDomain() + '/' + keys[i] + '.git'))))
-          .append(action)
+          .append(actionButton(keys[i], status))
           .append(' ')
           .append($('<button>', {'class': 'btn btn-danger'}).text('remove').click(removeHandler(keys[i])))));
       div.append(panel);
