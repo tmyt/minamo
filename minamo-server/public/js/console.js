@@ -29,8 +29,18 @@ function isRunning(text){
   return text === 'running';
 }
 
-function toEnabled(state){
-  return state ? 'enabled' : 'disabled';
+function isStopped(text){
+  return text === 'stopped';
+}
+
+function isPrepareing(text){
+  return text === 'prepareing';
+}
+
+function toLabelColor(text){
+  if(isRunning(text)) return 'label-success';
+  if(isPrepareing(text)) return 'label-warning';
+  if(isStopped(text)) return 'label-danger';
 }
 
 function startContainer(name){
@@ -72,7 +82,7 @@ function actionButton(name, status){
     actions
       .append($('<li>').append(dom.a('stop', '#', stopContainer(name))))
       .append($('<li>').append(dom.a('restart', '#', restartContainer(name))))
-  }else{
+  }else if(isStopped(status)){
     actions
       .append($('<li>').append(dom.a('start', '#', startContainer(name))))
   }
@@ -101,7 +111,7 @@ function updateStatus(){
       var created = cont.created ? new Date(cont.created).toLocaleString() : "";
       table.append($('<tr>')
         .append($('<td>').append(dom.a(keys[i], '//' + keys[i] + '.' + rootDomain())))
-        .append($('<td>').append($('<span class="label" />').text(status).addClass(isRunning(status)?'label-success':'label-danger')))
+        .append($('<td>').append($('<span class="label" />').text(status).addClass(toLabelColor(status))))
         .append($('<td>').text(cont.head))
         .append($('<td>').append($('<span>',{'data-toggle':'tooltip',title:created}).text(cont.uptime).tooltip()))
         .append($('<td>').append($('<input>').addClass('form-control').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
@@ -118,7 +128,7 @@ function updateStatus(){
             .append($('<h4 class="panel-title visible-xs-inline"></h4>')
               .append($('<a data-toggle="collapse"></a>').attr('href','#svc_'+keys[i]).text(keys[i]))))
           .append($('<div class="col-xs-6 text-right"></div>')
-            .append($('<p class="label vcenter text-right"></p>').text(status).addClass(isRunning(status)?'label-success':'label-danger')))));
+            .append($('<p class="label vcenter text-right"></p>').text(status).addClass(toLabelColor(status))))));
       panel2.append($('<div class="panel-collapse collapse"></div>').collapse('hide').attr("id",'svc_'+keys[i])
         .append($('<div class="panel-body"></div>')
           .append($('<dl class="dl-horizontal"></dl>')

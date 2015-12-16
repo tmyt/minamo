@@ -12,6 +12,10 @@ if [ "x$NAME" = "x" ]; then
   exit 1
 fi
 
+# prepareing flag
+mkdir -p /tmp/minamo/
+touch /tmp/minamo/${NAME}.prep
+
 # remove current container & image
 echo 'stopping...'
 docker stop ${NAME}
@@ -70,3 +74,5 @@ while [ "x$REMOTEADDR" = "x" ]; do
 done
 redis-cli SET "${NAME}.${DOMAIN}" "http://${REMOTEADDR}:${PORT}"
 
+# cleanup prep file
+rm /tmp/minamo/${NAME}.prep

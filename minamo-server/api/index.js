@@ -129,6 +129,10 @@ class api {
                             break;
                         }
                     }
+                    try{
+                      fs.statSync('/tmp/minamo/' + files[i] + '.prep');
+                      statuses[files[i]].status = 'prepareing';
+                    }catch(e){ }
                 }
                 res.send(statuses);
             });
