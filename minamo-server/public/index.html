@@ -14,15 +14,22 @@
     <header>
       <div class="navbar navbar-default navbar-static-top">
         <div class="container">
-          <a href="#" class="navbar-brand">minamo.io</a>
+          <div class="navbar-header">
+            <a href="#" class="navbar-brand">minamo.io</a>
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar-main">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+          <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="/console">console</a></li>
+            </ul>
         </div>
       </div>
     </header>
     <div class="container">
-      <div class="header">
-        <h1>Minamo management console</h1>
-      </div>
-
       <h2>Container status</h2>
       <div id="statuses" class="hidden-xs"></div>
       <div id="statuses_xs" class="visible-xs"></div>
