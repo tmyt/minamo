@@ -122,8 +122,8 @@ function updateStatus(){
       var panel = $('<div class="panel-group"></div>');
       var panel2 = $('<div class="panel panel-default"></div>');
       panel.append(panel2);
-      panel2.append($('<div class="panel-heading"></div>')
-        .append($('<div class="row" data-toggle="collapse"></div>').attr('href', '#svc_' + keys[i])
+      panel2.append($('<div class="panel-heading" data-toggle="collapse"></div>').attr('href', '#svc_' + keys[i])
+        .append($('<div class="row" data-toggle="collapse"></div>')
           .append($('<div class="col-xs-6"></div>')
             .append($('<h4 class="panel-title visible-xs-inline"></h4>').text(keys[i])))
           .append($('<div class="col-xs-6 text-right"></div>')
