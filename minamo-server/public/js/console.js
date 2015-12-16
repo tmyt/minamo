@@ -70,16 +70,18 @@ function updateStatus(){
         .append(dom.th('action'))
         .append(dom.th('remove'))
     );
+    var div = $('#statuses_xs');div.children().remove();
     var keys = Object.keys(json);
+    // build non xs
     for(var i = 0; i < keys.length; ++i){
-      //var actions = $('<select>').addClass('form-control');
       var cont = json[keys[i]];
       var status = cont.status;
       var created = cont.created ? new Date(cont.created).toLocaleString() : "";
       var action = $('<div></div>').addClass('btn-group');
       var actions = $('<ul></ul>').addClass('dropdown-menu');
       action
-        .append($('<button></button>', {'data-toggle':'dropdown', 'class':'btn dropdown-toggle'}).text('Action ').append($('<span>').addClass('caret')))
+        .append($('<button></button>', {'data-toggle':'dropdown', 'class':'btn dropdown-toggle'}).text('Action ')
+          .append($('<span>').addClass('caret')))
         .append(actions);
       if(isRunning(status)){
       actions
@@ -91,13 +93,37 @@ function updateStatus(){
       }
       table.append($('<tr>')
         .append($('<td>').append(dom.a(keys[i], '//' + keys[i] + '.' + rootDomain())))
-        .append($('<td>').append($('<span></span>').text(status).addClass(isRunning(status)?'label label-success':'label label-danger')))
+        .append($('<td>').append($('<span class="label" />').text(status).addClass(isRunning(status)?'label-success':'label-danger')))
         .append($('<td>').text(cont.head))
         .append($('<td>').append($('<span>',{'data-toggle':'tooltip',title:created}).text(cont.uptime).tooltip()))
         .append($('<td>').append($('<input>').addClass('form-control').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
         .append($('<td>').append(action))
         .append($('<td>').append($('<button>', {'class': 'btn btn-danger'}).text('remove').click(removeHandler(keys[i]))))
       );
+      // xs panel
+      var panel = $('<div class="panel-group"></div>');
+      var panel2 = $('<div class="panel panel-default"></div>');
+      panel.append(panel2);
+      panel2.append($('<div class="panel-heading"></div>')
+        .append($('<h4 class="panel-title visible-xs-inline"></h4>')
+          .append($('<a data-toggle="collapse"></a>').attr('href','#svc_'+keys[i]).text(keys[i])))
+        .append(' ')
+        .append($('<p class="label vcenter"></p>').text(status).addClass(isRunning(status)?'label-success':'label-danger')));
+      panel2.append($('<div class="panel-collapse collapse"></div>').collapse('hide').attr("id",'svc_'+keys[i])
+        .append($('<div class="panel-body"></div>')
+          .append($('<dl class="dl-horizontal"></dl>')
+            .append($('<dt>').text('service'))
+            .append($('<dd>').append(dom.a(keys[i] + '.' + rootDomain(), '//' + keys[i] + '.' + rootDomain())))
+            .append($('<dt>').text('head'))
+            .append($('<dd>').text(cont.head))
+            .append($('<dt>').text('uptime'))
+            .append($('<dd>').append($('<span>',{'data-toggle':'tooltip',title:created}).text(cont.uptime).tooltip()))
+            .append($('<dt>').text('repo'))
+            .append($('<dd>').append($('<input>').addClass('form-control').val('http://git.' + rootDomain() + '/' + keys[i] + '.git'))))
+          .append(action)
+          .append(' ')
+          .append($('<button>', {'class': 'btn btn-danger'}).text('remove').click(removeHandler(keys[i])))));
+      div.append(panel);
     }
     $('#statuses').children().remove();
     $('#statuses').append(table);
