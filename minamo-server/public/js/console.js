@@ -5,7 +5,7 @@ function rootDomain(){
 function removeHandler(name){
   return function(){
     if(window.confirm('This container permanently removed. Are you sure?')){
-      $.get('/api/destroy', {'service': name}, function(){
+      $.get('/api/destroy', {'service': name, 't': Date.now()}, function(){
         updateStatus();
       });
     }
@@ -18,7 +18,7 @@ function createNew(){
     $('#errmsg').text('error: service name should be [a-z0-9-]+');
     return false;
   }
-  $.get('/api/create', {'service': name}, function(){
+  $.get('/api/create', {'service': name, 't': Date.now()}, function(){
     document.new_container.service.value = "";
     updateStatus();
   });
@@ -35,7 +35,7 @@ function toEnabled(state){
 
 function startContainer(name){
   return function(){
-    $.get('/api/start', {'service': name}, function(){
+    $.get('/api/start', {'service': name, 't': Date.now()}, function(){
       updateStatus();
     });
     return false;
@@ -44,7 +44,7 @@ function startContainer(name){
 
 function stopContainer(name){
   return function(){
-    $.get('/api/stop', {'service': name}, function(){
+    $.get('/api/stop', {'service': name, 't': Date.now()}, function(){
       updateStatus();
     });
     return false;
@@ -53,7 +53,7 @@ function stopContainer(name){
 
 function restartContainer(name){
   return function(){
-    $.get('/api/restart', {'service': name}, function(){
+    $.get('/api/restart', {'service': name, 't': Date.now()}, function(){
       updateStatus();
     });
     return false;
@@ -80,7 +80,7 @@ function actionButton(name, status){
 }
 
 function updateStatus(){
-  $.get('/api/status', function(json){
+  $.get('/api/status', {'t': Date.now()}, function(json){
     var dom = new Dom();
     var table = $('<table></table>').addClass('table table-hover')
       .append($('<tr></td>')
