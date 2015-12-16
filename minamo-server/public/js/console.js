@@ -113,10 +113,12 @@ function updateStatus(){
       var panel2 = $('<div class="panel panel-default"></div>');
       panel.append(panel2);
       panel2.append($('<div class="panel-heading"></div>')
-        .append($('<h4 class="panel-title visible-xs-inline"></h4>')
-          .append($('<a data-toggle="collapse"></a>').attr('href','#svc_'+keys[i]).text(keys[i])))
-        .append(' ')
-        .append($('<p class="label vcenter"></p>').text(status).addClass(isRunning(status)?'label-success':'label-danger')));
+        .append($('<div class="row"></div>')
+          .append($('<div class="col-xs-6"></div>')
+            .append($('<h4 class="panel-title visible-xs-inline"></h4>')
+              .append($('<a data-toggle="collapse"></a>').attr('href','#svc_'+keys[i]).text(keys[i]))))
+          .append($('<div class="col-xs-6 text-right"></div>')
+            .append($('<p class="label vcenter text-right"></p>').text(status).addClass(isRunning(status)?'label-success':'label-danger')))));
       panel2.append($('<div class="panel-collapse collapse"></div>').collapse('hide').attr("id",'svc_'+keys[i])
         .append($('<div class="panel-body"></div>')
           .append($('<dl class="dl-horizontal"></dl>')
