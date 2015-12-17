@@ -12,15 +12,26 @@ if [ "x$NAME" = "x" ]; then
   exit 1
 fi
 
-# prepareing flag
+# stopping flag
 mkdir -p /tmp/minamo/
-touch /tmp/minamo/${NAME}.prep
+docker inspect ${NAME} > /dev/null
+if [ $? -eq 0 ];then
+  touch /tmp/minamo/${NAME}.term
+else
+  touch /tmp/minamo/${NAME}.prep
+fi
 
 # remove current container & image
 echo 'stopping...'
 docker stop ${NAME}
 docker rm ${NAME}
 docker rmi $(docker images | grep "minamo/${NAME} " | awk '{print $3;}')
+
+# clear flag
+rm /tmp/minamo/${NAME}.term
+
+# prepareing flag
+touch /tmp/minamo/${NAME}.prep
 
 # build image
 PWD=$(pwd)

@@ -37,9 +37,14 @@ function isPrepareing(text){
   return text === 'prepareing';
 }
 
+function isStopping(text){
+  return text === 'stopping';
+}
+
 function toLabelColor(text){
   if(isRunning(text)) return 'label-success';
-  if(isPrepareing(text)) return 'label-warning';
+  if(isPrepareing(text)) return 'label-info';
+  if(isStopping(text)) return 'label-warning';
   if(isStopped(text)) return 'label-danger';
 }
 

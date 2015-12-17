@@ -133,6 +133,10 @@ class api {
                       fs.statSync('/tmp/minamo/' + files[i] + '.prep');
                       statuses[files[i]].status = 'prepareing';
                     }catch(e){ }
+                    try{
+                      fs.statSync('/tmp/minamo/' + files[i] + '.term');
+                      statuses[files[i]].status = 'stopping';
+                    }catch(e){ }
                 }
                 res.send(statuses);
             });
