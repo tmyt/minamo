@@ -13,9 +13,13 @@
     "docker-ps": "^1.0.1",
     "express": "^4.13.3",
     "express-git": "^0.7.0",
+    "express-session": "^1.12.1",
     "git-init": "tmyt/git-init#aed5436",
     "githead": "tmyt/node-githead",
-    "hiredis": "^0.4.1"
+    "hiredis": "^0.4.1",
+    "passport": "^0.3.2",
+    "passport-github": "^1.0.0",
+    "passport-twitter": "^1.0.3"
   },
   "devDependencies": {
     "bower": "^1.7.1"
