@@ -12,15 +12,10 @@ app.use(function(req, res, next){
     next();
 });
 
-// handler
-app.get('/', function(req, res){
-    res.send('OK');
-});
-
 // routers
 let api = require('./api');
 app.use('/api', new api(express.Router()));
-app.use('/console', express.static('./public'));
+app.use('/', express.static('./public'));
 
 // git
 let expressGit = require('express-git');
