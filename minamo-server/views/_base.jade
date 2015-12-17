@@ -1,0 +1,35 @@
+doctype
+html
+  head
+    meta(charset'utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='/components/Umi/dist/css/bootstrap.min.css')
+    script(src='//code.jquery.com/jquery-2.1.4.min.js')
+    block scripts
+    block title
+      title minamo.io
+  body
+    header
+      .navbar.navbar-default.navbar-static-top
+        .container
+          .navbar-header
+            a.navbar-brand(href='/') minamo.io
+            button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-main')
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+          #navbar-main.navbar-collapse.collapse
+            if profile
+              ul.nav.navbar-nav.navbar-right
+                li: a.profile-image
+                  img.img-circle(src=profile.avatar, width=28, height=28)
+                  span.visible-xs-inline!= profile.username
+            ul.nav.navbar-nav
+              block header-nav
+                li: a(href='/console') console
+    .container
+      block content
+        h2 minamo.io is private PaaS platform
+        p!= username
+    script(src='/components/Umi/dist/js/bootstrap.min.js')

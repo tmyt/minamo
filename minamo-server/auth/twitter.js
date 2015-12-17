@@ -13,10 +13,13 @@ module.exports = new TwitterStrategy({
         consumerSecret: TWITTER_CONSUMER_SECRET,
         callbackURL: "http://" + config.domain + "/auth/twitter/callback"
     }, function(token, tokenSecret, profile, done){
-        console.log(token, tokenSecret, profile);
         process.nextTick(function(){
-            if(trustedUsers.indexOf(profile.username) >= 0) return done(null, profile);
-            return done(null, false);
+            if(trustedUsers.indexOf(profile.username) < 0) return done(null, false);
+            return done(null, {
+                username: profile.username,
+                provider: profile.provider,
+                avatar: profile._json.profile_image_url_https
+            });
         });
     }
 );

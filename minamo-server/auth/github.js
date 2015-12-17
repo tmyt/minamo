@@ -13,10 +13,13 @@ module.exports = new GitHubStrategy({
         clientSecret: GITHUB_CLIENT_SECRET,
         callbackURL: "http://" + config.domain + "/auth/github/callback"
     }, function(accessToken, refreshToken, profile, done){
-        console.log(accessToken, refreshToken, profile);
         process.nextTick(function(){
-            if(trustedUsers.indexOf(profile.username) >= 0) return done(null, profile);
-            return done(null, false);
+            if(trustedUsers.indexOf(profile.username) < 0) return done(null, false);
+            return done(null, {
+              username: profile.username,
+              provider: profile.provider,
+              avatar: profile._json.avatar_url
+            });
         });
     }
 );
