@@ -1,6 +1,7 @@
 "use strict";
 
-let config = require('../config.js');
+let appReq = require('app-require');
+let config = appReq('./config');
 let GitHubStrategy = require('passport-github').Strategy;
 
 const GITHUB_CLIENT_ID = 'xxxx';

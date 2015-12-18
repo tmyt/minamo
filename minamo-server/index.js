@@ -5,6 +5,7 @@ let appReq = require('app-require');
 let config = appReq('./config');
 
 // WebUI
+let jadeStatic = appReq('./lib/jade/static');
 let express = require('express');
 let passport = require('passport');
 let app = express();
@@ -48,8 +49,8 @@ app.get('/logout', function(req, res){
 // routers
 let api = appReq('./api');
 app.use('/api', requireAuthentication, new api(express.Router()));
-app.use('/console', requireAuthentication, express.static('./public/console'));
-app.use('/', appReq('./lib/jade/static')(path.resolve('./views')));
+app.use('/console', requireAuthentication, jadeStatic(path.resolve('./views')));
+app.use('/', jadeStatic(path.resolve('./views')));
 app.use('/', express.static('./public'));
 
 // git
