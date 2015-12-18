@@ -9,6 +9,7 @@ function staticJadeHandler(views){
         let jade = req.url.substr(req.baseUrl.length);
 
         if(jade.endsWith('/')) { jade += 'index' }
+        if(path.basename(jade)[0] === '_') return next();
 
         fs.stat(path.join(views, jade + '.jade'), function(err, st){
             if(err) return next();
