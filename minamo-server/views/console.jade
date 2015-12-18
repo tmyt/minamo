@@ -1,11 +1,11 @@
 extends _base
 
+block vars
+  - var pageTitle = 'console'
+
 block scripts
   script(src='/js/dom.js')
   script(src='/js/console.js')
-
-block title
-  title console | minamo.io
 
 block header-nav
   li: a.active(href='/console') console

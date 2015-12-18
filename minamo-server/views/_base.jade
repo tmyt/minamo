@@ -1,5 +1,6 @@
 doctype
 html
+  block vars
   head
     meta(charset'utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
@@ -8,7 +9,9 @@ html
     link(rel='stylesheet', href='/css/minamo.css')
     script(src='//code.jquery.com/jquery-2.1.4.min.js')
     block scripts
-    block title
+    if pageTitle
+      title #{pageTitle} | minamo.io
+    else
       title minamo.io
   body
     header
