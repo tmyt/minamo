@@ -20,8 +20,8 @@ passport.deserializeUser(function(obj, done){
     done(null, obj);
 });
 
-passport.use(appReq('./auth/twitter.js'));
-passport.use(appReq('./auth/github.js'));
+passport.use(appReq('./lib/auth/twitter'));
+passport.use(appReq('./lib/auth/github'));
 
 // simple logger
 app.use(function(req, res, next){
@@ -37,7 +37,7 @@ app.use(require('express-session')({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/auth', appReq('./auth/'));
+app.use('/auth', appReq('./lib/auth'));
 
 // handlers
 app.get('/logout', function(req, res){
