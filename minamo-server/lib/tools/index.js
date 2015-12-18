@@ -2,7 +2,8 @@
 
 let path = require('path');
 let exec = require('child_process').exec;
-let config = require('../config');
+let appReq = require('app-require');
+let config = appReq('./config');
 
 class Tools{
 

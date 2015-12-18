@@ -1,7 +1,8 @@
 "use strict";
 
 let path = require('path');
-let config = require('./config');
+let appReq = require('app-require');
+let config = appReq('./config');
 
 // WebUI
 let express = require('express');
@@ -19,8 +20,8 @@ passport.deserializeUser(function(obj, done){
     done(null, obj);
 });
 
-passport.use(require('./auth/twitter.js'));
-passport.use(require('./auth/github.js'));
+passport.use(appReq('./auth/twitter.js'));
+passport.use(appReq('./auth/github.js'));
 
 // simple logger
 app.use(function(req, res, next){
@@ -36,7 +37,7 @@ app.use(require('express-session')({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/auth', require('./auth/'));
+app.use('/auth', appReq('./auth/'));
 
 // handlers
 app.get('/logout', function(req, res){
@@ -45,12 +46,11 @@ app.get('/logout', function(req, res){
 });
 
 // routers
-let api = require('./api');
+let api = appReq('./api');
 app.use('/api', requireAuthentication, new api(express.Router()));
 app.use('/console', requireAuthentication, express.static('./public/console'));
-app.use('/', require('./lib/static-jade')(path.resolve('./views')));
+app.use('/', appReq('./lib/jade/static')(path.resolve('./views')));
 app.use('/', express.static('./public'));
-
 
 // git
 let expressGit = require('express-git');
@@ -61,7 +61,7 @@ let git = expressGit.serve(config.repo_path, {
 githttp.use('/', git);
 git.on('post-receive', function(repo, changes){
     let name = repo.name.split('/').reverse()[0];
-    let tools = require('./tools');
+    let tools = appReq('./lib/tools');
     tools.build(name);
 });
 

@@ -10,6 +10,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "app-require": "tmyt/node-app-require",
     "docker-ps": "^1.0.1",
     "express": "^4.13.3",
     "express-git": "^0.7.0",

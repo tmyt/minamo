@@ -5,9 +5,10 @@ let fs = require('fs');
 let init = require('git-init');
 let head = require('githead');
 let exec = require('child_process').exec;
+let appReq = require('app-require');
 
-let config = require('../config');
-let tools = require('../tools');
+let config = appReq('./config');
+let tools = appReq('./lib/tools');
 
 function checkParams(req, res){
     var name = req.query.service;
