@@ -5,6 +5,7 @@ html
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='/components/Umi/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/minamo.css')
     script(src='//code.jquery.com/jquery-2.1.4.min.js')
     block scripts
     block title
@@ -21,10 +22,12 @@ html
               span.icon-bar
           #navbar-main.navbar-collapse.collapse
             if profile
-              ul.nav.navbar-nav.navbar-right
-                li: a.profile-image
-                  img.img-circle(src=profile.avatar, width=28, height=28)
-                  span.visible-xs-inline!= profile.username
+              .nav.navbar-right
+                .navbar-text.hidden-xs
+                  img.profile-image.img-circle(src=profile.avatar, width=40, height=40)
+                .navbar-text.visible-xs
+                  img.profile-image-xs.img-circle(src=profile.avatar, width=28, height=28)
+                  a!= profile.username
             ul.nav.navbar-nav
               block header-nav
                 li: a(href='/console') console
