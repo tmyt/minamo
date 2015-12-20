@@ -15,7 +15,7 @@
     "express": "^4.13.3",
     "express-git": "^0.7.0",
     "express-session": "^1.12.1",
-    "git-init": "tmyt/git-init#aed5436",
+    "git-init": "tmyt/git-init#5ab0e459",
     "githead": "tmyt/node-githead",
     "hiredis": "^0.4.1",
     "jade": "^1.11.0",

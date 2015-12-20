@@ -38,13 +38,16 @@ class api {
 
     create(req, res){
         var name = checkParams(req, res);
+        let template = req.query.template || '';
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
         if(pathExists(repo)){
             res.send('error: service already exists');
         }else{
-            init(repo, true, function(err){
+            let templatePath = path.join(path.dirname(require.main.filename), '/lib/templates/' + template);
+            if(template === '') templatePath = '';
+            init(repo, true, templatePath, function(err){
                 res.send('create OK: ' + err);
             });
         }

@@ -14,11 +14,12 @@ function removeHandler(name){
 
 function createNew(){
   var name = document.new_container.service.value;
+  var template = document.new_container.template.value;
   if(!name.match(/^[a-z0-9-]+$/)){
     $('#errmsg').text('error: service name should be [a-z0-9-]+');
     return false;
   }
-  $.get('/api/create', {'service': name, 't': Date.now()}, function(){
+  $.get('/api/create', {'service': name, 'template': template, 't': Date.now()}, function(){
     document.new_container.service.value = "";
     updateStatus();
   });

@@ -22,4 +22,8 @@ block content
       input#service_name.form-control(type='text', name='service')
       span#service_name_glyph.glyphicon.form-control-feedback
       span#errmsg.help-block.text-danger
+      label(for='template') Template
+      select#template.form-control(name='template')
+        option Blank
+        option(value='simple-webapi') SimpleWebAPI
     input.btn.btn-primary(type='submit', value='create')
