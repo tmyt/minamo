@@ -54,8 +54,9 @@ RUN chown minamo:minamo /service/
 USER minamo
 WORKDIR /service/
 RUN git clone http://git.${DOMAIN}/${NAME}.git
-# RUN git clone https://github.com/tmyt/${NAME}.git
 WORKDIR ${NAME}
+RUN git submodule init
+RUN git submodule update
 RUN npm run minamo-preinstall || true
 RUN npm install
 RUN npm run minamo-postinstall || true
