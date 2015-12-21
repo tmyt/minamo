@@ -2,6 +2,7 @@
   "name": "minamo-server",
   "version": "1.0.0",
   "description": "Minamo is WebAPI management system",
+  "repository": "https://github.com/tmyt/minamo.git",
   "main": "index.js",
   "scripts": {
     "postinstall": "bower install",
