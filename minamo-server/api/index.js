@@ -1,7 +1,8 @@
 "use strict";
 
 let path = require('path');
-let fs = require('fs');
+let fs = require('fs-extra');
+let tarball = require('tarball-extract');
 let init = require('git-init');
 let head = require('githead');
 let exec = require('child_process').exec;
@@ -44,11 +45,23 @@ class api {
         let repo = path.join(config.repo_path, name);
         if(pathExists(repo)){
             res.send('error: service already exists');
-        }else{
-            let templatePath = path.join(path.dirname(require.main.filename), '/lib/templates/' + template);
-            if(template === '') templatePath = '';
-            init(repo, true, templatePath, function(err){
+            return;
+        }
+        let root = path.dirname(require.main.filename);
+        let templatePath = path.join(root, '/lib/templates/' + template + '.tar.gz');
+        let initFunc = function(templ, cb){
+            init(repo, true, templ, function(err){
+                if(cb) cb();
                 res.send('create OK: ' + err);
+            });
+        };
+        if(template === ''){
+            initFunc('');
+        }else{
+            let rand = Math.floor(Math.random() * 65535);
+            let tmpl = '/tmp/minamo-' + rand + '/';
+            tarball.extractTarball(templatePath, tmpl, function(err){
+                initFunc(tmpl, function(){ fs.removeSync(tmpl); });
             });
         }
     }
@@ -62,8 +75,7 @@ class api {
             res.send('error: service not found');
         }else{
             tools.terminate(name);
-            exec('rm -rf ' + repo); 
-            res.send('destroy OK');
+            fs.remove(repo, function(){ res.send('destroy OK'); })
         }
     }
 
