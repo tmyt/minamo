@@ -1,6 +1,8 @@
 "use strict";
 
 let path = require('path');
+let fs = require('fs-extra');
+let fsWatcher = fs.FSWatcher;
 let appReq = require('app-require');
 let config = appReq('./config');
 
@@ -8,7 +10,10 @@ let config = appReq('./config');
 let jadeStatic = appReq('./lib/jade/static');
 let express = require('express');
 let passport = require('passport');
+let basicAuth = require('basic-auth-connect');
+let bodyParser = require('body-parser');
 let app = express();
+let gitusers = {};
 
 app.set('view engine', 'jade');
 
@@ -32,6 +37,7 @@ app.use(function(req, res, next){
 });
 
 // setup auth
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(require('express-session')({
     secret: 'kuroshio',
     resave: false,
@@ -60,6 +66,11 @@ let githttp = express();
 let git = expressGit.serve(config.repo_path, {
     auto_init: false
 });
+let gitauth = basicAuth(function(user, pass){
+    return user !== undefined && pass !== undefined &&
+        gitusers[user] !== undefined && gitusers[user] === pass;
+});
+githttp.use(gitauth);
 githttp.use('/', git);
 git.on('post-receive', function(repo, changes){
     let name = repo.name.split('/').reverse()[0];
@@ -67,11 +78,24 @@ git.on('post-receive', function(repo, changes){
     tools.build(name);
 });
 
-// listen
-app.listen(3000);
-githttp.listen(7000);
+// load credentials & listen
+let gitusersPath = path.join(__dirname, '/data/gitusers.json');
+fs.readJson(gitusersPath, function(err, data){
+    if(!err) gitusers = data;
+    app.listen(3000);
+    githttp.listen(7000);
+});
+
+// watch auth file update
+let watcher = fs.watch(gitusersPath, function(name, e){
+    fs.readJson(gitusersPath, function(err, data){
+        if(!err) gitusers = data;
+    });
+});
+
 
 function requireAuthentication(req, res, next){
     if(req.isAuthenticated()) { return next(); }
     res.redirect('/login');
 }
+

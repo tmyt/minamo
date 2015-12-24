@@ -7,6 +7,7 @@ let init = require('git-init');
 let head = require('githead');
 let exec = require('child_process').exec;
 let appReq = require('app-require');
+let mutex = require('node-mutex')();
 
 let config = appReq('./config');
 let tools = appReq('./lib/tools');
@@ -34,6 +35,7 @@ class api {
         app.get('/restart', this.restart);
         app.get('/list', this.list);
         app.get('/status', this.status);
+        app.post('/credentials/update', this.updateCredentials);
         return app;
     }
 
@@ -155,6 +157,21 @@ class api {
                     }catch(e){ }
                 }
                 res.send(statuses);
+            });
+        });
+    }
+
+    updateCredentials(req, res){
+        let usersPath = path.join(__dirname, '../data/gitusers.json');
+        if(!req.user.username || !req.body.password ||
+            req.user.username === '' || req.body.password === '') return res.send(400);
+        mutex.lock('gitusers-json', function(err, unlock){
+            fs.readJson(usersPath, function(err, data){
+                data[req.user.username] = req.body.password;
+                fs.outputJson(usersPath, data, function(){
+                    res.send('OK');
+                    unlock();
+                });
             });
         });
     }

@@ -12,6 +12,8 @@
   "license": "MIT",
   "dependencies": {
     "app-require": "tmyt/node-app-require",
+    "basic-auth-connect": "^1.0.0",
+    "body-parser": "^1.14.2",
     "docker-ps": "^1.0.1",
     "express": "^4.13.3",
     "express-git": "^0.7.0",
@@ -21,6 +23,7 @@
     "githead": "tmyt/node-githead",
     "hiredis": "^0.4.1",
     "jade": "^1.11.0",
+    "node-mutex": "^0.1.6",
     "passport": "^0.3.2",
     "passport-github": "^1.0.0",
     "passport-twitter": "^1.0.3",

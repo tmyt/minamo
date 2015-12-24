@@ -26,6 +26,13 @@ function createNew(){
   return false;
 }
 
+function updateCredentials(){
+  $.post('/api/credentials/update', {'password': $('#password').val()}, function(){
+    
+  });
+  return false;
+}
+
 function isRunning(text){
   return text === 'running';
 }
@@ -158,6 +165,7 @@ function updateStatus(){
 function load(){
   updateStatus();
   $('#newform').submit(createNew);
+  $('#credentialform').submit(updateCredentials);
   $('#service_name').keyup(function(){
     if($('#service_name').val() === ""){
       $('#service_name_group').removeClass('has-success').removeClass('has-error');
