@@ -6,6 +6,10 @@
     margin: 0px 8px 0px 0px;
 }
 
+#credentialform {
+    margin-bottom: 22px;
+}
+
 #message {
     z-index: 99999;
     position: fixed;
