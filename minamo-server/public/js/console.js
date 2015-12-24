@@ -27,10 +27,27 @@ function createNew(){
 }
 
 function updateCredentials(){
-  $.post('/api/credentials/update', {'password': $('#password').val()}, function(){
-    
+  $.ajax({
+    type: 'POST',
+    url: '/api/credentials/update',
+    data: {'password': $('#password').val()},
+    success: function(){
+      showToast('', 'Update successful', 'success');
+      $('#password').val('');
+    },
+    error: function(){
+      showToast('', 'Update failed', 'danger');
+    }
   });
   return false;
+}
+
+function showToast(title, message, kind){
+  var button = $('<button class="close" data-dismiss="alert">').html('&times;');
+  var message = $('<div id="inner-message" class="alert">')
+    .addClass("alert-" + kind).append(button).append(message);
+  $('#message-container').children().remove();
+  $('#message-container').append(message);
 }
 
 function isRunning(text){

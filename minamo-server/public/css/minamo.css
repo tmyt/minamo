@@ -5,3 +5,15 @@
 .navbar .profile-image-xs{
     margin: 0px 8px 0px 0px;
 }
+
+#message {
+    z-index: 99999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+#inner-message {
+    margin: 10px auto;
+}
