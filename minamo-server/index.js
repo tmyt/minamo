@@ -26,7 +26,8 @@ passport.use(appReq('./lib/auth/github'));
 
 // simple logger
 app.use(function(req, res, next){
-    console.log('[%s] %s - %s', (new Date()).toLocaleString(), req.method, req.url);
+    console.log('[%s] %s - %s (%s)', (new Date()).toLocaleString(),
+        req.method, req.url, req.headers['user-agent']);
     next();
 });
 
