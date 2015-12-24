@@ -22,6 +22,7 @@ function createNew(){
   $.get('/api/create', {'service': name, 'template': template, 't': Date.now()}, function(){
     document.new_container.service.value = "";
     updateStatus();
+    showToast('', 'Service created', 'success');
   });
   return false;
 }
