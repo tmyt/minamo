@@ -142,13 +142,14 @@ function updateStatus(){
       var status = cont.status;
       var created = cont.created ? new Date(cont.created).toLocaleString() : "";
       var repo = 'http://git.' + rootDomain() + '/' + keys[i] + '.git';
-      if(json[keys[i]].repo === 'external'){
+      if(cont.repo === 'external'){
         repo = 'http://' + rootDomain() + '/api/hooks/' + keys[i] + '?key=' + json[keys[i]].key;
+        cont.head = 'external';
       }
       table.append($('<tr>')
         .append($('<td>').append(dom.a(keys[i], '//' + keys[i] + '.' + rootDomain())))
         .append($('<td>').append($('<span class="label" />').text(status).addClass(toLabelColor(status))))
-        .append($('<td>').text(cont.head))
+        .append($('<td>').addClass(cont.repo === 'external' ? 'text-muted' : '').text(cont.head))
         .append($('<td>').append($('<span>',{'data-toggle':'tooltip',title:created}).text(cont.uptime).tooltip()))
         .append($('<td>').append($('<input>').addClass('form-control').val(repo)))
         .append($('<td>').append(actionButton(keys[i], status)))
@@ -170,7 +171,7 @@ function updateStatus(){
             .append($('<dt>').text('service'))
             .append($('<dd>').append(dom.a(keys[i] + '.' + rootDomain(), '//' + keys[i] + '.' + rootDomain())))
             .append($('<dt>').text('head'))
-            .append($('<dd>').text(cont.head))
+            .append($('<dd>').addClass(cont.repo === 'external' ? 'text-muted' : '').text(cont.head))
             .append($('<dt>').text('uptime'))
             .append($('<dd>').append($('<span>',{'data-toggle':'tooltip',title:created}).text(cont.uptime).tooltip()))
             .append($('<dt>').text('repo'))
