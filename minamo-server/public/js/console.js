@@ -196,6 +196,13 @@ function load(){
       $('#service_name_glyph').addClass('glyphicon-remove').removeClass('glyphicon-ok');
     }
   });
+  $('#external_repo').keyup(function(){
+    if($('#external_repo').val() === ""){
+      $('#template').prop('disabled', false);
+    }else{
+      $('#template').prop('disabled', true);
+    }
+  });
 }
 
 $(document).ready(function(){

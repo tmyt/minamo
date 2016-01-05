@@ -22,10 +22,14 @@ block content
       input#service_name.form-control(type='text', name='service')
       span#service_name_glyph.glyphicon.form-control-feedback
       span#errmsg.help-block.text-danger
+    #template_group.form-group
       label(for='template') Template
       select#template.form-control(name='template')
         option(value='') Blank
         option(value='simple-webapi') SimpleWebAPI
+    #external_repo_group.form-group
+      label(for='external_repo') External Repository (optional)
+      input#external_repo.form-control(type='text', name='external')
     input.btn.btn-primary(type='submit', value='create')
 
   h2 Configure credentials
