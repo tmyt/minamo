@@ -42,6 +42,7 @@ class api {
     create(req, res){
         var name = checkParams(req, res);
         let template = req.query.template || '';
+        let external = req.query.external || '';
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
@@ -57,7 +58,11 @@ class api {
                 res.send('create OK: ' + err);
             });
         };
-        if(template === ''){
+        if(external !== ''){
+            fs.writeFile(repo, external, function(err){
+                res.send('create OK: ' + err);
+            });
+        }else if(template === ''){
             initFunc('');
         }else{
             let rand = Math.floor(Math.random() * 65535);

@@ -2,6 +2,7 @@
 
 NAME=$1
 PORT=$(($RANDOM + 3000))
+REPO=http://git.${DOMAIN}/${NAME}.git
 if [ "x$DOMAIN" = "x" ]; then
   echo "[ERROR] domain not found"
   exit 1
@@ -10,6 +11,10 @@ fi
 if [ "x$NAME" = "x" ]; then
   echo "[ERROR] name not found"
   exit 1
+fi
+
+if [ -f "$(dirname $(readlink -f $0))/../../repos/${NAME}" ]; then
+  REPO=$(cat $(dirname $(readlink -f $0))/../../repos/${NAME})
 fi
 
 # stopping flag
@@ -53,7 +58,7 @@ RUN mkdir -p /service/
 RUN chown minamo:minamo /service/
 USER minamo
 WORKDIR /service/
-RUN git clone http://git.${DOMAIN}/${NAME}.git
+RUN git clone ${REPO} ${NAME}
 WORKDIR ${NAME}
 RUN git submodule init
 RUN git submodule update
