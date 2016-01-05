@@ -1,6 +1,7 @@
 "use strict";
 
 let path = require('path');
+let crypto = require('crypto');
 let fs = require('fs-extra');
 let tarball = require('tarball-extract');
 let init = require('git-init');
@@ -11,6 +12,10 @@ let mutex = require('node-mutex')();
 
 let config = appReq('./config');
 let tools = appReq('./lib/tools');
+
+const hmac = (key, data) => {
+    return crypto.createHmac('sha1', key).update(data).digest('hex');
+};
 
 function checkParams(req, res){
     var name = req.query.service;
@@ -142,8 +147,14 @@ class api {
                         'status': 'stopped',
                         'uptime': '',
                         'created': '',
-                        'head': head(path.join(config.repo_path, files[i]))
+                        'head': head(path.join(config.repo_path, files[i])),
+                        'repo': 'local'
                     };
+                    let stat = fs.statSync(path.join(config.repo_path, files[i]));
+                    if(stat.isFile()){
+                        statuses[files[i]].repo = 'external';
+                        statuses[files[i]].key = hmac(config.secret || 'minamo.io', files[i]);
+                    }
                     for(let j = 0; j < containers.length; ++j){
                         if(containers[j].names[0] === ('/' + files[i])){
                             statuses[files[i]].status = 'running';

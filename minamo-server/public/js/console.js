@@ -141,12 +141,16 @@ function updateStatus(){
       var cont = json[keys[i]];
       var status = cont.status;
       var created = cont.created ? new Date(cont.created).toLocaleString() : "";
+      var repo = 'http://git.' + rootDomain() + '/' + keys[i] + '.git';
+      if(json[keys[i]].repo === 'external'){
+        repo = 'http://' + rootDomain() + '/api/hooks/' + keys[i] + '?key=' + json[keys[i]].key;
+      }
       table.append($('<tr>')
         .append($('<td>').append(dom.a(keys[i], '//' + keys[i] + '.' + rootDomain())))
         .append($('<td>').append($('<span class="label" />').text(status).addClass(toLabelColor(status))))
         .append($('<td>').text(cont.head))
         .append($('<td>').append($('<span>',{'data-toggle':'tooltip',title:created}).text(cont.uptime).tooltip()))
-        .append($('<td>').append($('<input>').addClass('form-control').val('http://git.' + rootDomain() + '/' + keys[i] + '.git')))
+        .append($('<td>').append($('<input>').addClass('form-control').val(repo)))
         .append($('<td>').append(actionButton(keys[i], status)))
         .append($('<td>').append($('<button>', {'class': 'btn btn-danger'}).text('remove').click(removeHandler(keys[i]))))
       );
