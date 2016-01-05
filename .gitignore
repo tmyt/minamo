@@ -1,3 +1,4 @@
 node_modules
+minamo-server/data/gitusers.json
 minamo-server/repos/*/
 minamo-server/public/components

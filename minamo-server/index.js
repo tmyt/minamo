@@ -78,8 +78,15 @@ git.on('post-receive', function(repo, changes){
     tools.build(name);
 });
 
-// load credentials & listen
+// create empty users file if not found
 let gitusersPath = path.join(__dirname, '/data/gitusers.json');
+try{
+    fs.statSync(gitusersPath);
+}catch(e){
+    fs.writeJsonSync(gitusersPath, {});
+}
+
+// load credentials & listen
 fs.readJson(gitusersPath, function(err, data){
     if(!err) gitusers = data;
     app.listen(3000);
