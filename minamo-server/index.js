@@ -2,7 +2,6 @@
 
 let path = require('path');
 let fs = require('fs-extra');
-let fsWatcher = fs.FSWatcher;
 let appReq = require('app-require');
 let config = appReq('./config');
 
@@ -52,6 +51,8 @@ app.get('/logout', function(req, res){
     req.logout();
     res.redirect('/');
 });
+app.get('/api/hooks/:repo', appReq('./api/hooks'));
+app.post('/api/hooks/:repo', appReq('./api/hooks'));
 
 // routers
 let api = appReq('./api');
