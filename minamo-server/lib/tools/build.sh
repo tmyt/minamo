@@ -43,22 +43,18 @@ PWD=$(pwd)
 mkdir /tmp/$$
 cd /tmp/$$
 date > created_at
-DOCKER0=$(ip addr show docker0 | grep inet | awk '{print $2;}' | cut -f 1 -d '/')
-echo "127.0.0.1 localhost
-::1 localhost
-${DOCKER0} git.${DOMAIN}" > hosts
+DOCKER0=$(ip addr show docker0 | grep inet | grep global | awk '{print $2;}' | cut -f 1 -d '/')
 echo "FROM node
 ENV PORT ${PORT}
 EXPOSE ${PORT}
 ADD created_at /tmp/created_at
-ADD hosts /etc/hosts
 RUN node --version
 RUN adduser minamo
 RUN mkdir -p /service/
 RUN chown minamo:minamo /service/
-USER minamo
 WORKDIR /service/
-RUN git clone ${REPO} ${NAME}
+RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c 'git clone ${REPO} ${NAME}'
+USER minamo
 WORKDIR ${NAME}
 RUN git submodule init
 RUN git submodule update
@@ -78,7 +74,6 @@ cd ${PWD}
 # cleanup tmp dir
 rm /tmp/$$/Dockerfile
 rm /tmp/$$/created_at
-rm /tmp/$$/hosts
 rmdir /tmp/$$
 
 # update host mapping

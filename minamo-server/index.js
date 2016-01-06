@@ -67,11 +67,19 @@ let githttp = express();
 let git = expressGit.serve(config.repo_path, {
     auto_init: false
 });
-let gitauth = basicAuth(function(user, pass){
+let gitBasicAuth = basicAuth(function(user, pass){
     return user !== undefined && pass !== undefined &&
         gitusers[user] !== undefined && gitusers[user] === pass;
 });
-githttp.use(gitauth);
+let gitComplexAuth = function(req, res, next){
+    // accept access from container
+    if(req.headers['x-forwarded-for'].match(/^172.17/)){
+        next();
+        return true;
+    }
+    return gitBasicAuth(req, res, next);
+};
+githttp.use(gitComplexAuth);
 githttp.use('/', git);
 git.on('post-receive', function(repo, changes){
     let name = repo.name.split('/').reverse()[0];
