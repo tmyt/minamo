@@ -4,6 +4,11 @@ block vars
   - var pageTitle = 'console'
 
 block scripts
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-dom.min.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.28.1/react-bootstrap.min.js')
+  script(src='/js/react.helper.js')
   script(src='/js/dom.js')
   script(src='/js/console.js')
 
@@ -12,6 +17,7 @@ block header-nav
 
 block content
   h2 Container status
+  #statuses_new
   #statuses.hidden-xs
   #statuses_xs.visible-xs
 
@@ -41,6 +47,8 @@ block content
       label(for='password') Git Password
       input#password.form-control(type='text', name='password')
     input.btn.btn-primary(type='submit', value='update')
+
+  script(src='/babel/console.js', type='text/babel')
 
 block outer_content
   #message
