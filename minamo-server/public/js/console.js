@@ -4,9 +4,7 @@ function rootDomain(){
 
 function removeHandler(name){
   if(window.confirm('This container permanently removed. Are you sure?')){
-    $.get('/api/destroy', {'service': name, 't': Date.now()}, function(){
-      updateStatus();
-    });
+    $.get('/api/destroy', {'service': name, 't': Date.now()}, function(){ });
   }
 }
 
@@ -20,7 +18,6 @@ function createNew(){
   }
   $.get('/api/create', {'service': name, 'template': template, 'external': external, 't': Date.now()}, function(){
     document.new_container.service.value = "";
-    updateStatus();
     showToast('', 'Service created', 'success');
   });
   return false;
@@ -74,27 +71,18 @@ function toLabelColor(text){
 }
 
 function startContainer(name){
-  $.get('/api/start', {'service': name, 't': Date.now()}, function(){
-    updateStatus();
-  });
+  $.get('/api/start', {'service': name, 't': Date.now()}, function(){ });
 }
 
 function stopContainer(name){
-  $.get('/api/stop', {'service': name, 't': Date.now()}, function(){
-    updateStatus();
-  });
+  $.get('/api/stop', {'service': name, 't': Date.now()}, function(){ });
 }
 
 function restartContainer(name){
-  $.get('/api/restart', {'service': name, 't': Date.now()}, function(){
-    updateStatus();
-  });
+  $.get('/api/restart', {'service': name, 't': Date.now()}, function(){ });
 }
 
-function updateStatus(){ }
-
 function load(){
-  updateStatus();
   $('#newform').submit(createNew);
   $('#credentialform').submit(updateCredentials);
   $('#service_name').keyup(function(){
