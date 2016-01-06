@@ -49,7 +49,7 @@ var ServiceUptime = React.createClass({
 var ServiceRepoUri = React.createClass({
   render: function(){
     var repo = 'http://git.' + rootDomain() + '/' + this.props.name + '.git';
-    if(this.props.key) prop = 'http://' + rootDomain() + '/api/hooks/' + this.props.name + '?key=' + this.props.key;
+    if(this.props.authkey) repo = 'http://' + rootDomain() + '/api/hooks/' + this.props.name + '?key=' + this.props.authkey;
     return (<input value={repo} type="text" className="form-control" />);
   }
 });
@@ -110,7 +110,7 @@ var ContainersTableRow = React.createClass({
         <td><ServiceStatus status={data.status} /></td>
         <td><ServiceHead head={data.head} external={data.repo==='external'} /></td>
         <td><ServiceUptime created={new Date(data.created).toLocaleString()} uptime={data.uptime} /></td>
-        <td><ServiceRepoUri name={this.props.name} key={data.key} /></td>
+        <td><ServiceRepoUri name={this.props.name} authkey={data.key} /></td>
         <td><ServiceAction name={this.props.name} status={data.status}/></td>
         <td><ServiceRemoveButton name={this.props.name} /></td>
       </tr>
@@ -161,7 +161,7 @@ var ContainerPane = React.createClass({
             <dt>uptime</dt>
             <dd><ServiceUptime created={new Date(data.created).toLocaleString()} uptime={data.uptime} /></dd>
             <dt>repo</dt>
-            <dd><ServiceRepoUri name={this.props.name} key={data.key} /></dd>
+            <dd><ServiceRepoUri name={this.props.name} authkey={data.key} /></dd>
           </dl>
           <ServiceAction name={this.props.name} status={data.status} />
           <span> </span>
