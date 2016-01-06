@@ -4,7 +4,7 @@ block vars
   - var pageTitle = 'console'
 
 block scripts
-  script(src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-dom.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.28.1/react-bootstrap.min.js')
@@ -17,9 +17,7 @@ block header-nav
 
 block content
   h2 Container status
-  #statuses_new
-  #statuses.hidden-xs
-  #statuses_xs.visible-xs
+  #statuses
 
   h2 Create containers
   form#newform(name='new_container')

@@ -77,14 +77,14 @@ var ServiceAction = React.createClass({
     }
     var items = commands.map(function(item){
       return (<MenuItem eventKey={item}>{item}</MenuItem>);
-    });
+    }.bind(this));
     return (<DropdownButton title="Action" onSelect={this.onSelect}>{items}</DropdownButton>);
   }
 });
 
 var ServiceRemoveButton = React.createClass({
   onClick: function(e){
-    aremoveHandler(this.props.name)();
+    removeHandler(this.props.name);
   },
   render: function(){
     return(<Button bsStyle="danger" onClick={this.onClick}>remove</Button>);
@@ -95,7 +95,7 @@ var ContainersTableHeader = React.createClass({
   render: function(){
     var names = ['name', 'status', 'head', 'uptime', 'repo', 'action', 'remove'];
     var headers = names.map(function(n){
-      return (<th>{n}</th>);
+      return (<th key={'tr_' + n}>{n}</th>);
     });
     return (<tr>{headers}</tr>);
   }
@@ -122,7 +122,7 @@ var ContainerListLarge = React.createClass({
   render: function(){
     var data = this.props.data;
     var rows = Object.keys(data).map(function(container){
-      return (<ContainersTableRow name={container} data={data[container]} />);
+      return (<ContainersTableRow name={container} data={data[container]} key={container} />);
     });
     return (
       <Table hover>
@@ -176,20 +176,24 @@ var ContainerListSmall = React.createClass({
   render: function(){
     var data = this.props.data;
     var rows = Object.keys(data).map(function(container){
-      return (<ContainerPane name={container} data={data[container]} />);
+      return (<ContainerPane name={container} data={data[container]} key={container + '_xs'} />);
     });
     return (<div>{rows}</div>);
   }
 });
 
 var ContainerGroup = React.createClass({
+  updateState: function(){
+    $.get('/api/status', {'t': Date.now()}, function(json){
+      this.setState({data: json});
+    }.bind(this));
+  },
   getInitialState: function(){
     return {data: {}};
   },
   componentDidMount: function(){
-    $.get('/api/status', {'t': Date.now()}, function(json){
-      this.setState({data: json});
-    }.bind(this));
+    this.updateState();
+    setInterval(this.updateState, this.props.pollInterval);
   },
   render: function(){
     return (
@@ -206,6 +210,6 @@ var ContainerGroup = React.createClass({
 });
 
 ReactDOM.render(
-  <ContainerGroup />,
-  document.getElementById('statuses_new')
+  <ContainerGroup pollInterval={5000}/>,
+  document.getElementById('statuses')
 );
