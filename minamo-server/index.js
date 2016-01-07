@@ -27,6 +27,7 @@ passport.deserializeUser(function(obj, done){
 
 passport.use(appReq('./lib/auth/twitter'));
 passport.use(appReq('./lib/auth/github'));
+passport.use(appReq('./lib/auth/local'));
 
 // simple logger
 app.use(function(req, res, next){

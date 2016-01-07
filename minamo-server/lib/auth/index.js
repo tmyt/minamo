@@ -12,14 +12,17 @@ function auth(provider, failure){
 
 function authRouter(provider){
     let r = express.Router();
-    r.get(`/${provider}/`, auth(provider), function(req, res){ });
-    r.get(`/${provider}/callback`, auth(provider, '/login'), function(req, res){
-        res.redirect('/');
-    });
+    let authFunc = auth(provider, '/login');
+    let callback = function(req, res){ res.redirect('/'); };
+    r.get(`/${provider}/`, authFunc, callback);
+    r.get(`/${provider}/callback`, authFunc, callback);
+    r.post(`/${provider}/`, authFunc, callback);
+    r.post(`/${provider}/callback`, authFunc, callback);
     return r;
 }
 
 router.use('/', authRouter('twitter'));
 router.use('/', authRouter('github'));
+router.use('/', authRouter('local'));
 
 module.exports = router;

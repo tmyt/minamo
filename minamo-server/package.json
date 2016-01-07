@@ -26,6 +26,7 @@
     "node-mutex": "^0.1.6",
     "passport": "^0.3.2",
     "passport-github": "^1.0.0",
+    "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.3",
     "tarball-extract": "0.0.3"
   },
