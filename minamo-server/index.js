@@ -60,7 +60,7 @@ let api = appReq('./api');
 app.use('/api', requireAuthentication, new api(express.Router()));
 app.use('/console', requireAuthentication, jadeStatic(path.resolve('./views')));
 app.use('/', jadeStatic(path.resolve('./views')));
-app.use('/', express.static('./public'));
+app.use('/', express.static('./public', {maxAge: 3600 * 1000}));
 
 // git
 let expressGit = require('express-git');

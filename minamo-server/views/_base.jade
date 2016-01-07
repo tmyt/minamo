@@ -7,7 +7,7 @@ html
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='/components/Umi/dist/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/minamo.css')
-    link(rel='stylesheet', href='/css/sticky-footer.css')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Open+Sans')
     script(src='//code.jquery.com/jquery-2.1.4.min.js')
     block scripts
     if pageTitle
@@ -44,4 +44,4 @@ html
     footer.footer
       .container
         p.text-muted Powered by minamo.io
-    script(src='/components/Umi/dist/js/bootstrap.min.js')
+    script(src='/components/Umi/dist/js/bootstrap.min.js', async)
