@@ -9,15 +9,18 @@ function removeHandler(name){
 }
 
 function createNew(){
-  var name = document.new_container.service.value;
-  var template = document.new_container.template.value;
-  var external = document.new_container.external.value;
+  var name = $('#service_name').val();
+  var template = $('#template').val();
+  var external = $('#external_repo').val();
   if(!name.match(/^[a-z0-9-]+$/)){
     $('#errmsg').text('error: service name should be [a-z0-9-]+');
     return false;
   }
   $.get('/api/create', {'service': name, 'template': template, 'external': external, 't': Date.now()}, function(){
-    document.new_container.service.value = "";
+    $('#service_name_group').removeClass('has-success').removeClass('has-error');
+    $('#service_name_glyph').removeClass('glyphicon-ok').removeClass('glyphicon-remove');
+    $('#service_name').val("");
+    $('#external_repo').val("");
     showToast('', 'Service created', 'success');
   });
   return false;
