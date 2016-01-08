@@ -4,4 +4,7 @@ block content
   .jumbotron
     h1 minamo.io
     p private PaaS platform for you
-    p: a.btn.btn-primary.btn-lg(href='/login', role='button') login
+    if profile
+      p: a.btn.btn-primary.btn-lg(href='/console', role='button') console
+    else
+      p: a.btn.btn-primary.btn-lg(href='/login', role='button') login
