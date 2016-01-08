@@ -99,8 +99,8 @@ try{
 // load credentials & listen
 fs.readJson(gitusersPath, function(err, data){
     if(!err) gitusers = data;
-    app.listen(3000);
-    githttp.listen(7000);
+    app.listen(3000, '127.0.0.1');
+    githttp.listen(7000, '127.0.0.1');
 });
 
 // watch auth file update
