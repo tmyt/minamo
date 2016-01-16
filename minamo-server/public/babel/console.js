@@ -48,8 +48,9 @@ var ServiceUptime = React.createClass({
 
 var ServiceRepoUri = React.createClass({
   render: function(){
-    var repo = 'http://git.' + rootDomain() + '/' + this.props.name + '.git';
-    if(this.props.authkey) repo = 'http://' + rootDomain() + '/api/hooks/' + this.props.name + '?key=' + this.props.authkey;
+    var proto = location.protocol;
+    var repo = proto + '//git.' + rootDomain() + '/' + this.props.name + '.git';
+    if(this.props.authkey) repo = proto + '//' + rootDomain() + '/api/hooks/' + this.props.name + '?key=' + this.props.authkey;
     return (<input value={repo} type="text" className="form-control" />);
   }
 });
