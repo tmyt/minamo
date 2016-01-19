@@ -45,6 +45,10 @@ cd /tmp/$$
 date > created_at
 DOCKER0=$(ip addr show docker0 | grep inet | grep global | awk '{print $2;}' | cut -f 1 -d '/')
 echo "FROM node
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update
+RUN apt-get install -y redis-server
+RUN /etc/init.d/redis-server start
 ENV PORT ${PORT}
 EXPOSE ${PORT}
 ADD created_at /tmp/created_at
@@ -63,8 +67,12 @@ RUN npm install
 RUN npm run minamo-postinstall || true
 RUN ls -l
 RUN pwd
-CMD npm start" > Dockerfile
-docker build --force-rm=true --rm=true -t minamo/${NAME} .
+USER root
+CMD /etc/init.d/redis-server start && su minamo -c 'npm start'" > Dockerfile
+echo ==================== >> /tmp/minamo/build.log
+echo Building with >> /tmp/minamo/build.log
+cat Dockerfile >> /tmp/minamo/build.log
+docker build --force-rm=true --rm=true -t minamo/${NAME} . >> /tmp/minamo/build.log
 
 # run container
 docker run --name ${NAME} minamo/${NAME} &
