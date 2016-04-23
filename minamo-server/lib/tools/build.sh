@@ -46,6 +46,7 @@ date > created_at
 DOCKER0=$(ip addr show docker0 | grep inet | grep global | awk '{print $2;}' | cut -f 1 -d '/')
 echo "FROM node
 ENV DEBIAN_FRONTEND noninteractive
+$(cat $(dirname $(readlink -f $0))/../../repos/${NAME}.minamorc 2> /dev/null)
 RUN apt-get update
 RUN apt-get install -y redis-server
 RUN /etc/init.d/redis-server start
