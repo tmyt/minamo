@@ -81,6 +81,9 @@ var ServiceAction = React.createClass({
       case "config":
         showEnvConfig(this.props.name);
         break;
+      case "logs":
+        showLogs(this.props.name);
+        break;
       case "start":
         startContainer(this.props.name);
         break;
@@ -93,13 +96,13 @@ var ServiceAction = React.createClass({
     }
   },
   render: function(){
-    var commands = [];
+    var commands = ['logs', '---'];
     if(isRunning(this.props.status)){
-      commands.push('stop', 'restart');
+      commands.push('stop', 'restart', '---');
     }else if(isStopped(this.props.status)){
-      commands.push('start');
+      commands.push('start', '---');
     }
-    commands.push('---', 'config');
+    commands.push('config');
     var items = commands.map(function(item){
       if(item === '---') return (<hr className="divider"/>);
       return (<MenuItem eventKey={item}>{item}</MenuItem>);

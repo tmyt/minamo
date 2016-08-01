@@ -66,6 +66,14 @@ block content
               td(colspan=3): button.btn.btn-default.form-control add new
       .modal-footer
         button#env_save.btn.btn-primary(data-dismiss='modal') save
+        button.btn.btn-default(data-dismiss='modal') cancel
+
+  #logs_frame.modal.fade(role='dialog')
+    .modal-dialog: .modal-content
+      .modal-header: h4 Logs
+      .modal-body
+        textarea#logs.form-control(rows='15', readonly)
+      .modal-footer
         button.btn.btn-default(data-dismiss='modal') close 
 
   script(src='/babel/console.js', type='text/babel')

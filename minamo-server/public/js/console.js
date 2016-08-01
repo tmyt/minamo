@@ -102,6 +102,13 @@ function showEnvConfig(name){
   });
 }
 
+function showLogs(name){
+  $.get('/api/logs', {'service': name, 't': Date.now()}, function(logs){
+    $('#logs').val(logs);
+    $('#logs_frame').modal();
+  });
+}
+
 function createAddNewButton(){
   var addnew = $('<tr id="envlist_addnew"><td colspan="3"><button class="btn btn-default form-control">add new</button>');
   addnew.find('button').click(function(){

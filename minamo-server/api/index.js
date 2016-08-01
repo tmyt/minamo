@@ -9,6 +9,7 @@ let head = require('githead');
 let exec = require('child_process').exec;
 let appReq = require('app-require');
 let mutex = require('node-mutex')();
+let shellescape = require('shell-escape');
 
 let config = appReq('./config');
 let tools = appReq('./lib/tools');
@@ -42,6 +43,7 @@ class api {
         app.get('/status', this.status);
         app.get('/env', this.env);
         app.post('/env/update', this.updateEnv);
+        app.get('/logs', this.logs);
         app.post('/credentials/update', this.updateCredentials);
         return app;
     }
@@ -210,6 +212,16 @@ class api {
                 res.send('OK');
             });
         }
+    }
+
+    logs(req, res){
+        let name = checkParams(req, res);
+        if(!name) return;
+
+        let cmds = shellescape(['docker', 'logs', name]);
+        require('child_process').exec(cmds, function(err, stdout, stderr){
+          res.send(stdout);
+        });
     }
 
     updateCredentials(req, res){
