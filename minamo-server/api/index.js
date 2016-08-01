@@ -18,7 +18,7 @@ const hmac = (key, data) => {
 };
 
 function checkParams(req, res){
-    var name = req.query.service;
+    var name = req.query.service || req.body.service;
     if(!name){
         res.send('error: no service');
         return;
@@ -40,6 +40,8 @@ class api {
         app.get('/restart', this.restart);
         app.get('/list', this.list);
         app.get('/status', this.status);
+        app.get('/env', this.env);
+        app.post('/env/update', this.updateEnv);
         app.post('/credentials/update', this.updateCredentials);
         return app;
     }
@@ -63,6 +65,7 @@ class api {
                 res.send('create OK: ' + err);
             });
         };
+        fs.outputJsonSync(repo + '.env', {});
         if(external !== ''){
             fs.writeFile(repo, external, function(err){
                 res.send('create OK: ' + err);
@@ -87,7 +90,9 @@ class api {
             res.send('error: service not found');
         }else{
             tools.terminate(name);
-            fs.remove(repo, function(){ res.send('destroy OK'); })
+            fs.remove(repo, function(){
+                fs.remove(repo + '.env', function() {res.send('destroy OK'); })
+            });
         }
     }
 
@@ -105,15 +110,15 @@ class api {
     }
 
     stop(req, res){
-        var name = checkParams(req, res);
+        var name = checkparams(req, res);
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
-        if(!pathExists(repo)){
+        if(!pathexists(repo)){
             res.send('error: service not found');
         }else{
             tools.terminate(name);
-            res.send('stop OK');
+            res.send('stop ok');
         }
     }
 
@@ -143,6 +148,8 @@ class api {
             fs.readdir(config.repo_path, function(err, files){
                 for(let i = 0; i < files.length; ++i){
                     if(files[i][0] === '.') continue;
+                    let stat = fs.statSync(path.join(config.repo_path, files[i]));
+                    if(stat.isFile() && files[i].endsWith('.env')) continue;
                     statuses[files[i]] = {
                         'status': 'stopped',
                         'uptime': '',
@@ -150,7 +157,6 @@ class api {
                         'head': head(path.join(config.repo_path, files[i])),
                         'repo': 'local'
                     };
-                    let stat = fs.statSync(path.join(config.repo_path, files[i]));
                     if(stat.isFile()){
                         statuses[files[i]].repo = 'external';
                         statuses[files[i]].key = hmac(config.secret || 'minamo.io', files[i]);
@@ -175,6 +181,35 @@ class api {
                 res.send(statuses);
             });
         });
+    }
+
+    env(req, res){
+        var name = checkParams(req, res);
+        if(!name) return;
+        // .git is no required. its seems library bug.
+        let repo = path.join(config.repo_path, name);
+        if(!pathExists(repo)){
+            res.send('error: service not found');
+        }else{
+            fs.readFile(repo + '.env', function(err, data){
+                res.send(data);
+            });
+        }
+    }
+
+    updateEnv(req, res){
+        var name = checkParams(req, res);
+        if(!name) return;
+        // .git is no required. its seems library bug.
+        let repo = path.join(config.repo_path, name);
+        if(!pathExists(repo)){
+            res.send('error: service not found');
+        }else{
+            let env = JSON.parse(req.body.env);
+            fs.outputJson(repo + '.env', env, function(){
+                res.send('OK');
+            });
+        }
     }
 
     updateCredentials(req, res){

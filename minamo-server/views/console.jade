@@ -46,6 +46,28 @@ block content
       input#password.form-control(type='text', name='password')
     input.btn.btn-primary(type='submit', value='update')
 
+  #envconfig_frame.modal.fade(role='dialog')
+    .modal-dialog: .modal-content
+      .modal-header
+        h4 Env config
+      .modal-body
+        form
+          input#target_service(type='hidden', name='service')
+          table#envlist.table.table-hover
+            thead: tr
+              th name
+              th value
+            tr
+              td: input.form-control
+              td: input.form-control
+              td: button.btn.btn-danger.form-control
+                span.glyphicon.glyphicon-trash
+            tr
+              td(colspan=3): button.btn.btn-default.form-control add new
+      .modal-footer
+        button#env_save.btn.btn-primary(data-dismiss='modal') save
+        button.btn.btn-default(data-dismiss='modal') close 
+
   script(src='/babel/console.js', type='text/babel')
 
 block outer_content

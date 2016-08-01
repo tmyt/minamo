@@ -12,6 +12,7 @@ var Panel = ReactBootstrap.Panel;
 var Collapse = ReactBootstrap.Collapse;
 var Row = ReactBootstrap.Row;
 var Col = ReactBootstrap.Col;
+var Modal = ReactBootstrap.Modal;
 
 var ServiceLink = React.createClass({
   render: function(){
@@ -55,9 +56,31 @@ var ServiceRepoUri = React.createClass({
   }
 });
 
+var ServiceEnvConfig = React.createClass({
+  getInitialState: function(){
+    return { show: true }
+  },
+  close: function() {
+    this.setState({ show: false });
+  },
+  render: function(){
+    return (
+      <Modal show={this.state.show} onHide={this.close}>
+        <Modal.Footer>
+          <Button bsStyle="primary" onClick={this.close}>Save</Button>
+          <Button onClick={this.close}>Cancel</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+});
+
 var ServiceAction = React.createClass({
   onSelect: function(e, key){
     switch(key){
+      case "config":
+        showEnvConfig(this.props.name);
+        break;
       case "start":
         startContainer(this.props.name);
         break;
@@ -72,11 +95,13 @@ var ServiceAction = React.createClass({
   render: function(){
     var commands = [];
     if(isRunning(this.props.status)){
-      commands = ['stop', 'restart'];
+      commands.push('stop', 'restart');
     }else if(isStopped(this.props.status)){
-      commands = ['start'];
+      commands.push('start');
     }
+    commands.push('---', 'config');
     var items = commands.map(function(item){
+      if(item === '---') return (<hr className="divider"/>);
       return (<MenuItem eventKey={item}>{item}</MenuItem>);
     }.bind(this));
     return (<DropdownButton title="Action" onSelect={this.onSelect}>{items}</DropdownButton>);

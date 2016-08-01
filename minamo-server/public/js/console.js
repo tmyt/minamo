@@ -85,6 +85,47 @@ function restartContainer(name){
   $.get('/api/restart', {'service': name, 't': Date.now()}, function(){ });
 }
 
+function showEnvConfig(name){
+  // clear
+  $('#envlist').children().remove();
+  $('#envlist').append($('<thead><tr><th>name</th><th>value</th></tr></thead>'));
+  $('#target_service').val(name);
+  $.get('/api/env', {'service': name, 't': Date.now()}, function(json){
+    var env = JSON.parse(json);
+    // add trailing button
+    var keys = Object.keys(env);
+    for(var i = 0; i < keys.length; ++i){
+      $('#envlist').append(createEnvRow(keys[i], env[keys[i]]));
+    }
+    $('#envlist').append(createAddNewButton());
+    $('#envconfig_frame').modal();
+  });
+}
+
+function createAddNewButton(){
+  var addnew = $('<tr id="envlist_addnew"><td colspan="3"><button class="btn btn-default form-control">add new</button>');
+  addnew.find('button').click(function(){
+    $('#envlist_addnew').remove();
+    $('#envlist').append(createEnvRow()).append(createAddNewButton());
+    return false;
+  });
+  return addnew;
+}
+
+function createEnvRow(name, value){
+  var row = $('<tr data-env="env-item"/>');
+  row.append($('<td><input class="form-control" name="env-name" /></td>'));
+  row.append($('<td><input class="form-control" name="env-value" /></td>'));
+  row.append($('<td><button class="btn btn-danger form-control"><span class="glyphicon glyphicon-trash" /></button></td>'));
+  row.find('input[name="env-name"]').val(name || '');
+  row.find('input[name="env-value"]').val(value || '');
+  row.find('button').click(function(){
+    row.remove();
+    return false;
+  })
+  return row;
+}
+
 function load(){
   $('#newform').submit(createNew);
   $('#credentialform').submit(updateCredentials);
@@ -106,6 +147,24 @@ function load(){
     }else{
       $('#template').prop('disabled', true);
     }
+  });
+  $('#env_save').click(function(){
+    var items = $('#envlist tr[data-env="env-item"]');
+    var env = {};
+    for(var i = 0 ; i < items.length; ++i){
+      var name = items.eq(i).find('input[name="env-name"]').val();
+      var value = items.eq(i).find('input[name="env-value"]').val();
+      env[name] = value;
+    }
+    $.ajax({
+      type: 'POST',
+      url: '/api/env/update',
+      data: {'env': JSON.stringify(env), 'service': $('#target_service').val()},
+      success: function(){ },
+      error: function(){
+        showToast('', 'Env update failed', 'danger');
+      }
+    });
   });
 }
 
