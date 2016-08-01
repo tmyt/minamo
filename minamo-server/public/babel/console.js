@@ -104,7 +104,7 @@ var ServiceAction = React.createClass({
     }
     commands.push('config');
     var items = commands.map(function(item){
-      if(item === '---') return (<li className="divider"/>);
+      if(item === '---') return (<MenuItem divider />);
       return (<MenuItem eventKey={item}>{item}</MenuItem>);
     }.bind(this));
     return (<DropdownButton title="Action" onSelect={this.onSelect}>{items}</DropdownButton>);
