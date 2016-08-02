@@ -19,7 +19,7 @@ const hmac = (key, data) => {
 };
 
 function checkParams(req, res){
-    var name = req.query.service || req.body.service;
+    let name = req.query.service || req.body.service;
     if(!name){
         res.send('error: no service');
         return;
@@ -49,7 +49,7 @@ class api {
     }
 
     create(req, res){
-        var name = checkParams(req, res);
+        let name = checkParams(req, res);
         let template = req.query.template || '';
         let external = req.query.external || '';
         if(!name) return;
@@ -84,7 +84,7 @@ class api {
     }
 
     destroy(req, res){
-        var name = checkParams(req, res);
+        let name = checkParams(req, res);
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
@@ -99,7 +99,7 @@ class api {
     }
 
     start(req, res){
-        var name = checkParams(req, res);
+        let name = checkParams(req, res);
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
@@ -112,7 +112,7 @@ class api {
     }
 
     stop(req, res){
-        var name = checkparams(req, res);
+        let name = checkparams(req, res);
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
@@ -125,7 +125,7 @@ class api {
     }
 
     restart(req, res){
-        var name = checkParams(req, res);
+        let name = checkParams(req, res);
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
@@ -186,7 +186,7 @@ class api {
     }
 
     env(req, res){
-        var name = checkParams(req, res);
+        let name = checkParams(req, res);
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
@@ -200,7 +200,7 @@ class api {
     }
 
     updateEnv(req, res){
-        var name = checkParams(req, res);
+        let name = checkParams(req, res);
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
