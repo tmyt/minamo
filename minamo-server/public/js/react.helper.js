@@ -1,1 +1,0 @@
-var Alert = ReactBootstrap.Alert;
