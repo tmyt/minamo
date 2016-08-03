@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-let appReq = require('app-require');
-let config = appReq('./config');
-let LocalStrategy = require('passport-local').Strategy;
+const appReq = require('app-require')
+    , config = appReq('./config')
+    , LocalStrategy = require('passport-local').Strategy;
 
 const users = {};
 

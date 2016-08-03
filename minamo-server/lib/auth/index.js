@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-let express = require('express');
-let router = express.Router();
-let passport = require('passport');
+const express = require('express')
+    , router = express.Router()
+    , passport = require('passport');
 
 function auth(provider, failure){
     let opt = undefined;

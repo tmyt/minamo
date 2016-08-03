@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-let appReq = require('app-require');
-let config = appReq('./config');
-let GitHubStrategy = require('passport-github').Strategy;
+const appReq = require('app-require')
+    , config = appReq('./config')
+    , GitHubStrategy = require('passport-github').Strategy;
 
 const GITHUB_CLIENT_ID = 'xxxx';
 const GITHUB_CLIENT_SECRET = 'xxxx';

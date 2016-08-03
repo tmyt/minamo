@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-let appReq = require('app-require');
-let config = appReq('./config');
-let TwitterStrategy = require('passport-twitter').Strategy;
+const appReq = require('app-require')
+    , config = appReq('./config')
+    , TwitterStrategy = require('passport-twitter').Strategy;
 
 const TWITTER_CONSUMER_KEY = 'xxxx';
 const TWITTER_CONSUMER_SECRET = 'xxxx';

@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-let path = require('path');
-let crypto = require('crypto');
-let fs = require('fs-extra');
-let appReq = require('app-require');
-let config = appReq('./config');
+const path = require('path')
+    , crypto = require('crypto')
+    , fs = require('fs-extra')
+    , appReq = require('app-require')
+    , config = appReq('./config');
 
 const hmac = (key, data) => {
     return crypto.createHmac('sha1', key).update(data).digest('hex');

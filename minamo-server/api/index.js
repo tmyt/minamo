@@ -1,18 +1,18 @@
-"use strict";
+'use strict';
 
-let path = require('path');
-let crypto = require('crypto');
-let fs = require('fs-extra');
-let tarball = require('tarball-extract');
-let init = require('git-init');
-let head = require('githead');
-let exec = require('child_process').exec;
-let appReq = require('app-require');
-let mutex = require('node-mutex')();
-let shellescape = require('shell-escape');
+const path = require('path')
+    , crypto = require('crypto')
+    , fs = require('fs-extra')
+    , tarball = require('tarball-extract')
+    , init = require('git-init')
+    , head = require('githead')
+    , exec = require('child_process').exec
+    , appReq = require('app-require')
+    , mutex = require('node-mutex')()
+    , shellescape = require('shell-escape');
 
-let config = appReq('./config');
-let tools = appReq('./lib/tools');
+const config = appReq('./config')
+    , tools = appReq('./lib/tools');
 
 const hmac = (key, data) => {
     return crypto.createHmac('sha1', key).update(data).digest('hex');

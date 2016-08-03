@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
-let path = require('path');
-let exec = require('child_process').exec;
-let fs = require('fs-extra');
-let appReq = require('app-require');
-let config = appReq('./config');
+const path = require('path')
+    , exec = require('child_process').exec
+    , fs = require('fs-extra')
+    , appReq = require('app-require')
+    , config = appReq('./config');
 
 class Tools{
 

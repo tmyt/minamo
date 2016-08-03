@@ -1,17 +1,18 @@
-"use strict";
+'use strict';
 
-let path = require('path');
-let fs = require('fs-extra');
-let appReq = require('app-require');
-let config = appReq('./config');
+const path = require('path')
+    , fs = require('fs-extra')
+    , appReq = require('app-require')
+    , config = appReq('./config');
 
 // WebUI
-let jadeStatic = appReq('./lib/jade/static');
-let express = require('express');
-let passport = require('passport');
-let basicAuth = require('basic-auth-connect');
-let bodyParser = require('body-parser');
-let app = express();
+const jadeStatic = appReq('./lib/jade/static')
+    , express = require('express')
+    , passport = require('passport')
+    , basicAuth = require('basic-auth-connect')
+    , bodyParser = require('body-parser')
+    , app = express();
+
 let gitusers = {};
 
 app.set('view engine', 'jade');
