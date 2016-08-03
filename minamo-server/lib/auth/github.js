@@ -4,10 +4,9 @@ const appReq = require('app-require')
     , config = appReq('./config')
     , GitHubStrategy = require('passport-github').Strategy;
 
-const GITHUB_CLIENT_ID = 'xxxx';
-const GITHUB_CLIENT_SECRET = 'xxxx';
-
-const trustedUsers = [];
+const GITHUB_CLIENT_ID = config.GITHUB_CLIENT_ID;
+const GITHUB_CLIENT_SECRET = config.GITHUB_CLIENT_SECRET;
+const trustedUsers = config.GITHUB_TRUSTED_USERS;
 
 module.exports = new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,

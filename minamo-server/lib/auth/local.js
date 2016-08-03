@@ -4,7 +4,7 @@ const appReq = require('app-require')
     , config = appReq('./config')
     , LocalStrategy = require('passport-local').Strategy;
 
-const users = {};
+const users = config.LOCAL_USERS;
 
 module.exports = new LocalStrategy({
     usernameField: 'username', passwordField: 'password'

@@ -4,10 +4,9 @@ const appReq = require('app-require')
     , config = appReq('./config')
     , TwitterStrategy = require('passport-twitter').Strategy;
 
-const TWITTER_CONSUMER_KEY = 'xxxx';
-const TWITTER_CONSUMER_SECRET = 'xxxx';
-
-const trustedUsers = [];
+const TWITTER_CONSUMER_KEY = config.TWITTER_CONSUMER_KEY;
+const TWITTER_CONSUMER_SECRET = config.TWITTER_CONSUMER_SECRET;
+const trustedUsers = config.TWITTER_TRUSTED_USERS;
 
 module.exports = new TwitterStrategy({
     consumerKey: TWITTER_CONSUMER_KEY,
