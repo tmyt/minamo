@@ -112,15 +112,15 @@ class api {
     }
 
     stop(req, res){
-        let name = checkparams(req, res);
+        let name = checkParams(req, res);
         if(!name) return;
         // .git is no required. its seems library bug.
         let repo = path.join(config.repo_path, name);
-        if(!pathexists(repo)){
+        if(!pathExists(repo)){
             res.send('error: service not found');
         }else{
             tools.terminate(name);
-            res.send('stop ok');
+            res.send('stop OK');
         }
     }
 
