@@ -19,11 +19,11 @@ app.set('view engine', 'jade');
 
 // setup passport
 passport.serializeUser(function(user, done){
-    done(null, user);
+  done(null, user);
 });
 
 passport.deserializeUser(function(obj, done){
-    done(null, obj);
+  done(null, obj);
 });
 
 passport.use(appReq('./lib/auth/twitter'));
@@ -32,17 +32,17 @@ passport.use(appReq('./lib/auth/local'));
 
 // simple logger
 app.use(function(req, res, next){
-    console.log('[%s] %s - %s (%s)', (new Date()).toLocaleString(),
-        req.method, req.url, req.headers['user-agent']);
-    next();
+  console.log('[%s] %s - %s (%s)', (new Date()).toLocaleString(),
+    req.method, req.url, req.headers['user-agent']);
+  next();
 });
 
 // setup auth
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(require('express-session')({
-    secret: 'kuroshio',
-    resave: false,
-    saveUninitialized: false
+  secret: 'kuroshio',
+  resave: false,
+  saveUninitialized: false
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -50,8 +50,8 @@ app.use('/auth', appReq('./lib/auth'));
 
 // handlers
 app.get('/logout', function(req, res){
-    req.logout();
-    res.redirect('/');
+  req.logout();
+  res.redirect('/');
 });
 app.get('/api/hooks/:repo', appReq('./api/hooks'));
 app.post('/api/hooks/:repo', appReq('./api/hooks'));
@@ -67,53 +67,52 @@ app.use('/', express.static('./public', {maxAge: 3600 * 1000}));
 let expressGit = require('express-git');
 let githttp = express();
 let git = expressGit.serve(config.repo_path, {
-    auto_init: false
+  auto_init: false
 });
 let gitBasicAuth = basicAuth(function(user, pass){
-    return user !== undefined && pass !== undefined &&
-        gitusers[user] !== undefined && gitusers[user] === pass;
+  return user !== undefined && pass !== undefined &&
+    gitusers[user] !== undefined && gitusers[user] === pass;
 });
 let gitComplexAuth = function(req, res, next){
-    // accept access from container
-    if(req.headers['x-forwarded-for'].match(/^172.17/)){
-        next();
-        return true;
-    }
-    return gitBasicAuth(req, res, next);
+  // accept access from container
+  if(req.headers['x-forwarded-for'].match(/^172.17/)){
+    next();
+    return true;
+  }
+  return gitBasicAuth(req, res, next);
 };
 githttp.use(gitComplexAuth);
 githttp.use('/', git);
 git.on('post-receive', function(repo, changes){
-    let name = repo.name.split('/').reverse()[0];
-    let tools = appReq('./lib/tools');
-    tools.build(name);
+  let name = repo.name.split('/').reverse()[0];
+  let tools = appReq('./lib/tools');
+  tools.build(name);
 });
 
 // create empty users file if not found
 let gitusersPath = path.join(__dirname, '/data/gitusers.json');
 try{
-    fs.statSync(gitusersPath);
+  fs.statSync(gitusersPath);
 }catch(e){
-    fs.writeJsonSync(gitusersPath, {});
+  fs.writeJsonSync(gitusersPath, {});
 }
 
 // load credentials & listen
 fs.readJson(gitusersPath, function(err, data){
-    if(!err) gitusers = data;
-    app.listen(3000, '127.0.0.1');
-    githttp.listen(7000, '127.0.0.1');
+  if(!err) gitusers = data;
+  app.listen(3000, '127.0.0.1');
+  githttp.listen(7000, '127.0.0.1');
 });
 
 // watch auth file update
 let watcher = fs.watch(gitusersPath, function(name, e){
-    fs.readJson(gitusersPath, function(err, data){
-        if(!err) gitusers = data;
-    });
+  fs.readJson(gitusersPath, function(err, data){
+    if(!err) gitusers = data;
+  });
 });
 
-
 function requireAuthentication(req, res, next){
-    if(req.isAuthenticated()) { return next(); }
-    res.redirect('/login');
+  if(req.isAuthenticated()) { return next(); }
+  res.redirect('/login');
 }
 
