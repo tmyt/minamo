@@ -15,7 +15,7 @@ module.exports = function(req, res){
   if(!repo.match(/^[a-z0-9-]+$/)){
    return res.sendStatus(400);
   }
-  fs.readFile(path.join(config.repo_path, repo), function(err, json){
+  fs.readFile(path.join(config.repo_path, repo), (err, json) => {
     if(err) return res.sendStatus(400);
     if(req.query.key !== hmac(config.secret || 'minamo.io', repo)){
       return res.sendStatus(400);

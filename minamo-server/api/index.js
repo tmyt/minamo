@@ -41,9 +41,9 @@ class api {
     app.get('/restart', this.restart);
     app.get('/list', this.list);
     app.get('/status', this.status);
+    app.get('/logs', this.logs);
     app.get('/env', this.env);
     app.post('/env/update', this.updateEnv);
-    app.get('/logs', this.logs);
     app.post('/credentials/update', this.updateCredentials);
     return app;
   }
@@ -62,23 +62,21 @@ class api {
     let root = path.dirname(require.main.filename);
     let templatePath = path.join(root, '/lib/templates/' + template + '.tar.gz');
     let initFunc = function(templ, cb){
-      init(repo, true, templ, function(err){
+      init(repo, true, templ, err => {
         if(cb) cb();
         res.send('create OK: ' + err);
       });
     };
     fs.outputJsonSync(repo + '.env', {});
     if(external !== ''){
-      fs.writeFile(repo, external, function(err){
-        res.send('create OK: ' + err);
-      });
+      fs.writeFile(repo, external, err => res.send('create OK: ' + err));
     }else if(template === ''){
       initFunc('');
     }else{
       let rand = Math.floor(Math.random() * 65535);
       let tmpl = '/tmp/minamo-' + rand + '/';
-      tarball.extractTarball(templatePath, tmpl, function(err){
-        initFunc(tmpl, function(){ fs.removeSync(tmpl); });
+      tarball.extractTarball(templatePath, tmpl, err => {
+        initFunc(tmpl, () => fs.removeSync(tmpl));
       });
     }
   }
@@ -92,9 +90,7 @@ class api {
       res.send('error: service not found');
     }else{
       tools.terminate(name);
-      fs.remove(repo, function(){
-        fs.remove(repo + '.env', function() {res.send('destroy OK'); })
-      });
+      fs.remove(repo, () => fs.remove(repo + '.env', () => res.send('destroy OK')));
     }
   }
 
@@ -138,16 +134,14 @@ class api {
   }
 
   list(req, res){
-    fs.readdir(config.repo_path, function(err, files){
-      res.send(files);
-    });
+    fs.readdir(config.repo_path, (err, files) => res.send(files));
   }
 
   status(req, res){
     let ps = require('docker-ps');
-    ps(function(err, containers){
+    ps((err, containers) => {
       let statuses = {};
-      fs.readdir(config.repo_path, function(err, files){
+      fs.readdir(config.repo_path, (err, files) => {
         for(let i = 0; i < files.length; ++i){
           if(files[i][0] === '.') continue;
           let stat = fs.statSync(path.join(config.repo_path, files[i]));
@@ -193,9 +187,7 @@ class api {
     if(!pathExists(repo)){
       res.send('error: service not found');
     }else{
-      fs.readFile(repo + '.env', function(err, data){
-        res.send(data);
-      });
+      fs.readFile(repo + '.env', (err, data) => res.send(data));
     }
   }
 
@@ -208,30 +200,26 @@ class api {
       res.send('error: service not found');
     }else{
       let env = JSON.parse(req.body.env);
-      fs.outputJson(repo + '.env', env, function(){
-        res.send('OK');
-      });
+      fs.outputJson(repo + '.env', env, () => res.send('OK'));
     }
   }
 
   logs(req, res){
     let name = checkParams(req, res);
     if(!name) return;
-
+    // read docker logs
     let cmds = shellescape(['docker', 'logs', name]);
-    require('child_process').exec(cmds, function(err, stdout, stderr){
-      res.send(stdout);
-    });
+    require('child_process').exec(cmds, (err, stdout, stderr) => res.send(stdout));
   }
 
   updateCredentials(req, res){
     let usersPath = path.join(__dirname, '../data/gitusers.json');
     if(!req.user.username || !req.body.password ||
       req.user.username === '' || req.body.password === '') return res.send(400);
-    mutex.lock('gitusers-json', function(err, unlock){
-      fs.readJson(usersPath, function(err, data){
+    mutex.lock('gitusers-json', (err, unlock) => {
+      fs.readJson(usersPath, (err, data) => {
         data[req.user.username] = req.body.password;
-        fs.outputJson(usersPath, data, function(){
+        fs.outputJson(usersPath, data, () => {
           res.send('OK');
           unlock();
         });

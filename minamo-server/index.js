@@ -18,20 +18,15 @@ let gitusers = {};
 app.set('view engine', 'jade');
 
 // setup passport
-passport.serializeUser(function(user, done){
-  done(null, user);
-});
-
-passport.deserializeUser(function(obj, done){
-  done(null, obj);
-});
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((obj, done) => done(null, obj));
 
 passport.use(appReq('./lib/auth/twitter'));
 passport.use(appReq('./lib/auth/github'));
 passport.use(appReq('./lib/auth/local'));
 
 // simple logger
-app.use(function(req, res, next){
+app.use((req, res, next) => {
   console.log('[%s] %s - %s (%s)', (new Date()).toLocaleString(),
     req.method, req.url, req.headers['user-agent']);
   next();
@@ -49,7 +44,7 @@ app.use(passport.session());
 app.use('/auth', appReq('./lib/auth'));
 
 // handlers
-app.get('/logout', function(req, res){
+app.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
@@ -69,7 +64,7 @@ let githttp = express();
 let git = expressGit.serve(config.repo_path, {
   auto_init: false
 });
-let gitBasicAuth = basicAuth(function(user, pass){
+let gitBasicAuth = basicAuth((user, pass) => {
   return user !== undefined && pass !== undefined &&
     gitusers[user] !== undefined && gitusers[user] === pass;
 });
@@ -83,7 +78,7 @@ let gitComplexAuth = function(req, res, next){
 };
 githttp.use(gitComplexAuth);
 githttp.use('/', git);
-git.on('post-receive', function(repo, changes){
+git.on('post-receive', (repo, changes) => {
   let name = repo.name.split('/').reverse()[0];
   let tools = appReq('./lib/tools');
   tools.build(name);
@@ -98,15 +93,15 @@ try{
 }
 
 // load credentials & listen
-fs.readJson(gitusersPath, function(err, data){
+fs.readJson(gitusersPath, (err, data) => {
   if(!err) gitusers = data;
   app.listen(3000, '127.0.0.1');
   githttp.listen(7000, '127.0.0.1');
 });
 
 // watch auth file update
-let watcher = fs.watch(gitusersPath, function(name, e){
-  fs.readJson(gitusersPath, function(err, data){
+let watcher = fs.watch(gitusersPath, (name, e) => {
+  fs.readJson(gitusersPath, (err, data) => {
     if(!err) gitusers = data;
   });
 });
