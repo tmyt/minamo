@@ -44,7 +44,7 @@ mkdir /tmp/$$
 cd /tmp/$$
 date > created_at
 DOCKER0=$(ip addr show docker0 | grep inet | grep global | awk '{print $2;}' | cut -f 1 -d '/')
-echo "FROM node
+echo "FROM node:latest
 ENV DEBIAN_FRONTEND noninteractive
 ${EXTRAENV}
 RUN apt-get update
@@ -73,7 +73,10 @@ CMD /etc/init.d/redis-server start && su minamo -c 'npm start'" > Dockerfile
 echo ==================== >> /tmp/minamo/build.log
 echo Building with >> /tmp/minamo/build.log
 cat Dockerfile >> /tmp/minamo/build.log
+echo Pulling image... >> /tmp/minamo/build.log
+docker pull node:latest >> /tmp/minamo/build.log
 docker build --force-rm=true --rm=true -t minamo/${NAME} . >> /tmp/minamo/build.log
+echo Docker build exited with $? >> /tmp/minamo/build.log
 
 # run container
 docker run --name ${NAME} minamo/${NAME} &
