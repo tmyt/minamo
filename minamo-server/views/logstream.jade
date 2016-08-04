@@ -1,0 +1,20 @@
+extends _base
+
+block vars
+  - var pageTitle = 'log stream'
+
+block scripts
+  script(src='https://cdn.socket.io/socket.io-1.4.5.js')
+
+block styles
+  link(rel='stylesheet', href='/css/logstream.css')
+  link(rel='stylesheet', href='/css/ansi.css')
+
+block header-nav
+  li: a(href='/console') console
+  li: a.active(href='/logstream') log stream
+
+block content
+  h2 Log Stream
+  #log
+  script(src='/js/logstream.js')

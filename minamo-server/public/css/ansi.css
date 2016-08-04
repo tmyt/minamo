@@ -1,0 +1,28 @@
+.ansi_console_snippet {
+    font-family: monospace;
+    white-space: pre;
+    display: block;
+    unicode-bidi: embed;
+    overflow: auto;
+    padding: 2px 5px;
+    background-color: black;
+    color: white;
+}
+.ansi_bold { font-weight: bold }
+.ansi_italic { font-style: italic }
+.ansi_fg_black { color: black }
+.ansi_fg_red { color: red }
+.ansi_fg_green { color: green }
+.ansi_fg_yellow { color: yellow }
+.ansi_fg_blue { color: blue }
+.ansi_fg_purple { color: purple }
+.ansi_fg_cyan { color: cyan }
+.ansi_fg_white { color: white }
+.ansi_bg_black { background-color: black }
+.ansi_bg_red { background-color: red }
+.ansi_bg_green { background-color: green }
+.ansi_bg_yellow { background-color: yellow }
+.ansi_bg_blue { background-color: blue }
+.ansi_bg_purple { background-color: purple }
+.ansi_bg_cyan { background-color: cyan }
+.ansi_bg_white { background-color: white }

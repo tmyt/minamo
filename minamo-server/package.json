@@ -11,6 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "ansi2html-extended": "0.0.4",
     "app-require": "tmyt/node-app-require",
     "basic-auth-connect": "^1.0.0",
     "body-parser": "^1.14.2",
@@ -29,6 +30,7 @@
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.3",
     "shell-escape": "^0.2.0",
+    "socket.io": "^1.4.8",
     "tarball-extract": "0.0.3"
   },
   "devDependencies": {

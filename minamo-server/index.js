@@ -11,7 +11,9 @@ const jadeStatic = appReq('./lib/jade/static')
     , passport = require('passport')
     , basicAuth = require('basic-auth-connect')
     , bodyParser = require('body-parser')
-    , app = express();
+    , app = express()
+    , server = require('http').Server(app)
+    , io = require('./api/logstream')(server);
 
 let gitusers = {};
 
@@ -55,6 +57,7 @@ app.post('/api/hooks/:repo', appReq('./api/hooks'));
 let api = appReq('./api');
 app.use('/api', requireAuthentication, new api(express.Router()));
 app.use('/console', requireAuthentication, jadeStatic(path.resolve('./views')));
+app.use('/logstream', requireAuthentication, jadeStatic(path.resolve('./views')));
 app.use('/', jadeStatic(path.resolve('./views')));
 app.use('/', express.static('./public', {maxAge: 3600 * 1000}));
 
@@ -95,7 +98,7 @@ try{
 // load credentials & listen
 fs.readJson(gitusersPath, (err, data) => {
   if(!err) gitusers = data;
-  app.listen(3000, '127.0.0.1');
+  server.listen(3000, '127.0.0.1');
   githttp.listen(7000, '127.0.0.1');
 });
 

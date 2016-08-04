@@ -8,6 +8,7 @@ html
     link(rel='stylesheet', href='/components/Umi/dist/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/minamo.css')
     link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Open+Sans')
+    block styles
     script(src='//code.jquery.com/jquery-2.1.4.min.js')
     block scripts
     if pageTitle
@@ -35,6 +36,7 @@ html
             ul.nav.navbar-nav
               block header-nav
                 li: a(href='/console') console
+                li: a(href='/logstream') log stream
     .container
       block content
         h2 minamo.io is private PaaS platform
