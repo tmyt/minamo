@@ -24,7 +24,7 @@ module.exports = function(server){
   io.on('connection', socket => {
     let tail = tailf('/tmp/minamo/build.log');
     tail.on('line', line => socket.emit('line', stylize(line)));
-    tail.on('disconnect', () => tail.kill());
+    socket.on('disconnect', () => tail.kill());
   });
   return io;
 }
