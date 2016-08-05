@@ -1,5 +1,5 @@
 var log = document.getElementById('log');
-var socket = io();
+var socket = io('/log');
 socket.on('line', function(line){
   // check scroll position
   var tail = log.scrollHeight <= log.scrollTop + log.clientHeight;

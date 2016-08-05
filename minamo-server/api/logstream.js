@@ -21,7 +21,7 @@ function stylize(str){
 
 module.exports = function(server){
   const io = require('socket.io')(server)
-  io.on('connection', socket => {
+  io.of('/log').on('connection', socket => {
     let tail = tailf('/tmp/minamo/build.log');
     tail.on('line', line => socket.emit('line', stylize(line)));
     socket.on('disconnect', () => tail.kill());
