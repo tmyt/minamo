@@ -1,12 +1,12 @@
 .ansi_console_snippet {
     font-family: monospace;
-    white-space: pre;
+    white-space: pre-wrap;
     display: block;
     unicode-bidi: embed;
-    overflow: auto;
     padding: 2px 5px;
     background-color: black;
     color: white;
+    word-break: break-all;
 }
 .ansi_bold { font-weight: bold }
 .ansi_italic { font-style: italic }
