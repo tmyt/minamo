@@ -89,7 +89,7 @@ class api {
     if(!pathExists(repo)){
       res.send('error: service not found');
     }else{
-      tools.terminate(name);
+      tools.terminate(name, true);
       fs.remove(repo, () => fs.remove(repo + '.env', () => res.send('destroy OK')));
     }
   }

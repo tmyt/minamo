@@ -19,8 +19,11 @@ class Tools{
     exec(path.join(__dirname, 'build.sh') + ' ' + repo, {env: env});
   }
 
-  terminate(repo){
+  terminate(repo, destroy){
     exec(path.join(__dirname, 'terminate.sh') + ' ' + repo);
+    if(destroy){
+      exec(path.join(__dirname, 'destroy.sh') + ' ' + repo);
+    }
   }
 
 }

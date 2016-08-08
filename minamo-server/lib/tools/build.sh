@@ -38,11 +38,20 @@ rm /tmp/minamo/${NAME}.term
 # prepareing flag
 touch /tmp/minamo/${NAME}.prep
 
+# create data container
+if ! docker inspect ${NAME}-data > /dev/null 2> /dev/null ; then
+  docker create -v /data --name ${NAME}-data busybox >> /tmp/minamo/build.log
+fi
+
 # build image
 PWD=$(pwd)
 mkdir /tmp/$$
 cd /tmp/$$
 date > created_at
+echo "#!/bin/sh
+chown minamo:minamo /data
+/etc/init.d/redis-server start
+su minamo -c 'npm start'" > run.sh
 DOCKER0=$(ip addr show docker0 | grep inet | grep global | awk '{print $2;}' | cut -f 1 -d '/')
 echo "FROM node:latest
 ENV DEBIAN_FRONTEND noninteractive
@@ -55,8 +64,9 @@ EXPOSE ${PORT}
 ADD created_at /tmp/created_at
 RUN node --version
 RUN adduser minamo
-RUN mkdir -p /service/
-RUN chown minamo:minamo /service/
+RUN mkdir -p /service/; chown minamo:minamo /service/
+ADD run.sh /service/run.sh
+RUN chmod 755 /service/run.sh
 WORKDIR /service/
 RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c 'git clone ${REPO} ${NAME}'
 USER minamo
@@ -69,7 +79,7 @@ RUN npm run minamo-postinstall || true
 RUN ls -l
 RUN pwd
 USER root
-CMD /etc/init.d/redis-server start && su minamo -c 'npm start'" > Dockerfile
+CMD /service/run.sh" > Dockerfile
 echo ==================== >> /tmp/minamo/build.log
 echo Building with >> /tmp/minamo/build.log
 cat Dockerfile >> /tmp/minamo/build.log
@@ -79,7 +89,7 @@ docker build --force-rm=true --rm=true -t minamo/${NAME} . >> /tmp/minamo/build.
 echo Docker build exited with $? >> /tmp/minamo/build.log
 
 # run container
-docker run --name ${NAME} minamo/${NAME} &
+docker run --volumes-from ${NAME}-data --name ${NAME} minamo/${NAME} &
 echo 'started'
 cd ${PWD}
 
