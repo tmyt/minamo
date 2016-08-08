@@ -54,7 +54,7 @@ chown minamo:minamo /data
 su minamo -c 'npm start'" > run.sh
 DOCKER0=$(ip addr show docker0 | grep inet | grep global | awk '{print $2;}' | cut -f 1 -d '/')
 echo "FROM node:latest
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive MINAMO_BRANCH_NAME=master
 ${EXTRAENV}
 RUN apt-get update
 RUN apt-get install -y redis-server
@@ -68,7 +68,7 @@ RUN mkdir -p /service/; chown minamo:minamo /service/
 ADD run.sh /service/run.sh
 RUN chmod 755 /service/run.sh
 WORKDIR /service/
-RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c 'git clone ${REPO} ${NAME} --recursive'
+RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c \"git clone ${REPO} ${NAME} --recursive && cd ${NAME} && git checkout \$MINAMO_BRANCH_NAME\"
 USER minamo
 WORKDIR ${NAME}
 RUN npm run minamo-preinstall || true
