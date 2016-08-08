@@ -68,11 +68,9 @@ RUN mkdir -p /service/; chown minamo:minamo /service/
 ADD run.sh /service/run.sh
 RUN chmod 755 /service/run.sh
 WORKDIR /service/
-RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c 'git clone ${REPO} ${NAME}'
+RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c 'git clone ${REPO} ${NAME} --recursive'
 USER minamo
 WORKDIR ${NAME}
-RUN git submodule init
-RUN git submodule update
 RUN npm run minamo-preinstall || true
 RUN npm install
 RUN npm run minamo-postinstall || true
