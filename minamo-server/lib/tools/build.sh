@@ -13,6 +13,12 @@ if [ "x$NAME" = "x" ]; then
   exit 1
 fi
 
+if [ -f /tmp/minamo/${NAME}.lock ]; then
+  echo "[ERROR] the container work in progress"
+  exit 1
+fi
+touch /tmp/minamo/${NAME}.lock
+
 if [ -f "$(dirname $(readlink -f $0))/../../repos/${NAME}" ]; then
   REPO=$(cat $(dirname $(readlink -f $0))/../../repos/${NAME})
 fi
@@ -108,3 +114,6 @@ redis-cli SET "${NAME}.${DOMAIN}" "http://${REMOTEADDR}:${PORT}"
 
 # cleanup prep file
 rm /tmp/minamo/${NAME}.prep
+
+# clear lock file
+rm -f /tmp/minamo/${NAME}.prep
