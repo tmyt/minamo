@@ -16,7 +16,7 @@ var Modal = ReactBootstrap.Modal;
 
 var ServiceLink = React.createClass({
   render: function(){
-    var uri = '//' + this.props.service + '.' + rootDomain();
+    var uri = location.href.protocol + '//' + this.props.service + '.' + rootDomain();
     var label = this.props.service + (this.props.short ? '' : '.' + rootDomain());
     return (<a href={uri}>{label}</a>); 
   }
