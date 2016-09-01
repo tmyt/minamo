@@ -208,8 +208,9 @@ class api {
     let name = checkParams(req, res);
     if(!name) return;
     // read docker logs
-    let cmds = shellescape(['docker', 'logs', name]);
-    require('child_process').exec(cmds, (err, stdout, stderr) => res.send(stdout));
+    let process = require('child_process').spawn('docker', ['logs', name]);
+    process.stdout.pipe(res);
+    process.stderr.pipe(res);
   }
 
   updateCredentials(req, res){
