@@ -55,7 +55,7 @@ app.post('/api/hooks/:repo', appReq('./api/hooks'));
 
 // routers
 let api = appReq('./api');
-app.use('/api', requireAuthentication, new api(express.Router()));
+app.use('/api', rejectIfNotAuthenticated, new api(express.Router()));
 app.use('/console', requireAuthentication, jadeStatic(path.resolve('./views')));
 app.use('/logstream', requireAuthentication, jadeStatic(path.resolve('./views')));
 app.use('/', jadeStatic(path.resolve('./views')));
@@ -114,3 +114,7 @@ function requireAuthentication(req, res, next){
   res.redirect('/login');
 }
 
+function rejectIfNotAuthenticated(req, res, next){
+  if(req.isAuthenticated()) { return next(); }
+  res.status(401).send();
+}
