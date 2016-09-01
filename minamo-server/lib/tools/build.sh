@@ -6,7 +6,11 @@ LOG_FILE=/tmp/minamo/build.log
 ## Run docker command
 function exec_docker(){
   echo "$ docker $*" >> $LOG_FILE
-  docker $* >> $LOG_FILE
+  if [ "x$BACKGROUND" == "x" ]; then
+    docker $* >> $LOG_FILE
+  else
+    docker $* & >> $LOG_FILE
+  fi
 }
 
 ## Script main
@@ -116,7 +120,7 @@ echo Docker build exited with $? >> $LOG_FILE
 
 ## run container
 echo Starting container ${NAME} >> $LOG_FILE
-exec_docker run --volumes-from ${NAME}-data --name ${NAME} minamo/${NAME} &
+BACKGROUND=1 exec_docker run --volumes-from ${NAME}-data --name ${NAME} minamo/${NAME}
 echo 'started'
 cd ${PWD}
 
