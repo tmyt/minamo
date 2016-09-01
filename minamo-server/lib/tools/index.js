@@ -12,10 +12,17 @@ class Tools{
     let extraEnv = fs.readJsonSync(path.join(config.repo_path, repo) + '.env');
     let envString = '';
     let envKeys = Object.keys(extraEnv);
+    let extraPackages = {};
     for(let i = 0; i < envKeys.length; ++i){
+      if(envKeys[i] === 'MINAMO_REQUIRED_PACKAGES') continue;
       envString += `ENV ${envKeys[i]} ${extraEnv[envKeys[i]]}\n`;
     }
-    let env = {'DOMAIN': config.domain, 'EXTRAENV': envString};
+    let packages = (extraEnv['REQUIRED_PACKAGES'] || '').split(',');
+    for(let i = 0; i < packages.length; ++i){
+      if(!packages[i].trim()) continue;
+      extraPackages['MINAMO_BUILD_REQUIRED_' + packages[i].toUpperCase()] = 'true';
+    }
+    let env = Object.assign({'DOMAIN': config.domain, 'EXTRAENV': envString}, extraPackages);
     exec(path.join(__dirname, 'build.sh') + ' ' + repo, {env: env});
   }
 
