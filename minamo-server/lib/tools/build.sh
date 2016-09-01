@@ -1,5 +1,15 @@
 #!/bin/bash
 
+## Configuration
+LOG_FILE=/tmp/minamo/build.log
+
+## Run docker command
+function exec_docker(){
+  echo "$ docker $*" >> /tmp/minamo/build.log
+  docker $* >> /tmp/minamo/build.log
+}
+
+## Script main
 NAME=$1
 PORT=$(($RANDOM + 3000))
 REPO=http://git.${DOMAIN}/${NAME}.git
@@ -34,9 +44,10 @@ fi
 
 # remove current container & image
 echo 'stopping...'
-docker stop ${NAME}
-docker rm ${NAME}
-docker rmi $(docker images | grep "minamo/${NAME} " | awk '{print $3;}')
+echo Stopping container ${NAME} >> /tmp/minamo/build.log
+exec_docker stop ${NAME}
+exec_docker rm ${NAME}
+exec_docker rmi $(docker images | grep "minamo/${NAME} " | awk '{print $3;}')
 
 # clear flag
 rm /tmp/minamo/${NAME}.term
@@ -46,7 +57,7 @@ touch /tmp/minamo/${NAME}.prep
 
 # create data container
 if ! docker inspect ${NAME}-data > /dev/null 2> /dev/null ; then
-  docker create -v /data --name ${NAME}-data busybox >> /tmp/minamo/build.log
+  exec_docker create -v /data --name ${NAME}-data busybox
 fi
 
 # build image
@@ -88,12 +99,13 @@ echo ==================== >> /tmp/minamo/build.log
 echo Building with >> /tmp/minamo/build.log
 cat Dockerfile >> /tmp/minamo/build.log
 echo Pulling image... >> /tmp/minamo/build.log
-docker pull node:latest >> /tmp/minamo/build.log
-docker build --force-rm=true --rm=true -t minamo/${NAME} . >> /tmp/minamo/build.log
+exec_docker pull node:latest
+exec_docker build --force-rm=true --rm=true -t minamo/${NAME} .
 echo Docker build exited with $? >> /tmp/minamo/build.log
 
 # run container
-docker run --volumes-from ${NAME}-data --name ${NAME} minamo/${NAME} &
+echo Starting container ${NAME} >> /tmp/minamo/build.log
+exec_docker run --volumes-from ${NAME}-data --name ${NAME} minamo/${NAME} &
 echo 'started'
 cd ${PWD}
 
