@@ -116,4 +116,4 @@ redis-cli SET "${NAME}.${DOMAIN}" "http://${REMOTEADDR}:${PORT}"
 rm /tmp/minamo/${NAME}.prep
 
 # clear lock file
-rm -f /tmp/minamo/${NAME}.prep
+rm /tmp/minamo/${NAME}.lock
