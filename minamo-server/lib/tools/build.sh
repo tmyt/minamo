@@ -74,7 +74,7 @@ date > created_at
 echo "#!/bin/sh
 chown minamo:minamo /data" > run.sh
 if [ "x$MINAMO_BUILD_REQUIRED_REDIS" != "x" ]; then
-  echo "/etc/init.d/redis-server start" >> /run.sh
+  echo "/etc/init.d/redis-server start" >> run.sh
 fi
 echo "su minamo -c 'npm start'" >> run.sh
 
@@ -126,6 +126,7 @@ cd ${PWD}
 
 ## cleanup tmp dir
 rm /tmp/$$/Dockerfile
+rm /tmp/$$/run.sh
 rm /tmp/$$/created_at
 rmdir /tmp/$$
 
