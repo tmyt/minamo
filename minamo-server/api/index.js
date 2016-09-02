@@ -8,7 +8,6 @@ const path = require('path')
     , head = require('githead')
     , exec = require('child_process').exec
     , appReq = require('app-require')
-    , mutex = require('node-mutex')()
     , shellescape = require('shell-escape');
 
 const config = appReq('./config')
@@ -239,15 +238,10 @@ class api {
     let usersPath = path.join(__dirname, '../data/gitusers.json');
     if(!req.user.username || !req.body.password ||
       req.user.username === '' || req.body.password === '') return res.send(400);
-    mutex.lock('gitusers-json', (err, unlock) => {
-      fs.readJson(usersPath, (err, data) => {
-        data[req.user.username] = req.body.password;
-        fs.outputJson(usersPath, data, () => {
-          res.send('OK');
-          unlock();
-        });
-      });
-    });
+    let data = fs.readJsonSync(usersPath);
+    data[req.user.username] = req.body.password;
+    fs.outputJsonSync(usersPath, data);
+    res.send('OK');
   }
 };
 
