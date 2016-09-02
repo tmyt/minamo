@@ -120,7 +120,7 @@ echo Docker build exited with $? >> $LOG_FILE
 
 ## run container
 echo Starting container ${NAME} >> $LOG_FILE
-BACKGROUND=1 exec_docker run --volumes-from ${NAME}-data --name ${NAME} minamo/${NAME}
+exec_docker run -d --volumes-from ${NAME}-data --name ${NAME} minamo/${NAME}
 echo 'started'
 cd ${PWD}
 
