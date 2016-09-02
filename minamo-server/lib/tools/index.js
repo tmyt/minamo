@@ -25,9 +25,13 @@ class Tools{
     let extraPackages = this.getRequiredPackages(extraEnv);
     for(let i = 0; i < envKeys.length; ++i){
       if(envKeys[i] === 'MINAMO_REQUIRED_PACKAGES') continue;
+      if(envKeys[i] === 'MINAMO_NODE_VERSION') continue;
       envString += `ENV ${envKeys[i]} ${extraEnv[envKeys[i]]}\n`;
     }
-    let env = Object.assign({'DOMAIN': config.domain, 'EXTRAENV': envString}, extraPackages);
+    let engine = extraEnv['MINAMO_NODE_VERSION'] || '';
+    if(!engine.match('^[0-9.]+$')) engine = '';
+    let env = Object.assign({'DOMAIN': config.domain, 'EXTRAENV': envString,
+      'MINAMO_NODE_VERSION': engine || 'latest'}, extraPackages);
     exec(path.join(__dirname, 'build.sh') + ' ' + repo, {env: env});
   }
 

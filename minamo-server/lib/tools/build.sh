@@ -82,7 +82,7 @@ echo "su minamo -c 'npm start'" >> run.sh
 DOCKER0=$(ip addr show docker0 | grep inet | grep global | awk '{print $2;}' | cut -f 1 -d '/')
 
 # generate Dockerfile
-echo "FROM node:latest
+echo "FROM node:${MINAMO_NODE_VERSION}
 ENV DEBIAN_FRONTEND=noninteractive MINAMO_BRANCH_NAME=master
 ${EXTRAENV}
 RUN apt-get update" > Dockerfile
@@ -114,7 +114,7 @@ echo ==================== >> $LOG_FILE
 echo Building with >> $LOG_FILE
 cat Dockerfile >> $LOG_FILE
 echo Pulling image... >> $LOG_FILE
-exec_docker pull node:latest
+exec_docker pull node:${MINAMO_NODE_VERSION}
 exec_docker build --force-rm=true --rm=true -t minamo/${NAME} .
 echo Docker build exited with $? >> $LOG_FILE
 
