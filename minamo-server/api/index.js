@@ -36,10 +36,10 @@ class api {
     this.kvs = kvs;
     this.initializeKvs();
     app.get('/create', this.create);
-    app.get('/destroy', this.destroy);
-    app.get('/start', this.start);
-    app.get('/stop', this.stop);
-    app.get('/restart', this.restart);
+    app.get('/destroy', this.destroy.bind(this));
+    app.get('/start', this.start.bind(this));
+    app.get('/stop', this.stop.bind(this));
+    app.get('/restart', this.restart.bind(this));
     app.get('/list', this.list);
     app.get('/status', this.status);
     app.get('/logs', this.logs);
@@ -108,7 +108,7 @@ class api {
     if(!pathExists(repo)){
       res.send('error: service not found');
     }else{
-      kvs.delHost(`${name}.${config.domain}`);
+      this.kvs.delHost(`${name}.${config.domain}`);
       tools.terminate(name, true);
       fs.remove(repo, () => fs.remove(repo + '.env', () => res.send('destroy OK')));
     }
@@ -122,7 +122,7 @@ class api {
     if(!pathExists(repo)){
       res.send('error: service not found');
     }else{
-      kvs.addHost(`${name}.${config.domain}`);
+      this.kvs.resetHost(`${name}.${config.domain}`);
       tools.build(name);
       res.send('start OK');
     }
@@ -136,7 +136,7 @@ class api {
     if(!pathExists(repo)){
       res.send('error: service not found');
     }else{
-      kvs.delHost(`${name}.${config.domain}`);
+      this.kvs.delHost(`${name}.${config.domain}`);
       tools.terminate(name);
       res.send('stop OK');
     }
@@ -150,6 +150,7 @@ class api {
     if(!pathExists(repo)){
       res.send('error: service not found');
     }else{
+      this.kvs.resetHost(`${name}.${config.domain}`);
       tools.build(name);
       res.send('restart OK');
     }

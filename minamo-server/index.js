@@ -85,6 +85,7 @@ githttp.use('/', git);
 git.on('post-receive', (repo, changes) => {
   let name = repo.name.split('/').reverse()[0];
   let tools = appReq('./lib/tools');
+  kvs.resetHost(`${name}.${config.domain}`);
   tools.build(name);
 });
 

@@ -63,6 +63,10 @@ class Kvs
   delHost(host){
     delete this.hosts[host];
   }
+  resetHost(host){
+    this.delHost(host);
+    this.addHost(host);
+  }
   getContainerEndpoint(host, callback){
     if(!host.endsWith(config.domain)) return callback('');
     let container = host.substr(0, host.length - config.domain.length - 1);
