@@ -138,7 +138,6 @@ while [ "x$REMOTEADDR" = "x" ]; do
     break
   fi
 done
-redis-cli SET "${NAME}.${DOMAIN}" "http://${REMOTEADDR}:${PORT}"
 
 ## cleanup prep file
 rm /tmp/minamo/${NAME}.prep

@@ -6,6 +6,7 @@ module.exports = {
   proto: "https",
   domain: 'minamo.io',
   repo_path: process.env.MINAMO_REPOS_PATH || path.resolve('repos'),
+  redis_port: 16379,
 
   // GitHub appid and trusted users
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '',

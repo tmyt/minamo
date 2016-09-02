@@ -13,7 +13,8 @@ const jadeStatic = appReq('./lib/jade/static')
     , bodyParser = require('body-parser')
     , app = express()
     , server = require('http').Server(app)
-    , io = require('./api/logstream')(server);
+    , io = require('./api/logstream')(server)
+    , kvs = new (require('./lib/kvs'))();
 
 let gitusers = {};
 
@@ -55,7 +56,7 @@ app.post('/api/hooks/:repo', appReq('./api/hooks'));
 
 // routers
 let api = appReq('./api');
-app.use('/api', rejectIfNotAuthenticated, new api(express.Router()));
+app.use('/api', rejectIfNotAuthenticated, new api(express.Router(), kvs));
 app.use('/console', requireAuthentication, jadeStatic(path.resolve('./views')));
 app.use('/logstream', requireAuthentication, jadeStatic(path.resolve('./views')));
 app.use('/', jadeStatic(path.resolve('./views')));
@@ -100,6 +101,7 @@ fs.readJson(gitusersPath, (err, data) => {
   if(!err) gitusers = data;
   server.listen(3000, '127.0.0.1');
   githttp.listen(7000, '127.0.0.1');
+  kvs.listen(config.redis_port);
 });
 
 // watch auth file update

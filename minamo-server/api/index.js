@@ -33,7 +33,9 @@ function checkParams(req, res){
 
 
 class api {
-  constructor(app){
+  constructor(app, kvs){
+    this.kvs = kvs;
+    this.initializeKvs();
     app.get('/create', this.create);
     app.get('/destroy', this.destroy);
     app.get('/start', this.start);
@@ -46,6 +48,24 @@ class api {
     app.post('/env/update', this.updateEnv);
     app.post('/credentials/update', this.updateCredentials);
     return app;
+  }
+
+  initializeKvs(){
+    require('docker-ps')((err, containers) => {
+      fs.readdir(config.repo_path, (err, files) => {
+        for(let i = 0; i < files.length; ++i){
+          if(files[i][0] === '.') continue;
+          let stat = fs.statSync(path.join(config.repo_path, files[i]));
+          if(stat.isFile() && files[i].endsWith('.env')) continue;
+          for(let j = 0; j < containers.length; ++j){
+            if(containers[j].names[0] === ('/' + files[i])){
+              this.kvs.addHost(`${files[i]}.${config.domain}`);
+              break;
+            }
+          }
+        }
+      });
+    });
   }
 
   create(req, res){
@@ -89,6 +109,7 @@ class api {
     if(!pathExists(repo)){
       res.send('error: service not found');
     }else{
+      kvs.delHost(`${name}.${config.domain}`);
       tools.terminate(name, true);
       fs.remove(repo, () => fs.remove(repo + '.env', () => res.send('destroy OK')));
     }
@@ -102,6 +123,7 @@ class api {
     if(!pathExists(repo)){
       res.send('error: service not found');
     }else{
+      kvs.addHost(`${name}.${config.domain}`);
       tools.build(name);
       res.send('start OK');
     }
@@ -115,6 +137,7 @@ class api {
     if(!pathExists(repo)){
       res.send('error: service not found');
     }else{
+      kvs.delHost(`${name}.${config.domain}`);
       tools.terminate(name);
       res.send('stop OK');
     }
@@ -138,8 +161,7 @@ class api {
   }
 
   status(req, res){
-    let ps = require('docker-ps');
-    ps((err, containers) => {
+    require('docker-ps')((err, containers) => {
       let statuses = {};
       fs.readdir(config.repo_path, (err, files) => {
         for(let i = 0; i < files.length; ++i){
