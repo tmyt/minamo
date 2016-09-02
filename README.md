@@ -32,7 +32,6 @@ Install
     - your unix account need to access docker server.
 4. Run services
     - Nginx
-    - Redis
     - Docker
 5. Install dependency npm packages.
     - ``npm install``
