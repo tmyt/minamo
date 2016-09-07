@@ -1,0 +1,35 @@
+.login-form {
+    max-width: 600px;
+    margin: 0 auto 20px;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.1)
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    display: block
+}
+
+.login-col {
+    padding: 0px 35px 15px 35px;
+}
+
+.form-heading {
+    padding: 15px 35px 0px 35px;
+}
+
+@media screen and (min-width:992px){
+    .form-col {
+        border-left: 1px solid #ecf0f1;
+    }
+}
+
+i.fa {
+    width: 16px;
+}
+
+.btn i.fa + span {
+    margin: 0px 0px 0px 8px;
+}

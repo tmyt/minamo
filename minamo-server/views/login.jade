@@ -1,11 +1,34 @@
 extends _base
 
+block styles
+  link(rel='stylesheet', href='/css/login.css')
+
 block vars
   - var pageTitle = 'login'
 
 block content
-  h2 choose account provider
-  ul
-    li: a(href='/auth/twitter') twitter
-    li: a(href='/auth/github') github
-    li: a(href='/loginform') local
+  .row: .center-block.login-form
+    .form-heading
+      h3.header Sign In
+      hr
+    .row.login-col
+      .col-md-6
+        h4 Use other accounts
+        a.btn.btn-large.btn-block.btn-primary(href='/auth/twitter')
+          i.fa.fa-twitter
+          span Login with Twitter
+        a.btn.btn-large.btn-block.btn-primary(href='/auth/github')
+          i.fa.fa-github
+          span Login with GitHub
+      .col-md-6.form-col
+        h4.header Using your account
+        form(method='post',action='/auth/local')
+          .form-group
+            .input-group
+              span.input-group-addon#username_addon: i.fa.fa-user
+              input.form-control.input-block-level(placeholder='Username', aria-describedby='username_addon')
+            .input-group
+              span.input-group-addon#password_addon: i.fa.fa-key
+              input.form-control.input-block-level(placeholder='Password', aria-describedby='password_addon')
+          .form-group
+            input.btn.btn-large.btn-primary.btn-block(type='submit',value='Sign In')
