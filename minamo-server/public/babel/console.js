@@ -137,7 +137,7 @@ var ContainersTableRow = React.createClass({
   render: function(){
     var data = this.props.data;
     return (
-      <tr>
+      <tr className="container_row">
         <td><ServiceLink service={this.props.name} short /></td>
         <td><ServiceStatus status={data.status} /></td>
         <td><ServiceHead head={data.head} external={data.repo==='external'} /></td>
