@@ -30,8 +30,8 @@ passport.use(appReq('./lib/auth/local'));
 
 // simple logger
 app.use((req, res, next) => {
-  console.log('[%s] %s - %s (%s)', (new Date()).toLocaleString(),
-    req.method, req.url, req.headers['user-agent']);
+  console.log('%s - - [%s] %s %s (%s)', req.headers['x-forwarded-for'],
+    (new Date()).toLocaleString(), req.method, req.url, req.headers['user-agent']);
   next();
 });
 
