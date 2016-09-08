@@ -51,8 +51,8 @@ app.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
-app.get('/api/hooks/:repo', appReq('./api/hooks'));
-app.post('/api/hooks/:repo', appReq('./api/hooks'));
+app.get('/api/hooks/:repo', appReq('./api/hooks')(kvs));
+app.post('/api/hooks/:repo', appReq('./api/hooks')(kvs));
 
 // routers
 let api = appReq('./api');
