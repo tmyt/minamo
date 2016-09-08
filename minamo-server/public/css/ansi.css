@@ -5,7 +5,7 @@
     unicode-bidi: embed;
     padding: 2px 5px;
     background-color: black;
-    color: white;
+    color: #eeeeee;
     word-break: break-all;
 }
 .ansi_bold { font-weight: bold }
