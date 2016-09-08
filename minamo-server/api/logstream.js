@@ -1,6 +1,6 @@
 'use strict';
 
-const readline =require('readline')
+const readline = require('readline')
     , a2h = require('ansi2html-extended')
     , spawn = require('child_process').spawn;
 
