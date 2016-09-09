@@ -27,7 +27,7 @@ class Kvs
     let args = [];
     let argBytes = -1;
     rl.on('line', input => {
-      if(input[0] === '*'){
+      if(rest < 0 && input[0] === '*'){
         args = [];
         rest = parseInt(input.substr(1));
         return;
@@ -49,6 +49,7 @@ class Kvs
         }else{
           client.write('-ERROR\r\n');
         }
+        rest = -1;
       }
     });
   }
