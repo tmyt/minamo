@@ -26,7 +26,7 @@ class Tools{
     for(let i = 0; i < envKeys.length; ++i){
       if(envKeys[i] === 'MINAMO_REQUIRED_PACKAGES') continue;
       if(envKeys[i] === 'MINAMO_NODE_VERSION') continue;
-      envString += `ENV ${envKeys[i]} ${extraEnv[envKeys[i]]}\n`;
+      envString += `${envKeys[i]}="${extraEnv[envKeys[i]]}" `;
     }
     let engine = extraEnv['MINAMO_NODE_VERSION'] || '';
     if(!engine.match('^[0-9.]+$')) engine = '';

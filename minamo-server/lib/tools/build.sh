@@ -81,33 +81,33 @@ echo "su minamo -c 'npm start'" >> run.sh
 # get docker0 ip addr
 DOCKER0=$(ip addr show docker0 | grep inet | grep global | awk '{print $2;}' | cut -f 1 -d '/')
 
+# listup extra packages
+EXTRAPKGS=""
+if [ "x${MINAMO_BUILD_REQUIRED_REDIS}" != "x" ]; then
+  EXTRAPKGS="${EXTRAPKGS} redis-server"
+fi
+if [ "x${EXTRAPKGS}" != "x" ]; then
+  EXTRAPKGS="RUN apt-get update && apt-get install -y ${EXTRAPKGS}";
+fi
+
 # generate Dockerfile
 echo "FROM node:${MINAMO_NODE_VERSION}
-ENV DEBIAN_FRONTEND=noninteractive MINAMO_BRANCH_NAME=master
-${EXTRAENV}
-RUN apt-get update" > Dockerfile
-if [ "x$MINAMO_BUILD_REQUIRED_REDIS" != "x" ]; then
-  echo "RUN apt-get install -y redis-server" >> Dockerfile
-fi
-echo "ENV PORT ${PORT}
+ENV PORT=${PORT} DEBIAN_FRONTEND=noninteractive MINAMO_BRANCH_NAME=master ${EXTRAENV}
 EXPOSE ${PORT}
+${EXTRAPKGS}
 ADD created_at /tmp/created_at
 RUN node --version
 RUN adduser minamo
-RUN mkdir -p /service/; chown minamo:minamo /service/
+RUN mkdir -p /service/${NAME}; chown -R minamo:minamo /service/
 ADD run.sh /service/run.sh
 RUN chmod 755 /service/run.sh
-WORKDIR /service/
-RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c \"git clone ${REPO} ${NAME} --recursive && cd ${NAME} && git checkout \$MINAMO_BRANCH_NAME\"
+WORKDIR /service/${NAME}
+RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c \"git clone ${REPO} . --recursive && git checkout \$MINAMO_BRANCH_NAME\"
 USER minamo
-WORKDIR ${NAME}
-RUN npm run minamo-preinstall || true
-RUN npm install
-RUN npm run minamo-postinstall || true
+RUN npm run minamo-preinstall ; npm install ; npm run minamo-postinstall || true
 RUN ls -l
-RUN pwd
 USER root
-CMD /service/run.sh" >> Dockerfile
+CMD /service/run.sh" > Dockerfile
 
 ## Start docker build
 echo ==================== >> $LOG_FILE
