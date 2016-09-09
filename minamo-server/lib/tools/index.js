@@ -1,10 +1,13 @@
 'use strict';
 
 const path = require('path')
-  , exec = require('child_process').exec
-  , fs = require('fs-extra')
-  , appReq = require('app-require')
-  , config = appReq('./config');
+    , exec = require('child_process').exec
+    , fs = require('fs-extra')
+    , appReq = require('app-require')
+    , config = appReq('./config');
+
+const Docker = require('dockerode')
+    , docker = new Docker({socketPath: '/var/run/docker.sock'});
 
 class Tools{
 
@@ -38,8 +41,14 @@ class Tools{
   terminate(repo, destroy){
     exec(path.join(__dirname, 'terminate.sh') + ' ' + repo);
     if(destroy){
-      exec(path.join(__dirname, 'destroy.sh') + ' ' + repo);
+      this.destroy(repo);
     }
+  }
+
+  destroy(repo){
+    docker.getContainer(repo).remove((err, data) => {
+      docker.getImage(`minamo/${repo}-data`).remove();
+    });
   }
 
 }

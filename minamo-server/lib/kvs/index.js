@@ -7,6 +7,9 @@
 const net = require('net')
     , config = require('../../config.js');
 
+const Docker = require('dockerode')
+    , docker = new Docker({socketPath: '/var/run/docker.sock'});
+
 class Kvs
 {
   constructor(){
@@ -71,12 +74,10 @@ class Kvs
   getContainerEndpoint(host, callback){
     if(!host.endsWith(config.domain)) return callback('');
     let container = host.substr(0, host.length - config.domain.length - 1);
-    let exec = require('child_process').exec;
-    exec("docker inspect --format='{{.NetworkSettings.IPAddress}}:{{range $k,$v:=.NetworkSettings.Ports}}{{$k}}{{end}}' " + container, (error, stdout, stderr) => {
-      let target = stdout.split('/')[0];
-      let comp = target.split(':');
-      if(!comp[0] || !comp[1]) return callback('');
-      callback('http://' + target);
+    docker.getContainer(container).inspect((err, data) => {
+      let bind = Object.keys(data.NetworkSettings.Ports)[0];
+      let port = bind.split('/')[0];
+      callback(`http://${data.NetworkSettings.IPAddress}:${port}`);
     });
   }
   //

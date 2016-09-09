@@ -6,9 +6,11 @@ const path = require('path')
     , tarball = require('tarball-extract')
     , init = require('git-init')
     , head = require('githead')
-    , exec = require('child_process').exec
     , appReq = require('app-require')
     , shellescape = require('shell-escape');
+
+const Docker = require('dockerode')
+    , docker = new Docker({socketPath: '/var/run/docker.sock'});
 
 const config = appReq('./config')
     , tools = appReq('./lib/tools');
@@ -30,6 +32,10 @@ function checkParams(req, res){
   return name;
 }
 
+function isEnvFile(filename){
+  let stat = fs.statSync(path.join(config.repo_path, filename));
+  return stat.isFile() && filename.endsWith('.env');
+}
 
 class api {
   constructor(app, kvs){
@@ -50,18 +56,13 @@ class api {
   }
 
   initializeKvs(){
-    require('docker-ps')((err, containers) => {
+    docker.listContainers({all: true}, (err, containers) => {
       fs.readdir(config.repo_path, (err, files) => {
-        for(let i = 0; i < files.length; ++i){
-          if(files[i][0] === '.') continue;
-          let stat = fs.statSync(path.join(config.repo_path, files[i]));
-          if(stat.isFile() && files[i].endsWith('.env')) continue;
-          for(let j = 0; j < containers.length; ++j){
-            if(containers[j].names[0] === ('/' + files[i])){
-              this.kvs.addHost(`${files[i]}.${config.domain}`);
-              break;
-            }
-          }
+        let names = containers.map(x => x.Names[0]);
+        let repos = files.filter(x => x[0] !== '.' && !isEnvFile(x))
+          .filter(x => names.indexOf('/' + x) >= 0);
+        for(let i = 0; i < repos.length; ++i){
+          this.kvs.addHost(`${repos[i]}.${config.domain}`);
         }
       });
     });
@@ -161,7 +162,7 @@ class api {
   }
 
   status(req, res){
-    require('docker-ps')((err, containers) => {
+    docker.listContainers({all: true}, (err, containers) => {
       let statuses = {};
       fs.readdir(config.repo_path, (err, files) => {
         for(let i = 0; i < files.length; ++i){
@@ -180,10 +181,10 @@ class api {
             statuses[files[i]].key = hmac(config.secret || 'minamo.io', files[i]);
           }
           for(let j = 0; j < containers.length; ++j){
-            if(containers[j].names[0] === ('/' + files[i])){
+            if(containers[j].Names[0] === ('/' + files[i])){
               statuses[files[i]].status = 'running';
-              statuses[files[i]].uptime = containers[j].status;
-              statuses[files[i]].created = containers[j].created;
+              statuses[files[i]].uptime = containers[j].Status;
+              statuses[files[i]].created = containers[j].Created;
               break;
             }
           }
