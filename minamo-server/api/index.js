@@ -184,7 +184,7 @@ class api {
             if(containers[j].Names[0] === ('/' + files[i])){
               statuses[files[i]].status = 'running';
               statuses[files[i]].uptime = containers[j].Status;
-              statuses[files[i]].created = containers[j].Created;
+              statuses[files[i]].created = containers[j].Created * 1000;
               break;
             }
           }
