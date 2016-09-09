@@ -130,15 +130,6 @@ rm /tmp/$$/run.sh
 rm /tmp/$$/created_at
 rmdir /tmp/$$
 
-## update host mapping
-while [ "x$REMOTEADDR" = "x" ]; do
-  sleep 1
-  REMOTEADDR=$(docker inspect --format '{{.NetworkSettings.IPAddress}}' ${NAME})
-  if [ "$?" -ne "0" ]; then
-    break
-  fi
-done
-
 ## cleanup prep file
 rm /tmp/minamo/${NAME}.prep
 
