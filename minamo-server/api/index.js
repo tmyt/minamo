@@ -182,8 +182,7 @@ class api {
           }
           for(let j = 0; j < containers.length; ++j){
             if(containers[j].Names[0] === ('/' + files[i])){
-              statuses[files[i]].status = containers[j].State === 'running'
-                ? 'running' : 'stopped';
+              statuses[files[i]].status = containers[j].State;
               statuses[files[i]].uptime = containers[j].Status;
               statuses[files[i]].created = containers[j].Created * 1000;
               break;

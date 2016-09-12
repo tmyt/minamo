@@ -55,7 +55,7 @@ function isRunning(text){
 }
 
 function isStopped(text){
-  return text === 'stopped';
+  return text === 'stopped' || isExited(text);
 }
 
 function isPrepareing(text){
@@ -66,7 +66,12 @@ function isStopping(text){
   return text === 'stopping';
 }
 
+function isExited(text){
+  return text === 'exited';
+}
+
 function toLabelColor(text){
+  if(isExited(text)) return 'primary';
   if(isRunning(text)) return 'success';
   if(isPrepareing(text)) return 'info';
   if(isStopping(text)) return 'warning';
