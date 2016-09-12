@@ -1,6 +1,10 @@
-.login-form {
-    max-width: 600px;
+#login-container {
+    max-width: 624px;
     margin: 0 auto 20px;
+}
+
+.login-form {
+    margin: 0px 12px;
     background-color: #fff;
     border: 1px solid rgba(0,0,0,0.1);
     -webkit-box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
@@ -23,6 +27,11 @@
 @media screen and (min-width:992px){
     .form-col {
         border-left: 1px solid #ecf0f1;
+    }
+}
+@media screen and (max-width:991px){
+    .form-col {
+        padding-top: 20px;
     }
 }
 
