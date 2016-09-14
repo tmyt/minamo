@@ -5,23 +5,6 @@
 
 .login-form {
     margin: 0px 12px;
-    background-color: #fff;
-    border: 1px solid rgba(0,0,0,0.1);
-    -webkit-box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.1)
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    display: block
-}
-
-.login-col {
-    padding: 0px 35px 15px 35px;
-}
-
-.form-heading {
-    padding: 15px 35px 0px 35px;
 }
 
 @media screen and (min-width:992px){
@@ -42,3 +25,32 @@ i.fa {
 .btn i.fa + span {
     margin: 0px 0px 0px 8px;
 }
+
+.form-group.vertical-grouped .input-group .input-group-addon:first-child {
+    border-bottom-width: 0;
+    border-radius: 0;
+}
+
+.form-group.vertical-grouped .input-group .form-control:last-child {
+    border-bottom-width: 0;
+    border-radius: 0;
+}
+
+.form-group.vertical-grouped .input-group:first-child .input-group-addon:first-child {
+    border-top-left-radius: 2px;
+}
+
+.form-group.vertical-grouped .input-group:first-child .form-control:last-child {
+    border-top-right-radius: 2px;
+}
+
+.form-group.vertical-grouped .input-group:last-child .input-group-addon:first-child {
+    border-bottom-left-radius: 2px;
+    border-bottom-width: 1px;
+}
+
+.form-group.vertical-grouped .input-group:last-child .form-control:last-child {
+    border-bottom-right-radius: 2px;
+    border-bottom-width: 1px;
+}
+

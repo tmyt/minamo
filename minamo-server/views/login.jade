@@ -7,11 +7,9 @@ block vars
   - var pageTitle = 'login'
 
 block content
-  .row: .center-block#login-container: .login-form
-    .form-heading
-      h3.header Sign In
-      hr
-    .row.login-col
+  .row: .center-block#login-container: .panel.panel-primary.login-form
+    .panel-heading: h3.panel-title Sign In
+    .panel-body: .row
       .col-md-6
         h4 Use other accounts
         a.btn.btn-large.btn-block.btn-primary(href='/auth/twitter')
@@ -23,7 +21,7 @@ block content
       .col-md-6.form-col
         h4.header Using your account
         form(method='post',action='/auth/local')
-          .form-group
+          .form-group.vertical-grouped
             .input-group
               span.input-group-addon#username_addon: i.fa.fa-user
               input.form-control.input-block-level(placeholder='Username', aria-describedby='username_addon')
