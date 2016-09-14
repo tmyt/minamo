@@ -87,12 +87,12 @@ if [ "x${MINAMO_BUILD_REQUIRED_REDIS}" != "x" ]; then
   EXTRAPKGS="${EXTRAPKGS} redis-server"
 fi
 if [ "x${EXTRAPKGS}" != "x" ]; then
-  EXTRAPKGS="RUN apt-get update && apt-get install -y ${EXTRAPKGS}";
+  EXTRAPKGS="RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ${EXTRAPKGS}";
 fi
 
 # generate Dockerfile
 echo "FROM node:${MINAMO_NODE_VERSION}
-ENV PORT=${PORT} DEBIAN_FRONTEND=noninteractive MINAMO_BRANCH_NAME=master ${EXTRAENV}
+ENV PORT=${PORT} MINAMO_BRANCH_NAME=master ${EXTRAENV}
 EXPOSE ${PORT}
 ${EXTRAPKGS}
 ADD created_at /tmp/created_at
