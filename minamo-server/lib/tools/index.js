@@ -3,6 +3,7 @@
 const path = require('path')
     , exec = require('child_process').exec
     , fs = require('fs-extra')
+    , shellescape = require('shell-escape')
     , appReq = require('app-require')
     , config = appReq('./config');
 
@@ -29,7 +30,7 @@ class Tools{
     for(let i = 0; i < envKeys.length; ++i){
       if(envKeys[i] === 'MINAMO_REQUIRED_PACKAGES') continue;
       if(envKeys[i] === 'MINAMO_NODE_VERSION') continue;
-      envString += `${envKeys[i]}="${extraEnv[envKeys[i]]}" `;
+      envString += `${envKeys[i]}=${shellescape([extraEnv[envKeys[i]]])} `;
     }
     let engine = extraEnv['MINAMO_NODE_VERSION'] || '';
     if(!engine.match('^[0-9.]+$')) engine = '';
