@@ -38,7 +38,7 @@ var ServiceHead = React.createClass({
 
 var ServiceUptime = React.createClass({
   render: function(){
-    var tooltip = (<Tooltip>{this.props.created}</Tooltip>);
+    var tooltip = (<Tooltip id={this.props.created}>{this.props.created}</Tooltip>);
     return (
       <OverlayTrigger overlay={tooltip} placement="top">
         <span>{this.props.uptime}</span>
@@ -106,11 +106,11 @@ var ServiceAction = React.createClass({
       commands.push('start', '---');
     }
     commands.push('config');
-    var items = commands.map(function(item){
-      if(item === '---') return (<MenuItem divider />);
-      return (<MenuItem eventKey={item}>{item}</MenuItem>);
+    var items = commands.map(function(item,i){
+      if(item === '---') return (<MenuItem divider key={'---'+i}/>);
+      return (<MenuItem eventKey={item} key={item}>{item}</MenuItem>);
     }.bind(this));
-    return (<DropdownButton title="Action" onSelect={this.onSelect}>{items}</DropdownButton>);
+    return (<DropdownButton id={this.props.name} title="Action" onSelect={this.onSelect}>{items}</DropdownButton>);
   }
 });
 
