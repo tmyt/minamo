@@ -17,6 +17,7 @@
     "tests"
   ],
   "dependencies": {
-    "Umi": "~3.3.6-1"
+    "Umi": "~3.3.6-1",
+    "openwebicons": "^1.4.1"
   }
 }

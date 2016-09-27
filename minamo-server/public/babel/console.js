@@ -3,7 +3,8 @@ var Table = ReactBootstrap.Table;
 var Label = ReactBootstrap.Label;
 var Tooltip = ReactBootstrap.Tooltip;
 var OverlayTrigger = ReactBootstrap.OverlayTrigger;
-var Input = ReactBootstrap.Input;
+var FormControl = ReactBootstrap.FormControl;
+var InputGroup = ReactBootstrap.InputGroup;
 var Button = ReactBootstrap.Button;
 var DropdownButton = ReactBootstrap.DropdownButton;
 var MenuItem = ReactBootstrap.MenuItem;
@@ -13,6 +14,7 @@ var Collapse = ReactBootstrap.Collapse;
 var Row = ReactBootstrap.Row;
 var Col = ReactBootstrap.Col;
 var Modal = ReactBootstrap.Modal;
+var Glyphicon = ReactBootstrap.Glyphicon;
 
 var ServiceLink = React.createClass({
   render: function(){
@@ -53,9 +55,19 @@ var ServiceRepoUri = React.createClass({
   },
   render: function(){
     var proto = location.protocol;
-    var repo = proto + '//git.' + rootDomain() + '/' + this.props.name + '.git';
-    if(this.props.authkey) repo = proto + '//' + rootDomain() + '/api/hooks/' + this.props.name + '?key=' + this.props.authkey;
-    return (<Input standalone readOnly value={repo} type="text" className="form-control" onFocus={this.focus} />);
+    this.repo = proto + '//git.' + rootDomain() + '/' + this.props.name + '.git';
+    if(this.props.authkey){
+      this.repo = proto + '//' + rootDomain() + '/api/hooks/' + this.props.name + '?key=' + this.props.authkey;
+      return (
+        <InputGroup>
+          <InputGroup.Addon><i className="openwebicons-webhooks"></i></InputGroup.Addon>
+          <FormControl readOnly value={this.repo} type="text" onFocus={this.focus} />
+        </InputGroup>
+      );
+    }
+    return (
+      <FormControl readOnly value={this.repo} type="text" onFocus={this.focus} />
+    );
   }
 });
 
@@ -79,7 +91,7 @@ var ServiceEnvConfig = React.createClass({
 });
 
 var ServiceAction = React.createClass({
-  onSelect: function(e, key){
+  onSelect: function(key, e){
     switch(key){
       case "config":
         showEnvConfig(this.props.name);
@@ -107,7 +119,7 @@ var ServiceAction = React.createClass({
     }
     commands.push('config');
     var items = commands.map(function(item,i){
-      if(item === '---') return (<MenuItem divider key={'---'+i}/>);
+      if(item === '---') return (<MenuItem divider key={'---' + i}/>);
       return (<MenuItem eventKey={item} key={item}>{item}</MenuItem>);
     }.bind(this));
     return (<DropdownButton id={this.props.name} title="Action" onSelect={this.onSelect}>{items}</DropdownButton>);
