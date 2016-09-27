@@ -18,8 +18,8 @@ var Glyphicon = ReactBootstrap.Glyphicon;
 
 var ServiceLink = React.createClass({
   render: function(){
-    var uri = document.location.protocol + '//' + this.props.service + '.' + rootDomain();
-    var label = this.props.service + (this.props.short ? '' : '.' + rootDomain());
+    var uri = MinamoConfig.proto + '//' + this.props.service + '.' + MinamoConfig.domain;
+    var label = this.props.service + (this.props.short ? '' : '.' + MinamoConfig.domain);
     return (<a href={uri}>{label}</a>); 
   }
 });
@@ -54,10 +54,9 @@ var ServiceRepoUri = React.createClass({
     e.target.select();
   },
   render: function(){
-    var proto = location.protocol;
-    this.repo = proto + '//git.' + rootDomain() + '/' + this.props.name + '.git';
+    this.repo = MinamoConfig.proto + '//git.' + MinamoConfig.domain + '/' + this.props.name + '.git';
     if(this.props.authkey){
-      this.repo = proto + '//' + rootDomain() + '/api/hooks/' + this.props.name + '?key=' + this.props.authkey;
+      this.repo = MinamoConfig.proto + '//' + MinamoConfig.domain + '/api/hooks/' + this.props.name + '?key=' + this.props.authkey;
       return (
         <InputGroup>
           <InputGroup.Addon><i className="openwebicons-webhooks"></i></InputGroup.Addon>

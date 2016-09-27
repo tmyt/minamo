@@ -50,6 +50,7 @@ class api {
     app.get('/status', this.status);
     app.get('/logs', this.logs);
     app.get('/env', this.env);
+    app.get('/config.js', this.getConfigJs);
     app.post('/env/update', this.updateEnv);
     app.post('/credentials/update', this.updateCredentials);
     return app;
@@ -212,6 +213,13 @@ class api {
     }else{
       fs.readFile(repo + '.env', (err, data) => res.send(data));
     }
+  }
+
+  getConfigJs(req, res){
+    res.send(`var MinamoConfig = ${JSON.stringify({
+      proto: config.proto + ':',
+      domain: config.domain,
+    })};`);
   }
 
   updateEnv(req, res){

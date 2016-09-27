@@ -1,7 +1,3 @@
-function rootDomain(){
-  return window.location.hostname;
-}
-
 function removeHandler(name){
   if(window.confirm('This container permanently removed. Are you sure?')){
     $.get('/api/destroy', {'service': name, 't': Date.now()}, function(){ });
