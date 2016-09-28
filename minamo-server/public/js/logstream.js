@@ -7,6 +7,10 @@ socket.on('line', function(line){
   var span = document.createElement('span');
   span.innerHTML = line;
   log.appendChild(span.firstChild);
+  // remove overflow log
+  while(log.children.length > 5000){
+    log.removeChild(log.children[0]);
+  }
   // scroll if needed
   if(tail) log.scrollTop = log.scrollHeight;
 });
