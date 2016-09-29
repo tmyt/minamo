@@ -6,7 +6,7 @@ const path = require('path')
     , config = appReq('./config');
 
 // WebUI
-const jadeStatic = appReq('./lib/jade/static')
+const pugStatic = appReq('./lib/pug/static')
     , express = require('express')
     , passport = require('passport')
     , basicAuth = require('basic-auth-connect')
@@ -18,7 +18,7 @@ const jadeStatic = appReq('./lib/jade/static')
 
 let gitusers = {};
 
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // setup passport
 passport.serializeUser((user, done) => done(null, user));
@@ -57,9 +57,9 @@ app.post('/api/hooks/:repo', appReq('./api/hooks')(kvs));
 // routers
 let api = appReq('./api');
 app.use('/api', rejectIfNotAuthenticated, new api(express.Router(), kvs));
-app.use('/console', requireAuthentication, jadeStatic(path.resolve('./views')));
-app.use('/logstream', requireAuthentication, jadeStatic(path.resolve('./views')));
-app.use('/', jadeStatic(path.resolve('./views')));
+app.use('/console', requireAuthentication, pugStatic(path.resolve('./views')));
+app.use('/logstream', requireAuthentication, pugStatic(path.resolve('./views')));
+app.use('/', pugStatic(path.resolve('./views')));
 app.use('/', express.static('./public', {maxAge: 3600 * 1000}));
 
 // git

@@ -22,11 +22,11 @@
     "fs-extra": "^0.26.3",
     "git-init": "tmyt/git-init#5ab0e459",
     "githead": "tmyt/node-githead",
-    "jade": "^1.11.0",
     "passport": "^0.3.2",
     "passport-github": "^1.0.0",
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.3",
+    "pug": "^2.0.0-beta6",
     "shell-escape": "^0.2.0",
     "socket.io": "^1.4.8",
     "tarball-extract": "0.0.3"
