@@ -1,5 +1,11 @@
 extends _base
 
+block links
+  if profile
+    link(rel='prerender', href='/console')
+  else
+    link(rel='prerender', href='/login')
+
 block content
   .jumbotron
     h1 minamo.io
