@@ -22,37 +22,47 @@ block header-nav
   li: a.active(href='/console') console
   li: a(href='/logstream') log stream
 
+block navbar-addon
+  #console-tab: .container: ul.nav.nav-tabs.nav-static-top
+    li.active: a(href='#tab-statuses', data-toggle='tab') statuses
+    li: a(href='#tab-create', data-toggle='tab') create
+    li: a(href='#tab-configure', data-toggle='tab') configure
+
 block content
-  h2 Container status
-  #statuses
+  .tab-content
+    .tab-pane.fade.in.active#tab-statuses
+      h2 Container status
+      #statuses
 
-  h2 Create containers
-  form#newform(name='new_container')
-    #service_name_group.form-group.has-feedback
-      label(for='service_name') Name
-      input#service_name.form-control(type='text', name='service')
-      span#service_name_glyph.glyphicon.form-control-feedback
-      span#errmsg.help-block.text-danger
-    #template_group.form-group
-      label(for='template') Template
-      select#template.form-control(name='template')
-        option(value='') Blank
-        option(value='simple-webapi') SimpleWebAPI
-        option(value='express-pug') ExpressPug
-    #external_repo_group.form-group
-      label(for='external_repo') External Repository (optional)
-      input#external_repo.form-control(type='text', name='external')
-    input.btn.btn-primary(type='submit', value='create')
+    .tab-pane.fade#tab-create
+      h2 Create containers
+      form#newform(name='new_container')
+        #service_name_group.form-group.has-feedback
+          label(for='service_name') Name
+          input#service_name.form-control(type='text', name='service')
+          span#service_name_glyph.glyphicon.form-control-feedback
+          span#errmsg.help-block.text-danger
+        #template_group.form-group
+          label(for='template') Template
+          select#template.form-control(name='template')
+            option(value='') Blank
+            option(value='simple-webapi') SimpleWebAPI
+            option(value='express-pug') ExpressPug
+        #external_repo_group.form-group
+          label(for='external_repo') External Repository (optional)
+          input#external_repo.form-control(type='text', name='external')
+        input.btn.btn-primary(type='submit', value='create')
 
-  h2 Configure credentials
-  form#credentialform(name='credential_configure')
-    #username_group.form-group
-      label(for='username') Git Username
-      input#username.form-control(type='text', name='password', disabled='disabled', value=profile.username)
-    #password_group.form-group
-      label(for='password') Git Password
-      input#password.form-control(type='text', name='password')
-    input.btn.btn-primary(type='submit', value='update')
+    .tab-pane.fade#tab-configure
+      h2 Configure credentials
+      form#credentialform(name='credential_configure')
+        #username_group.form-group
+          label(for='username') Git Username
+          input#username.form-control(type='text', name='password', disabled='disabled', value=profile.username)
+        #password_group.form-group
+          label(for='password') Git Password
+          input#password.form-control(type='text', name='password')
+        input.btn.btn-primary(type='submit', value='update')
 
   #envconfig_frame.modal.fade(role='dialog')
     .modal-dialog: .modal-content
