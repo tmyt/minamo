@@ -1,4 +1,4 @@
-.table>tbody>tr.container_row>td {
+.table > tbody > tr.container_row > td {
   vertical-align: middle;
 }
 
@@ -36,3 +36,7 @@
   color: #fff;
 }
 
+dl.dl-horizontal > dd {
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
