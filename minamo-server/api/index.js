@@ -22,11 +22,11 @@ const hmac = (key, data) => {
 function checkParams(req, res){
   let name = req.query.service || req.body.service;
   if(!name){
-    res.send('error: no service');
+    res.status(400).send('error: no service');
     return;
   }
   if(!name.match(/^[a-z0-9-]+$/)){
-    res.send('error: service should be [a-z0-9-]+');
+    res.status(400).send('error: service should be [a-z0-9-]+');
     return;
   }
   return name;
@@ -77,7 +77,7 @@ class api {
     // .git is no required. its seems library bug.
     let repo = path.join(config.repo_path, name);
     if(pathExists(repo)){
-      res.send('error: service already exists');
+      res.status(400).send('error: service already exists');
       return;
     }
     let root = path.dirname(require.main.filename);
@@ -108,7 +108,7 @@ class api {
     // .git is no required. its seems library bug.
     let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
-      res.send('error: service not found');
+      res.status(404).send('error: service not found');
     }else{
       this.kvs.delHost(`${name}.${config.domain}`);
       tools.terminate(name, true);
@@ -122,7 +122,7 @@ class api {
     // .git is no required. its seems library bug.
     let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
-      res.send('error: service not found');
+      res.status(404).send('error: service not found');
     }else{
       this.kvs.resetHost(`${name}.${config.domain}`);
       tools.build(name);
@@ -136,7 +136,7 @@ class api {
     // .git is no required. its seems library bug.
     let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
-      res.send('error: service not found');
+      res.status(404).send('error: service not found');
     }else{
       this.kvs.delHost(`${name}.${config.domain}`);
       tools.terminate(name);
@@ -150,7 +150,7 @@ class api {
     // .git is no required. its seems library bug.
     let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
-      res.send('error: service not found');
+      res.status(404).send('error: service not found');
     }else{
       this.kvs.resetHost(`${name}.${config.domain}`);
       tools.build(name);
@@ -209,7 +209,7 @@ class api {
     // .git is no required. its seems library bug.
     let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
-      res.send('error: service not found');
+      res.status(404).send('error: service not found');
     }else{
       fs.readFile(repo + '.env', (err, data) => res.send(data));
     }
@@ -228,7 +228,7 @@ class api {
     // .git is no required. its seems library bug.
     let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
-      res.send('error: service not found');
+      res.status(404).send('error: service not found');
     }else{
       let env = JSON.parse(req.body.env);
       fs.outputJson(repo + '.env', env, () => res.send('OK'));
