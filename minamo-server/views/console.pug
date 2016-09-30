@@ -11,10 +11,12 @@ block scripts
   script(src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.38/browser.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.30.3/react-bootstrap.min.js')
+  script(src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js')
   script(src='/api/config.js')
   script(src='/js/console.js')
 
 block styles
+  link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css')
   link(rel='stylesheet', href='/components/openwebicons/css/openwebicons.min.css')
   link(rel='stylesheet', href='/css/console.css')
 
@@ -94,8 +96,7 @@ block content
       .modal-footer
         button.btn.btn-default(data-dismiss='modal') close 
 
+  script().
+    toastr.options.closeButton = true;
+    toastr.options.progressBar = true;
   script(src='/babel/console.js', type='text/babel')
-
-block outer_content
-  #message
-    #message-container.container

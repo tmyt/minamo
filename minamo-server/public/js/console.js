@@ -12,12 +12,20 @@ function createNew(){
     $('#errmsg').text('error: service name should be [a-z0-9-]+');
     return false;
   }
-  $.get('/api/create', {'service': name, 'template': template, 'external': external, 't': Date.now()}, function(){
-    $('#service_name_group').removeClass('has-success').removeClass('has-error');
-    $('#service_name_glyph').removeClass('glyphicon-ok').removeClass('glyphicon-remove');
-    $('#service_name').val("");
-    $('#external_repo').val("");
-    showToast('', 'Service created', 'success');
+  $.ajax({
+    type: 'GET',
+    url: '/api/create',
+    data: {'service': name, 'template': template, 'external': external, 't': Date.now()},
+    success: function(){
+      $('#service_name_group').removeClass('has-success').removeClass('has-error');
+      $('#service_name_glyph').removeClass('glyphicon-ok').removeClass('glyphicon-remove');
+      $('#service_name').val("");
+      $('#external_repo').val("");
+      showToast('', 'Service "' + name + '" created', 'success');
+    },
+    error: function(request){
+      showToast('', 'Service "' + name + '" creation failed. ' + request.responseText, 'warning');
+    }
   });
   return false;
 }
@@ -28,22 +36,18 @@ function updateCredentials(){
     url: '/api/credentials/update',
     data: {'password': $('#password').val()},
     success: function(){
-      showToast('', 'Update successful', 'success');
+      showToast('', 'Credential update successful', 'success');
       $('#password').val('');
     },
     error: function(){
-      showToast('', 'Update failed', 'danger');
+      showToast('', 'Credential update failed', 'warning');
     }
   });
   return false;
 }
 
 function showToast(title, message, kind){
-  var button = $('<button class="close" data-dismiss="alert">').html('&times;');
-  var message = $('<div id="inner-message" class="alert">')
-    .addClass("alert-" + kind).append(button).append(message);
-  $('#message-container').children().remove();
-  $('#message-container').append(message);
+  toastr[kind](message, title);
 }
 
 function isRunning(text){
@@ -170,7 +174,7 @@ function load(){
       data: {'env': JSON.stringify(env), 'service': $('#target_service').val()},
       success: function(){ },
       error: function(){
-        showToast('', 'Env update failed', 'danger');
+        showToast('', 'Env update failed', 'warning');
       }
     });
   });
