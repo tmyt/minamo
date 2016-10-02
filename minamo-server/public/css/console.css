@@ -10,6 +10,10 @@
   border-width: 0px;
 }
 
+#console-tab .nav-tabs > li {
+  margin-bottom: 0px;
+}
+
 #console-tab .nav-tabs li a:focus,
 #console-tab .nav-tabs li a:hover {
   background-color: transparent;
