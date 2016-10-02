@@ -6,21 +6,22 @@
   margin: 0px 8px 0px 0px;
 }
 
+.navbar .navbar-text.visible-xs{
+  margin-bottom: 0px;
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 767px){
+  .nav.navbar-nav{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+
 #credentialform {
   margin-bottom: 22px;
 }
 
-#message {
-  z-index: 99999;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-#inner-message {
-  margin: 10px auto;
-}
 
 /* Sticky footer styles
 -------------------------------------------------- */
