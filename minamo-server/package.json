@@ -5,7 +5,8 @@
   "repository": "https://github.com/tmyt/minamo.git",
   "main": "index.js",
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "bower install; npm run build",
+    "build": "babel -x .babel public/babel -d public/babel",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -32,6 +33,15 @@
     "tarball-extract": "0.0.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
     "bower": "^1.7.1"
+  },
+  "babel": {
+    "presets": [
+      "react",
+      "es2015"
+    ]
   }
 }

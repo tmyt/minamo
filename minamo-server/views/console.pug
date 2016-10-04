@@ -9,7 +9,6 @@ block links
 block scripts
   script(src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js')
-  script(src='https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.38/browser.min.js')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.30.3/react-bootstrap.min.js')
   script(src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js')
   script(src='/api/config.js')
@@ -99,4 +98,4 @@ block content
   script().
     toastr.options.closeButton = true;
     toastr.options.progressBar = true;
-  script(src='/babel/console.js', type='text/babel')
+  script(src='/babel/console.js', async)
