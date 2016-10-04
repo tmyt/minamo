@@ -3,3 +3,4 @@ minamo-server/data/gitusers.json
 minamo-server/repos/*
 minamo-server/repos/*/
 minamo-server/public/components
+minamo-server/public/babel/*.js
