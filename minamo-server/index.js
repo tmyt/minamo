@@ -60,7 +60,7 @@ app.use('/api', rejectIfNotAuthenticated, new api(express.Router(), kvs));
 app.use('/console', requireAuthentication, pugStatic(path.resolve('./views')));
 app.use('/logstream', requireAuthentication, pugStatic(path.resolve('./views')));
 app.use('/', pugStatic(path.resolve('./views')));
-app.use('/', express.static('./public', {maxAge: 3600 * 1000}));
+app.use('/', express.static('./public', {maxAge: 24 * 3600 * 1000}));
 
 // git
 let expressGit = require('express-git');
