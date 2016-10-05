@@ -8,9 +8,12 @@ const path = require('path')
 // WebUI
 const pugStatic = appReq('./lib/pug/static')
     , express = require('express')
+    , expressSession = require('express-session')
+    , FileStore = require('session-file-store')(expressSession)
     , passport = require('passport')
     , basicAuth = require('basic-auth-connect')
     , bodyParser = require('body-parser')
+    , cookieParser = require('cookie-parser')
     , app = express()
     , server = require('http').Server(app)
     , io = require('./api/logstream')(server)
@@ -36,9 +39,10 @@ app.use((req, res, next) => {
 });
 
 // setup auth
-app.use(require('cookie-parser')());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(require('express-session')({
+app.use(expressSession({
+  store: new FileStore({path: __dirname + '/data/sessions', ttl: 604800}),
   secret: 'kuroshio',
   resave: false,
   saveUninitialized: false
