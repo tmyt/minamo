@@ -1,46 +1,47 @@
 // Import ReactBootstrap objects
-var Table = ReactBootstrap.Table;
-var Label = ReactBootstrap.Label;
-var Tooltip = ReactBootstrap.Tooltip;
-var OverlayTrigger = ReactBootstrap.OverlayTrigger;
-var FormControl = ReactBootstrap.FormControl;
-var InputGroup = ReactBootstrap.InputGroup;
-var Button = ReactBootstrap.Button;
-var DropdownButton = ReactBootstrap.DropdownButton;
-var MenuItem = ReactBootstrap.MenuItem;
-var PanelGroup = ReactBootstrap.PanelGroup;
-var Panel = ReactBootstrap.Panel;
-var Collapse = ReactBootstrap.Collapse;
-var Row = ReactBootstrap.Row;
-var Col = ReactBootstrap.Col;
-var Modal = ReactBootstrap.Modal;
-var Glyphicon = ReactBootstrap.Glyphicon;
+const Table = ReactBootstrap.Table
+    , Label = ReactBootstrap.Label
+    , Tooltip = ReactBootstrap.Tooltip
+    , OverlayTrigger = ReactBootstrap.OverlayTrigger
+    , FormControl = ReactBootstrap.FormControl
+    , InputGroup = ReactBootstrap.InputGroup
+    , Button = ReactBootstrap.Button
+    , DropdownButton = ReactBootstrap.DropdownButton
+    , MenuItem = ReactBootstrap.MenuItem
+    , PanelGroup = ReactBootstrap.PanelGroup
+    , Panel = ReactBootstrap.Panel
+    , Collapse = ReactBootstrap.Collapse
+    , Row = ReactBootstrap.Row
+    , Col = ReactBootstrap.Col
+    , Modal = ReactBootstrap.Modal
+    , Glyphicon = ReactBootstrap.Glyphicon;
 
-var ServiceLink = React.createClass({
+const ServiceLink = React.createClass({
   render: function(){
-    var uri = MinamoConfig.proto + '//' + this.props.service + '.' + MinamoConfig.domain;
-    var label = this.props.service + (this.props.short ? '' : '.' + MinamoConfig.domain);
+    let uri = `${MinamoConfig.proto}//${this.props.service}.${MinamoConfig.domain}`;
+    let label = `${this.props.service}${this.props.short ? '' : `.${MinamoConfig.domain}`}`;
     return (<a href={uri}>{label}</a>); 
   }
 });
 
-var ServiceStatus = React.createClass({
+const ServiceStatus = React.createClass({
   render: function(){
-    var style = toLabelColor(this.props.status);
+    let style = toLabelColor(this.props.status);
     return (<Label bsStyle={style}>{this.props.status}</Label>);
   }
 });
 
-var ServiceHead = React.createClass({
+const ServiceHead = React.createClass({
   render: function(){
-    if(this.props.external) return(<span className="text-muted">external</span>);
-    return (<span>{this.props.head}</span>);
+    return this.props.external
+      ? (<span className="text-muted">external</span>)
+      : (<span>{this.props.head}</span>);
   }
 });
 
-var ServiceUptime = React.createClass({
+const ServiceUptime = React.createClass({
   render: function(){
-    var tooltip = (<Tooltip id={this.props.created}>{this.props.created}</Tooltip>);
+    let tooltip = (<Tooltip id={this.props.created}>{this.props.created}</Tooltip>);
     return (
       <OverlayTrigger overlay={tooltip} placement="top">
         <span>{this.props.uptime}</span>
@@ -49,14 +50,14 @@ var ServiceUptime = React.createClass({
   }
 });
 
-var ServiceRepoUri = React.createClass({
+const ServiceRepoUri = React.createClass({
   focus: function(e){
     e.target.select();
   },
   render: function(){
-    this.repo = MinamoConfig.proto + '//git.' + MinamoConfig.domain + '/' + this.props.name + '.git';
+    this.repo = `${MinamoConfig.proto}//git.${MinamoConfig.domain}/${this.props.name}.git`;
     if(this.props.authkey){
-      this.repo = MinamoConfig.proto + '//' + MinamoConfig.domain + '/api/hooks/' + this.props.name + '?key=' + this.props.authkey;
+      this.repo = `${MinamoConfig.proto}//${MinamoConfig.domain}/api/hooks/${this.props.name}?key=${this.props.authkey}`;
       return (
         <InputGroup>
           <InputGroup.Addon><i className="openwebicons-webhooks"></i></InputGroup.Addon>
@@ -70,7 +71,7 @@ var ServiceRepoUri = React.createClass({
   }
 });
 
-var ServiceEnvConfig = React.createClass({
+const ServiceEnvConfig = React.createClass({
   getInitialState: function(){
     return { show: true }
   },
@@ -89,7 +90,7 @@ var ServiceEnvConfig = React.createClass({
   }
 });
 
-var ServiceAction = React.createClass({
+const ServiceAction = React.createClass({
   onSelect: function(key, e){
     switch(key){
       case "config":
@@ -110,43 +111,38 @@ var ServiceAction = React.createClass({
     }
   },
   render: function(){
-    var commands = ['logs', '---'];
+    let commands = ['logs', '---'];
     if(isRunning(this.props.status)){
       commands.push('stop', 'restart', '---');
     }else if(isStopped(this.props.status)){
       commands.push('start', '---');
     }
     commands.push('config');
-    var items = commands.map(function(item,i){
-      if(item === '---') return (<MenuItem divider key={'---' + i}/>);
-      return (<MenuItem eventKey={item} key={item}>{item}</MenuItem>);
-    }.bind(this));
+    let items = commands.map((item,i) => item === '---'
+      ? (<MenuItem divider key={`---${i}`}/>)
+      : (<MenuItem eventKey={item} key={item}>{item}</MenuItem>));
     return (<DropdownButton id={this.props.name} title="Action" onSelect={this.onSelect}>{items}</DropdownButton>);
   }
 });
 
-var ServiceRemoveButton = React.createClass({
-  onClick: function(e){
-    removeHandler(this.props.name);
-  },
+const ServiceRemoveButton = React.createClass({
+  onClick: function(e) { removeHandler(this.props.name); },
   render: function(){
     return(<Button bsStyle="danger" onClick={this.onClick}>remove</Button>);
   }
 });
 
-var ContainersTableHeader = React.createClass({
+const ContainersTableHeader = React.createClass({
   render: function(){
-    var names = ['name', 'status', 'head', 'uptime', 'repo', 'action', 'remove'];
-    var headers = names.map(function(n){
-      return (<th key={'tr_' + n}>{n}</th>);
-    });
+    let names = ['name', 'status', 'head', 'uptime', 'repo', 'action', 'remove'];
+    let headers = names.map(n => (<th key={`tr_${n}`}>{n}</th>));
     return (<tr>{headers}</tr>);
   }
 });
 
-var ContainersTableRow = React.createClass({
+const ContainersTableRow = React.createClass({
   render: function(){
-    var data = this.props.data;
+    let data = this.props.data;
     return (
       <tr className="container_row">
         <td><ServiceLink service={this.props.name} short /></td>
@@ -161,12 +157,11 @@ var ContainersTableRow = React.createClass({
   }
 });
 
-var ContainerListLarge = React.createClass({
+const ContainerListLarge = React.createClass({
   render: function(){
-    var data = this.props.data;
-    var rows = Object.keys(data).map(function(container){
-      return (<ContainersTableRow name={container} data={data[container]} key={container} />);
-    });
+    let data = this.props.data;
+    let rows = Object.keys(data).map(container =>
+      (<ContainersTableRow name={container} data={data[container]} key={container} />));
     return (
       <Table hover>
         <thead>
@@ -180,10 +175,10 @@ var ContainerListLarge = React.createClass({
   }
 });
 
-var ContainerPane = React.createClass({
+const ContainerPane = React.createClass({
   render: function(){
-    var data = this.props.data;
-    var header = (
+    let data = this.props.data;
+    let header = (
       <Row>
         <Col xs={6}>
           <h4 className="visible-xs-inline">{this.props.name}</h4>
@@ -215,25 +210,22 @@ var ContainerPane = React.createClass({
   }
 });
 
-var ContainerListSmall = React.createClass({
+const ContainerListSmall = React.createClass({
   render: function(){
-    var data = this.props.data;
-    var rows = Object.keys(data).map(function(container){
-      return (<ContainerPane name={container} data={data[container]} key={container + '_xs'} />);
-    });
+    let data = this.props.data;
+    let rows = Object.keys(data).map(container =>
+      (<ContainerPane name={container} data={data[container]} key={`${container}_xs`} />));
     return (<div>{rows}</div>);
   }
 });
 
-var ContainerGroup = React.createClass({
+const ContainerGroup = React.createClass({
   updateState: function(){
     $.get('/api/status', {'t': Date.now()}, function(json){
       this.setState({data: json});
     }.bind(this));
   },
-  getInitialState: function(){
-    return {data: {}};
-  },
+  getInitialState: () => ({data: {}}),
   componentDidMount: function(){
     this.updateState();
     setInterval(this.updateState, this.props.pollInterval);

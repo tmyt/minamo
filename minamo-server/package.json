@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "bower install; npm run build",
-    "build": "babel -x .babel public/babel -d public/babel",
+    "build": "babel --minified --no-comments -x .babel public/babel -d public/babel",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
