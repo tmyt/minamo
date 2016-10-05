@@ -5,8 +5,7 @@ const fs = require('fs')
 
 function staticPugHandler(views){
   return function(req, res, next){
-    let url = req.baseUrl + req.url;
-    let pug = req.url.substr(req.baseUrl.length);
+    let pug = req.baseUrl + req.path;
 
     if(pug.endsWith('/')) { pug += 'index' }
     if(path.basename(pug)[0] === '_') return next();
