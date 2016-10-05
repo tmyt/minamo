@@ -18,6 +18,8 @@ block styles
   link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css')
   link(rel='stylesheet', href='/components/openwebicons/css/openwebicons.min.css')
   link(rel='stylesheet', href='/css/console.css')
+  meta(name='apple-mobile-web-app-capable', content='yes')
+  meta(name='apple-mobile-web-app-status-bar-style', content='black-translucent')
 
 block header-nav
   li: a.active(href='/console') console
@@ -65,6 +67,11 @@ block content
           input#password.form-control(type='text', name='password')
         input.btn.btn-primary(type='submit', value='update')
 
+      #config_ios
+        h2 for iOS
+        p navigate to this link and add to home, you can use fullscreen console.
+        p: a(href=ios_url) auto login console
+
   #envconfig_frame.modal.fade(role='dialog')
     .modal-dialog: .modal-content
       .modal-header
@@ -95,7 +102,11 @@ block content
       .modal-footer
         button.btn.btn-default(data-dismiss='modal') close 
 
+block extra_content
   script().
     toastr.options.closeButton = true;
     toastr.options.progressBar = true;
+    if(!(!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform))){
+      $('#config_ios').css('display', 'block');
+    }
   script(src='/babel/console.js', async)

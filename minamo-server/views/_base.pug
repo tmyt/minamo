@@ -18,7 +18,7 @@ html
       title minamo.io
   body
     header
-      .navbar.navbar-default.navbar-static-top
+      #header_nav.navbar.navbar-default.navbar-static-top
         .container
           .navbar-header
             a.navbar-brand(href='/') minamo.io
@@ -48,4 +48,11 @@ html
     footer.footer
       .container
         p.text-muted Powered by minamo.io
+    #status_bar
+    block extra_content
+    script().
+      if(window.navigator.standalone){
+        $('#status_bar').css('display', 'block');
+        $('#header_nav').css('padding-top', '20px');
+      }
     script(src='/components/Umi/dist/js/bootstrap.min.js', async)

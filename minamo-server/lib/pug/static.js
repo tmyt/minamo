@@ -12,7 +12,8 @@ function staticPugHandler(views){
 
     fs.stat(path.join(views, pug + '.pug'), function(err, st){
       if(err) return next();
-      res.render(pug.substr(1), {profile: req.user});
+      let sid = encodeURIComponent(req.cookies['connect.sid'] || '');
+      res.render(pug.substr(1), {profile: req.user, ios_url: '/console?_token=' + sid});
     });
   }
 }

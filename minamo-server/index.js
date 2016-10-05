@@ -36,6 +36,7 @@ app.use((req, res, next) => {
 });
 
 // setup auth
+app.use(require('cookie-parser')());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(require('express-session')({
   secret: 'kuroshio',
@@ -113,6 +114,11 @@ let watcher = fs.watch(gitusersPath, (name, e) => {
 });
 
 function requireAuthentication(req, res, next){
+  if(req.query._token){
+    res.cookie('connect.sid', req.query._token);
+    if(req.isAuthenticated()) return next();
+    return res.redirect(req.baseUrl);
+  }
   if(req.isAuthenticated()) { return next(); }
   res.redirect('/login');
 }
