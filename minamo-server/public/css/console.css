@@ -45,16 +45,6 @@ dl.dl-horizontal > dd {
   margin-bottom: 8px;
 }
 
-#status_bar {
-  height: 20px;
-  width: 100%;
-  top: 0px;
-  z-index: 9999;
-  background-color: #1E2A36;
-  position: absolute;
-  display: none;
-}
-
 #config_ios {
   display: none;
 }

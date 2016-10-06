@@ -19,7 +19,7 @@ block styles
   link(rel='stylesheet', href='/components/openwebicons/css/openwebicons.min.css')
   link(rel='stylesheet', href='/css/console.css')
   meta(name='apple-mobile-web-app-capable', content='yes')
-  meta(name='apple-mobile-web-app-status-bar-style', content='black-translucent')
+  meta(name='apple-mobile-web-app-status-bar-style', content='black')
 
 block header-nav
   li: a.active(href='/console') console
@@ -106,7 +106,7 @@ block extra_content
   script().
     toastr.options.closeButton = true;
     toastr.options.progressBar = true;
-    if(!(!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform))){
+    if(!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)){
       $('#config_ios').css('display', 'block');
     }
   script(src='/babel/console.js', async)

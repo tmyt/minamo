@@ -32,10 +32,12 @@ html {
   position: relative;
   min-height: 100%;
 }
+
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
 }
+
 .footer {
   position: absolute;
   bottom: 2px;
@@ -45,11 +47,20 @@ body {
   background-color: #ecf0f1;
 }
 
-/* Custom page CSS
--------------------------------------------------- */
-/* Not required for template or sticky footer method. */
-
 .footer .container .text-muted {
   margin: 20px 0;
   text-align: center;
 }
+
+#status_bar {
+  height: 20px;
+  width: 100%;
+  top: 0px;
+  z-index: 9999;
+  background-color: #1E2A36;
+  position: fixed;
+  display: none;
+  transform: translateZ(-1px);
+  -webkit-transform: translateZ(-1px);
+}
+
