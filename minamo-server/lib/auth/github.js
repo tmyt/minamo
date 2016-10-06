@@ -18,7 +18,7 @@ module.exports = new GitHubStrategy({
       return done(null, {
         username: profile.username,
         provider: profile.provider,
-        avatar: profile._json.avatar_url
+        avatar: profile._json.avatar_url + '&s=80'
       });
     });
   }

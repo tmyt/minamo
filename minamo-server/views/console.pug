@@ -7,12 +7,13 @@ block links
   link(rel='prerender', href='/logstream')
 
 block scripts
-  script(src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.min.js')
-  script(src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js')
-  script(src='https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.30.3/react-bootstrap.min.js')
-  script(src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js')
-  script(src='/api/config.js')
-  script(src='/js/console.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.min.js', defer)
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.min.js', defer)
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.30.3/react-bootstrap.min.js', defer)
+  script(src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js', defer)
+  script(src='/api/config.js', defer)
+  script(src='/js/console.js', defer)
+  script(src='/babel/console.js', defer)
 
 block styles
   link(rel='stylesheet', href='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css')
@@ -104,9 +105,6 @@ block content
 
 block extra_content
   script().
-    toastr.options.closeButton = true;
-    toastr.options.progressBar = true;
     if(!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)){
       $('#config_ios').css('display', 'block');
     }
-  script(src='/babel/console.js', async)

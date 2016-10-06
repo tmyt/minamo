@@ -8,10 +8,8 @@ html
     block links
     link(rel='stylesheet', href='/components/Umi/dist/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/minamo.css')
-    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Open+Sans')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700')
     block styles
-    script(src='//code.jquery.com/jquery-2.1.4.min.js')
-    block scripts
     if pageTitle
       title #{pageTitle} | minamo.io
     else
@@ -49,4 +47,6 @@ html
       .container
         p.text-muted Powered by minamo.io
     block extra_content
-    script(src='/components/Umi/dist/js/bootstrap.min.js', async)
+    script(src='//code.jquery.com/jquery-2.1.4.min.js', defer)
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', defer)
+    block scripts

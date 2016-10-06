@@ -216,10 +216,11 @@ class api {
   }
 
   getConfigJs(req, res){
-    res.send(`var MinamoConfig = ${JSON.stringify({
+    let json = JSON.stringify({
       proto: config.proto + ':',
       domain: config.domain,
-    })};`);
+    });
+    res.set('Cache-Control', 'max-age=604800').send(`var MinamoConfig = ${json}`);
   }
 
   updateEnv(req, res){

@@ -1,11 +1,11 @@
 extends _base
 
+block vars
+  - var pageTitle = 'login'
+
 block styles
   link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css')
   link(rel='stylesheet', href='/css/login.css')
-
-block vars
-  - var pageTitle = 'login'
 
 block content
   .row: .center-block#login-container: .panel.panel-primary.login-form

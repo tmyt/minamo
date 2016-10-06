@@ -181,5 +181,9 @@ function load(){
 }
 
 $(document).ready(function(){
+  // congirue toastr
+  toastr.options.closeButton = true;
+  toastr.options.progressBar = true;
+  // load components
   load();
 })
