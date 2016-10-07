@@ -60,7 +60,7 @@ const ServiceRepoUri = React.createClass({
       this.repo = `${MinamoConfig.proto}//${MinamoConfig.domain}/api/hooks/${this.props.name}?key=${this.props.authkey}`;
       return (
         <InputGroup>
-          <InputGroup.Addon><i className="openwebicons-webhooks"></i></InputGroup.Addon>
+          <InputGroup.Addon><Glyphicon glyph="refresh" /></InputGroup.Addon>
           <FormControl readOnly value={this.repo} type="text" onFocus={this.focus} />
         </InputGroup>
       );
