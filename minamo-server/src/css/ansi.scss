@@ -1,0 +1,39 @@
+$color-table: (
+  red: #dd0000,
+  green: #00cc3e,
+  yellow: #eeee00,
+  blue: #0099ff,
+  purple: #bb00bb,
+  cyan: #00eeee,
+  white: #eeeeee,
+  iblack: #666,
+  ired: #f77,
+  igreen: #7f7,
+  iyellow: #ff7,
+  iblue: #77f,
+  ipurple: #f7f,
+  icyan: #7ff,
+  iwhite: #fff
+);
+
+.ansi_console_snippet {
+    font-family: monospace;
+    white-space: pre-wrap;
+    display: block;
+    unicode-bidi: embed;
+    padding: 2px 5px;
+    background-color: black;
+    color: #eeeeee;
+    word-break: break-all;
+}
+.ansi_bold { font-weight: bold; }
+.ansi_italic { font-style: italic; }
+
+@each $name, $color in $color-table {
+  .ansi_fg_#{$name} {
+    color: $color;
+  }
+  .ansi_bg_#{$name} {
+    background-color: $color;
+  }
+}
