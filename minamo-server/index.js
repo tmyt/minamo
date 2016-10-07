@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSession({
-  store: new FileStore({path: __dirname + '/data/sessions', ttl: 604800}),
+  store: new FileStore({path: __dirname + '/data/sessions', retries: 2, ttl: 604800}),
   secret: 'kuroshio',
   resave: false,
   saveUninitialized: false
