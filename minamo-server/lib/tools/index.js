@@ -48,6 +48,9 @@ class Tools{
 
   destroy(repo){
     docker.getContainer(repo).remove((err, data) => {
+      docker.getImage(`minamo/${repo}`).remove(()=>{});
+    });
+    docker.getContainer(`${repo}-data`).remove((err, data) => {
       docker.getImage(`minamo/${repo}-data`).remove(()=>{});
     });
   }
