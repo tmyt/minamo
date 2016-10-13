@@ -22,6 +22,11 @@
   box-shadow: inset 0 -1.5px 0 rgba(0,0,0,0.18);
 }
 
+.btn.btn-danger, .btn.btn-primary {
+  border-width: 0px;
+  padding: 7px 13px;
+}
+
 html {
   position: relative;
   min-height: 100%;
