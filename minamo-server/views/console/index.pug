@@ -1,4 +1,4 @@
-extends _base
+extends ../_base
 
 block vars
   - var pageTitle = 'console'
@@ -22,7 +22,7 @@ block styles
 
 block header-nav
   li: a.active(href='/console') console
-  li: a(href='/logstream') log stream
+  li: a(href='/console/logstream') log stream
 
 block navbar-addon
   #console-tab: .container: ul.nav.nav-tabs.nav-static-top

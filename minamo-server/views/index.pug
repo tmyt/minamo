@@ -2,7 +2,7 @@ extends _base
 
 block links
   if profile
-    link(rel='prerender', href='/console')
+    link(rel='prerender', href='/console/')
   else
     link(rel='prerender', href='/login')
 
@@ -11,6 +11,6 @@ block content
     h1 minamo.io
     p private PaaS platform for you
     if profile
-      p: a.btn.btn-primary.btn-lg(href='/console', role='button') console
+      p: a.btn.btn-primary.btn-lg(href='/console/', role='button') console
     else
       p: a.btn.btn-primary.btn-lg(href='/login', role='button') login
