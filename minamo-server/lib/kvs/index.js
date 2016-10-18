@@ -79,7 +79,7 @@ class Kvs
     if(!host.endsWith(config.domain)) return callback('');
     let container = host.substr(0, host.length - config.domain.length - 1);
     docker.getContainer(container).inspect((err, data) => {
-      if(!data.NetworkSettings.Ports) return callback('');
+      if(err || !data.NetworkSettings.Ports) return callback('');
       let bind = Object.keys(data.NetworkSettings.Ports)[0];
       let port = bind.split('/')[0];
       callback(`http://${data.NetworkSettings.IPAddress}:${port}`);
