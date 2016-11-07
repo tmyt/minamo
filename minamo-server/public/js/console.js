@@ -8,8 +8,8 @@ function createNew(){
   var name = $('#service_name').val();
   var template = $('#template').val();
   var external = $('#external_repo').val();
-  if(!name.match(/^[a-z](?:[a-z0-9-]*[a-z])?$/)){
-    $('#errmsg').text('error: service name should be [a-z](?:[a-z0-9-]*[a-z])?');
+  if(!name.match(/^[a-z][a-z0-9-]*[a-z]$/)){
+    $('#errmsg').text('error: service name should be [a-z][a-z0-9-]*[a-z]');
     return false;
   }
   $.ajax({
@@ -145,7 +145,7 @@ function load(){
     if($('#service_name').val() === ""){
       $('#service_name_group').removeClass('has-success').removeClass('has-error');
       $('#service_name_glyph').removeClass('glyphicon-ok').removeClass('glyphicon-remove');
-    }else if($('#service_name').val().match(/^[a-z](?:[a-z0-9-]*[a-z])?$/)){
+    }else if($('#service_name').val().match(/^[a-z][a-z0-9-]*[a-z]$/)){
       $('#service_name_group').addClass('has-success').removeClass('has-error');
       $('#service_name_glyph').addClass('glyphicon-ok').removeClass('glyphicon-remove');
     }else{
