@@ -24,6 +24,8 @@
     "fs-extra": "^0.26.3",
     "git-init": "tmyt/git-init#bare",
     "githead": "tmyt/node-githead",
+    "gulp-concat": "^2.6.1",
+    "gulp-concat-js": "^0.1.0",
     "passport": "^0.3.2",
     "passport-github": "^1.0.0",
     "passport-local": "^1.0.0",
