@@ -14,7 +14,7 @@ const paths = {
 };
 
 gulp.task('scss', () => {
-  return gulp.src(paths.scss + '**/*.scss')
+  return gulp.src([paths.scss + '**/*.scss', 'public/components/Umi/dist/css/bootstrap.css'])
     .pipe(sass())
     .pipe(concatCss('minamo.min.css'))
     .pipe(cleanCss())
