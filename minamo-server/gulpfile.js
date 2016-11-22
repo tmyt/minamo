@@ -11,7 +11,8 @@ const paths = {
   'bootstrap': 'public/components/Umi/dist/css/',
   'scss': 'src/css/',
   'css': 'public/css/',
-  'babel': 'src/babel/'
+  'babel': 'src/babel/',
+  'js': 'public/js/'
 };
 
 const BabelOptions = {
@@ -29,6 +30,12 @@ gulp.babelTask = function(name){
   });
 }
 
+gulp.babelTasks = function(...names){
+  for(let i = 0; i < names.length; ++i){
+    gulp.babelTask(names[i]);
+  }
+}
+
 gulp.task('scss', () => {
   return gulp.src([paths.bootstrap + 'bootstrap.css', paths.scss + '**/*.scss'],
     {base: 'public/css'})
@@ -38,8 +45,8 @@ gulp.task('scss', () => {
     .pipe(gulp.dest(paths.css));
 });
 
-gulp.babelTask('console');
+gulp.babelTasks('console', 'logstream');
 
-gulp.task('babel', ['babel-console']);
+gulp.task('babel', ['babel-console', 'babel-logstream']);
 
 gulp.task('build', ['babel', 'scss']);
