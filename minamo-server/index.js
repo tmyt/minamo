@@ -16,7 +16,7 @@ const pugStatic = appReq('./lib/pug/static')
     , cookieParser = require('cookie-parser')
     , app = express()
     , server = require('http').Server(app)
-    , io = require('./api/logstream')(server)
+    , io = require('socket.io')(server)
     , kvs = new (require('./lib/kvs'))();
 
 let gitusers = {};
@@ -61,10 +61,11 @@ app.post('/api/hooks/:repo', appReq('./api/hooks')(kvs));
 
 // routers
 let api = appReq('./api');
-app.use('/api', rejectIfNotAuthenticated, new api(express.Router(), kvs));
+app.use('/api', rejectIfNotAuthenticated, new api(express.Router(), kvs, io));
 app.use('/console', requireAuthentication, pugStatic(path.resolve('./views')));
 app.use('/', pugStatic(path.resolve('./views')));
 app.use('/', express.static('./public', {maxAge: '7d'}));
+require('./api/logstream.js')(io);
 
 // git
 let expressGit = require('express-git');

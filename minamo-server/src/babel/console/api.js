@@ -158,6 +158,12 @@ function createEnvRow(name, value){
   return row;
 }
 
+function initializeSocket(cb){
+  const socket = io('/status');
+  socket.on('statuses', cb);
+  return cookie => socket.emit('fetch', cookie);
+}
+
 function load(){
   $('#newform').submit(createNew);
   $('#credentialform').submit(updateCredentials);

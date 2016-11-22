@@ -18,6 +18,7 @@
     "basic-auth-connect": "^1.0.0",
     "body-parser": "^1.14.2",
     "cookie-parser": "^1.4.3",
+    "crc": "^3.4.3",
     "dockerode": "^2.3.1",
     "express": "^4.13.3",
     "express-git": "^0.7.0",

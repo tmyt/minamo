@@ -66,8 +66,7 @@ function getStyle(str){
   return state;
 }
 
-module.exports = function(server){
-  const io = require('socket.io')(server)
+module.exports = function(io){
   io.of('/log').on('connection', socket => {
     let tail = tailf('/tmp/minamo/build.log');
     let state = {color:'', bold:'', italic: ''};
@@ -80,5 +79,4 @@ module.exports = function(server){
     });
     socket.on('disconnect', () => tail.kill());
   });
-  return io;
 }

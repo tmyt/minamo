@@ -204,15 +204,15 @@ const ContainerListSmall = React.createClass({
 });
 
 const ContainerGroup = React.createClass({
-  updateState: function(){
-    $.get('/api/status', {'t': Date.now()}, function(json){
-      this.setState({data: json});
-    }.bind(this));
+  updateState: function(state){
+    this.cookie = state.cookie;
+    this.setState({data: state.statuses});
   },
   getInitialState: () => ({data: {}}),
   componentDidMount: function(){
-    this.updateState();
-    setInterval(this.updateState, this.props.pollInterval);
+    const requestFetch = initializeSocket(state => this.updateState(state));
+    setInterval(() => requestFetch(this.cookie), this.props.pollInterval);
+    requestFetch('');
   },
   render: function(){
     return (

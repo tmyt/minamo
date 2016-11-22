@@ -2,6 +2,7 @@
 
 const path = require('path')
     , crypto = require('crypto')
+    , crc = require('crc').crc32
     , fs = require('fs-extra')
     , tarball = require('tarball-extract')
     , init = require('git-init')
@@ -38,7 +39,7 @@ function isEnvFile(filename){
 }
 
 class api {
-  constructor(app, kvs){
+  constructor(app, kvs, io){
     this.kvs = kvs;
     this.initializeKvs();
     app.get('/create', this.create);
@@ -47,12 +48,23 @@ class api {
     app.get('/stop', this.stop.bind(this));
     app.get('/restart', this.restart.bind(this));
     app.get('/list', this.list);
-    app.get('/status', this.status);
+    app.get('/status', this.status.bind(this));
     app.get('/logs', this.logs);
     app.get('/env', this.env);
     app.get('/config.js', this.getConfigJs);
     app.post('/env/update', this.updateEnv);
     app.post('/credentials/update', this.updateCredentials);
+    // io
+    io.of('/status').on('connection', socket => {
+      socket.on('fetch', cookie => {
+        this.getContainerStatuses(statuses => {
+          const local = crc(JSON.stringify(statuses)).toString(16);
+          if(local === cookie) return;
+          const ret = {statuses, cookie: local};
+          socket.emit('statuses', ret);
+        });
+      });
+    });
     return app;
   }
 
@@ -65,6 +77,47 @@ class api {
         for(let i = 0; i < repos.length; ++i){
           this.kvs.addHost(`${repos[i]}.${config.domain}`);
         }
+      });
+    });
+  }
+
+  getContainerStatuses(cb){
+    docker.listContainers({all: true}, (err, containers) => {
+      let statuses = {};
+      fs.readdir(config.repo_path, (err, files) => {
+        for(let i = 0; i < files.length; ++i){
+          if(files[i][0] === '.') continue;
+          let stat = fs.statSync(path.join(config.repo_path, files[i]));
+          if(stat.isFile() && files[i].endsWith('.env')) continue;
+          statuses[files[i]] = {
+            'status': 'stopped',
+            'uptime': '',
+            'created': '',
+            'head': head(path.join(config.repo_path, files[i])),
+            'repo': 'local'
+          };
+          if(stat.isFile()){
+            statuses[files[i]].repo = 'external';
+            statuses[files[i]].key = hmac(config.secret || 'minamo.io', files[i]);
+          }
+          for(let j = 0; j < containers.length; ++j){
+            if(containers[j].Names[0] === ('/' + files[i])){
+              statuses[files[i]].status = containers[j].State;
+              statuses[files[i]].uptime = containers[j].Status;
+              statuses[files[i]].created = containers[j].Created * 1000;
+              break;
+            }
+          }
+          try{
+            fs.statSync('/tmp/minamo/' + files[i] + '.prep');
+            statuses[files[i]].status = 'prepareing';
+          }catch(e){ }
+          try{
+            fs.statSync('/tmp/minamo/' + files[i] + '.term');
+            statuses[files[i]].status = 'stopping';
+          }catch(e){ }
+        }
+        cb(statuses);
       });
     });
   }
@@ -163,44 +216,7 @@ class api {
   }
 
   status(req, res){
-    docker.listContainers({all: true}, (err, containers) => {
-      let statuses = {};
-      fs.readdir(config.repo_path, (err, files) => {
-        for(let i = 0; i < files.length; ++i){
-          if(files[i][0] === '.') continue;
-          let stat = fs.statSync(path.join(config.repo_path, files[i]));
-          if(stat.isFile() && files[i].endsWith('.env')) continue;
-          statuses[files[i]] = {
-            'status': 'stopped',
-            'uptime': '',
-            'created': '',
-            'head': head(path.join(config.repo_path, files[i])),
-            'repo': 'local'
-          };
-          if(stat.isFile()){
-            statuses[files[i]].repo = 'external';
-            statuses[files[i]].key = hmac(config.secret || 'minamo.io', files[i]);
-          }
-          for(let j = 0; j < containers.length; ++j){
-            if(containers[j].Names[0] === ('/' + files[i])){
-              statuses[files[i]].status = containers[j].State;
-              statuses[files[i]].uptime = containers[j].Status;
-              statuses[files[i]].created = containers[j].Created * 1000;
-              break;
-            }
-          }
-          try{
-            fs.statSync('/tmp/minamo/' + files[i] + '.prep');
-            statuses[files[i]].status = 'prepareing';
-          }catch(e){ }
-          try{
-            fs.statSync('/tmp/minamo/' + files[i] + '.term');
-            statuses[files[i]].status = 'stopping';
-          }catch(e){ }
-        }
-        res.send(statuses);
-      });
-    });
+    this.getContainerStatuses(statuses => res.send(statuses));
   }
 
   env(req, res){
