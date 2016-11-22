@@ -5,7 +5,8 @@
   "repository": "https://github.com/tmyt/minamo.git",
   "main": "index.js",
   "scripts": {
-    "postinstall": "bower install; npm run build",
+    "postinstall": "npm run bower-install; npm run build",
+    "bower-install": "bower install",
     "build": "gulp build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
