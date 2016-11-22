@@ -8,6 +8,7 @@ const gulp = require('gulp')
     , babel = require('gulp-babel');
 
 const paths = {
+  'bootstrap': 'public/components/Umi/dist/css/',
   'scss': 'src/css/',
   'css': 'public/css/',
   'babel': 'src/babel/',
@@ -15,7 +16,7 @@ const paths = {
 };
 
 gulp.task('scss', () => {
-  return gulp.src([paths.scss + '**/*.scss', 'public/components/Umi/dist/css/bootstrap.css'],
+  return gulp.src([paths.bootstrap + 'bootstrap.css', paths.scss + '**/*.scss'],
     {base: 'public/css'})
     .pipe(sass())
     .pipe(concatCss('minamo.min.css'))
