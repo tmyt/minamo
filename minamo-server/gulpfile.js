@@ -11,9 +11,23 @@ const paths = {
   'bootstrap': 'public/components/Umi/dist/css/',
   'scss': 'src/css/',
   'css': 'public/css/',
-  'babel': 'src/babel/',
-  'js': 'public/js/'
+  'babel': 'src/babel/'
 };
+
+const BabelOptions = {
+  presets: ['react', 'es2015'],
+  minified: true,
+  comments: false
+};
+
+gulp.babelTask = function(name){
+  gulp.task(`babel-${name}`, () => {
+    return gulp.src([paths.babel + `${name}/**/*.{js,babel}`])
+      .pipe(babel(BabelOptions))
+      .pipe(concat(`${name}.js`))
+      .pipe(gulp.dest(paths.js));
+  });
+}
 
 gulp.task('scss', () => {
   return gulp.src([paths.bootstrap + 'bootstrap.css', paths.scss + '**/*.scss'],
@@ -24,15 +38,8 @@ gulp.task('scss', () => {
     .pipe(gulp.dest(paths.css));
 });
 
-gulp.task('babel', () => {
-  return gulp.src([paths.babel + '**/*.babel', 'src/js/console.js'])
-    .pipe(babel({
-      presets: ['react', 'es2015'],
-      minified: true,
-      comments: false
-    }))
-    .pipe(concat('console.js'))
-    .pipe(gulp.dest(paths.js));
-});
+gulp.babelTask('console');
+
+gulp.task('babel', ['babel-console']);
 
 gulp.task('build', ['babel', 'scss']);

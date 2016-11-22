@@ -78,6 +78,26 @@ function toLabelColor(text){
   if(isStopped(text)) return 'danger';
 }
 
+function handleServiceAction(key, name){
+  switch(key){
+    case "config":
+      showEnvConfig(name);
+      break;
+    case "logs":
+      showLogs(name);
+      break;
+    case "start":
+      startContainer(name);
+      break;
+    case "stop":
+      stopContainer(name);
+      break;
+    case "restart":
+      restartContainer(name);
+      break;
+  }
+}
+
 function startContainer(name){
   $.get('/api/start', {'service': name, 't': Date.now()}, function(){ });
 }

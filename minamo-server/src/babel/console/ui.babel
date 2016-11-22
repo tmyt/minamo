@@ -92,23 +92,7 @@ const ServiceEnvConfig = React.createClass({
 
 const ServiceAction = React.createClass({
   onSelect: function(key, e){
-    switch(key){
-      case "config":
-        showEnvConfig(this.props.name);
-        break;
-      case "logs":
-        showLogs(this.props.name);
-        break;
-      case "start":
-        startContainer(this.props.name);
-        break;
-      case "stop":
-        stopContainer(this.props.name);
-        break;
-      case "restart":
-        restartContainer(this.props.name);
-        break;
-    }
+    handleServiceAction(key, this.props.name);
   },
   render: function(){
     let commands = ['logs', '---'];
