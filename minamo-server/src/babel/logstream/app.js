@@ -1,10 +1,10 @@
-var log = document.getElementById('log');
-var socket = io('/log');
+const log = document.getElementById('log');
+const socket = io('/log');
 socket.on('line', function(line){
   // check scroll position
-  var tail = log.scrollHeight <= log.scrollTop + log.clientHeight;
+  const tail = log.scrollHeight <= log.scrollTop + log.clientHeight;
   // append element
-  var span = document.createElement('span');
+  const span = document.createElement('span');
   span.innerHTML = line;
   log.appendChild(span.firstChild);
   // remove overflow log
