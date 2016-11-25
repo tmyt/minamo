@@ -211,8 +211,6 @@ const ContainerGroup = React.createClass({
   getInitialState: () => ({data: {}}),
   componentDidMount: function(){
     const requestFetch = initializeSocket(state => this.updateState(state));
-    setInterval(() => requestFetch(this.cookie), this.props.pollInterval);
-    requestFetch('');
   },
   render: function(){
     return (

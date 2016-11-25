@@ -55,16 +55,7 @@ class api {
     app.post('/env/update', this.updateEnv);
     app.post('/credentials/update', this.updateCredentials);
     // io
-    io.of('/status').on('connection', socket => {
-      socket.on('fetch', cookie => {
-        this.getContainerStatuses(statuses => {
-          const local = crc(JSON.stringify(statuses)).toString(16);
-          if(local === cookie) return;
-          const ret = {statuses, cookie: local};
-          socket.emit('statuses', ret);
-        });
-      });
-    });
+    io.of('/status').on('connection', this.wsStatuses.bind(this));
     return app;
   }
 
@@ -269,6 +260,29 @@ class api {
     data[req.user.username] = req.body.password;
     fs.outputJsonSync(usersPath, data);
     res.send('OK');
+  }
+
+  wsStatuses(socket){
+    let cookie = undefined;
+    let gen = (cb, flag) => {
+      this.getContainerStatuses(statuses => {
+        let local = crc(JSON.stringify(statuses)).toString(16);
+        if(!flag && local === cookie) return;
+        cookie = local;
+        cb({statuses, cookie: local});
+      });
+    };
+    let iid = setInterval(() => {
+      gen(state => socket.emit('statuses', state));
+    }, 5 * 1000);
+    socket.on('fetch', cookie => {
+      gen(state => {
+        if(state.cookie === cookie) return;
+        socket.emit('statuses', state);
+      }, 1);
+    });
+    socket.on('disconnect', () => clearInterval(iid));
+    gen(state => socket.emit('statuses', state));
   }
 };
 
