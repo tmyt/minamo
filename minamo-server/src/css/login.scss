@@ -18,12 +18,10 @@
   }
 }
 
-.btn {
-  i.fa {
-    width: 16px;
-    + span {
-      margin: 0px 0px 0px 8px;
-    }
+.btn i.fa {
+  width: 16px;
+  + span {
+    margin: 0px 0px 0px 8px;
   }
 }
 
