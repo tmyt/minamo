@@ -7,22 +7,19 @@
   margin: 0px 12px;
 }
 
-@media screen and (min-width:992px){
-  .form-col {
-    border-left: 1px solid #ecf0f1;
-  }
-}
-@media screen and (max-width:991px){
+@media screen and (max-width: 767px){
   .form-col {
     padding-top: 20px;
   }
 }
-
-.btn i.fa {
-  width: 16px;
-  + span {
-    margin: 0px 0px 0px 8px;
+@media screen and (min-width: 768px){
+  .form-col {
+    border-left: 1px solid #ecf0f1;
   }
+}
+
+.btn i.fa + span {
+  margin: 0px 0px 0px 8px;
 }
 
 .form-group.vertical-grouped {
