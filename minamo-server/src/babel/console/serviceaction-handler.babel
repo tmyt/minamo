@@ -1,0 +1,26 @@
+'use strict';
+
+class ServiceActionHandler{
+  constructor(name){
+    this._name = name;
+  }
+  config(){
+    showEnvConfig(this._name);
+  }
+  logs(){
+    showLogs(this._name);
+  }
+  start(){
+    Internal.call('start', this._name);
+  }
+  stop(){
+    Internal.call('stop', this._name);
+  }
+  restart(){
+    Internal.call('restart', this._name);
+  }
+  remove(){
+    if(!window.confirm('This container permanently removed. Are you sure?')) return;
+    Internal.call('destroy', this._name);
+  }
+}

@@ -1,3 +1,7 @@
+'use strict';
+
+(function(){
+
 // Import ReactBootstrap objects
 const Table = ReactBootstrap.Table
     , Label = ReactBootstrap.Label
@@ -26,8 +30,8 @@ const ServiceLink = React.createClass({
 
 const ServiceStatus = React.createClass({
   render: function(){
-    let style = toLabelColor(this.props.status);
-    return (<Label bsStyle={style}>{this.props.status}</Label>);
+    let style = this.props.status.toLabelColor();
+    return (<Label bsStyle={style}>{this.props.status.toString()}</Label>);
   }
 });
 
@@ -92,13 +96,14 @@ const ServiceEnvConfig = React.createClass({
 
 const ServiceAction = React.createClass({
   onSelect: function(key, e){
-    handleServiceAction(key, this.props.name);
+    this._handler[key]();
   },
   render: function(){
+    this._handler = new ServiceActionHandler(this.props.name);
     let commands = ['logs', '---'];
-    if(isRunning(this.props.status)){
+    if(this.props.status.isRunning()){
       commands.push('stop', 'restart', '---');
-    }else if(isStopped(this.props.status)){
+    }else if(this.props.status.isStopped()){
       commands.push('start', '---');
     }
     commands.push('config');
@@ -110,7 +115,7 @@ const ServiceAction = React.createClass({
 });
 
 const ServiceRemoveButton = React.createClass({
-  onClick: function(e) { removeHandler(this.props.name); },
+  onClick: function(e) { (new ServiceActionHandler(this.props.name)).remove(); },
   render: function(){
     return(<Button bsStyle="danger" onClick={this.onClick}>remove</Button>);
   }
@@ -127,14 +132,15 @@ const ContainersTableHeader = React.createClass({
 const ContainersTableRow = React.createClass({
   render: function(){
     let data = this.props.data;
+    let status = new ContainerStatus(data.status);
     return (
       <tr className="container_row">
         <td><ServiceLink service={this.props.name} short /></td>
-        <td><ServiceStatus status={data.status} /></td>
+        <td><ServiceStatus status={status} /></td>
         <td><ServiceHead head={data.head} external={data.repo==='external'} /></td>
         <td><ServiceUptime created={new Date(data.created).toLocaleString()} uptime={data.uptime} /></td>
         <td><ServiceRepoUri name={this.props.name} authkey={data.key} /></td>
-        <td><ServiceAction name={this.props.name} status={data.status}/></td>
+        <td><ServiceAction name={this.props.name} status={status}/></td>
         <td><ServiceRemoveButton name={this.props.name} /></td>
       </tr>
     );
@@ -162,13 +168,14 @@ const ContainerListLarge = React.createClass({
 const ContainerPane = React.createClass({
   render: function(){
     let data = this.props.data;
+    let status = new ContainerStatus(data.status);
     let header = (
       <Row>
         <Col xs={6}>
           <h4 className="visible-xs-inline">{this.props.name}</h4>
         </Col>
         <Col xs={6} className="text-right">
-          <ServiceStatus status={data.status} />
+          <ServiceStatus status={status} />
         </Col>
       </Row>
     );
@@ -185,7 +192,7 @@ const ContainerPane = React.createClass({
             <dt>repo</dt>
             <dd><ServiceRepoUri name={this.props.name} authkey={data.key} /></dd>
           </dl>
-          <ServiceAction name={this.props.name} status={data.status} />
+          <ServiceAction name={this.props.name} status={status} />
           <span> </span>
           <ServiceRemoveButton name={this.props.name} />
         </Panel>
@@ -230,3 +237,5 @@ ReactDOM.render(
   <ContainerGroup pollInterval={5000}/>,
   document.getElementById('statuses')
 );
+
+})();
