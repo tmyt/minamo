@@ -11,16 +11,16 @@ class ServiceActionHandler{
     showLogs(this._name);
   }
   start(){
-    Internal.call('start', this._name);
+    Internal.post(`/api/services/${this._name}/start`);
   }
   stop(){
-    Internal.call('stop', this._name);
+    Internal.post(`/api/services/${this._name}/stop`);
   }
   restart(){
-    Internal.call('restart', this._name);
+    Internal.post(`/api/services/${this._name}/restart`);
   }
   remove(){
     if(!window.confirm('This container permanently removed. Are you sure?')) return;
-    Internal.call('destroy', this._name);
+    Internal.del(`/api/services/${this._name}`);
   }
 }

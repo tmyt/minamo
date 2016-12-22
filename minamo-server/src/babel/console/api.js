@@ -7,18 +7,36 @@ const Internal = (function(){
   const nameFlags = ['has-error', 'has-success'];
   const glyphFlags = ['glyphicon-remove', 'glyphicon-ok'];
 
-  function call(api, name, cb){
-    $.get(`/api/${api}`, {'service': name, 't': Date.now()}, cb || function(){});
+  function ajax(type, url, data, success, error){
+    $.ajax({type, url, data, success, error});
+  }
+
+  function get(url, data, success, error){
+    ajax('GET', url, data, success, error);
+  }
+
+  function post(url, data, success, error){
+    ajax('POST', url, data, success, error);
+  }
+
+  function put(url, data, success, error){
+    ajax('PUT', url, data, success, error);
+  }
+
+  function del(url, data, success, error){
+    ajax('DELETE', url, data, success, error);
   }
 
   function clearValidation(){
     $('#service_name_group').removeClass(nameFlags.join(' '));
     $('#service_name_glyph').removeClass(glyphFlags.join(' '));
   }
+
   function clearForms(){
     $('#service_name').val('');
     $('#external_repo').val('');
   }
+
   function createNew(){
     let name = $('#service_name').val();
     let template = $('#template').val();
@@ -27,35 +45,26 @@ const Internal = (function(){
       $('#errmsg').text(`error: service name should be ${ContainerRegexpString}`);
       return false;
     }
-    $.ajax({
-      type: 'GET',
-      url: '/api/create',
-      data: {'service': name, 'template': template, 'external': external, 't': Date.now()},
-      success: () => {
+    put(`/api/services/${name}`, {template, external},
+      () => {
         clearValidation();
         clearForms();
         showToast(`Service "${name}" created`, 'success');
       },
-      error: function(request){
-        showToast(`Service "${name}" creation failed. ${request.responseText}`, 'warning');
-      }
-    });
+      (request) => { showToast(`Service "${name}" creation failed. ${request.responseText}`, 'warning'); }
+    );
     return false;
   }
 
   function updateCredentials(){
-    $.ajax({
-      type: 'POST',
-      url: '/api/credentials/update',
-      data: {'password': $('#password').val()},
-      success: function(){
+    let password = $('#password').val();
+    post('/api/credentials/update', {password},
+      () => {
         showToast('Credential update successful', 'success');
         $('#password').val('');
       },
-      error: function(){
-        showToast('Credential update failed', 'warning');
-      }
-    });
+      () => { showToast('Credential update failed', 'warning'); }
+    );
     return false;
   }
 
@@ -107,18 +116,16 @@ const Internal = (function(){
     });
     $('#env_save').click(function(){
       let items = $('#envlist tr[data-env="env-item"]').toArray();
-      let env = items.map(i => [
+      let env = JSON.stringify(items.map(i => [
           $(i).find('input[name="env-name"]').val(),
           $(i).find('input[name="env-value"]').val()
         ])
-        .reduce((pr, cr) => { pr[cr[0]] = cr[1]; return pr; }, {});
-      $.ajax({
-        type: 'POST',
-        url: '/api/env/update',
-        data: {'env': JSON.stringify(env), 'service': $('#target_service').val()},
-        success: () => showToast('Env updated!', 'success'),
-        error: () => showToast('Env update failed', 'warning')
-      });
+        .reduce((pr, cr) => { pr[cr[0]] = cr[1]; return pr; }, {}));
+      let name = $('#target_service').val();
+      post(`/api/services/${name}/env/update`, {env},
+        () => showToast('Env updated!', 'success'),
+        () => showToast('Env update failed', 'warning')
+      );
     });
   }
 
@@ -131,9 +138,7 @@ const Internal = (function(){
   })
 
   return {
-    'call': call,
-    'createEnvRow': createEnvRow,
-    'createAddNewButton': createAddNewButton
+    get, put, post, del, createEnvRow, createAddNewButton
   };
 })();
 
@@ -142,7 +147,7 @@ function showEnvConfig(name){
   $('#envlist').children().remove();
   $('#envlist').append($('<thead><tr><th>name</th><th>value</th></tr></thead>'));
   $('#target_service').val(name);
-  Internal.call('env', name, json=>{
+  Internal.get(`/api/services/${name}/env`, {}, json=>{
     let env = JSON.parse(json);
     // add trailing button
     Object.keys(env).reduce((pr, cr) => pr.append(Internal.createEnvRow(cr, env[cr])), $('#envlist'));
@@ -152,7 +157,7 @@ function showEnvConfig(name){
 }
 
 function showLogs(name){
-  Internal.call('logs', name, logs=>{
+  Internal.get(`/api/services/${name}/logs`, {}, logs=>{
     $('#logs').val(logs);
     $('#logs_frame').modal();
   });

@@ -16,7 +16,7 @@ const paths = {
 };
 
 const BabelOptions = {
-  presets: ['react', 'es2015'],
+  presets: ['react', 'es2015', 'es2016', 'es2017'],
   minified: true,
   comments: false
 };

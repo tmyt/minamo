@@ -21,7 +21,7 @@ const hmac = (key, data) => {
 };
 
 function checkParams(req, res){
-  let name = req.query.service || req.body.service;
+  let name = req.params.service || req.query.service || req.body.service;
   if(!name){
     res.status(400).send('error: no service');
     return;
@@ -42,17 +42,19 @@ class api {
   constructor(app, kvs, io){
     this.kvs = kvs;
     this.initializeKvs();
-    app.get('/create', this.create);
-    app.get('/destroy', this.destroy.bind(this));
-    app.get('/start', this.start.bind(this));
-    app.get('/stop', this.stop.bind(this));
-    app.get('/restart', this.restart.bind(this));
-    app.get('/list', this.list);
-    app.get('/status', this.status.bind(this));
-    app.get('/logs', this.logs);
-    app.get('/env', this.env);
+    /* v2 api */
+    let svcBase = '/services/:service';
     app.get('/config.js', this.getConfigJs);
-    app.post('/env/update', this.updateEnv);
+    app.get(`/services`, this.list);
+    app.get(`/services/status`, this.status.bind(this));
+    app.put(`${svcBase}`, this.create);
+    app.delete(`${svcBase}`, this.destroy.bind(this));
+    app.post(`${svcBase}/start`, this.start.bind(this));
+    app.post(`${svcBase}/stop`, this.stop.bind(this));
+    app.post(`${svcBase}/restart`, this.restart.bind(this));
+    app.get(`${svcBase}/logs`, this.logs);
+    app.get(`${svcBase}/env`, this.env);
+    app.post(`${svcBase}/env/update`, this.updateEnv);
     app.post('/credentials/update', this.updateCredentials);
     // io
     io.of('/status').on('connection', this.wsStatuses.bind(this));
