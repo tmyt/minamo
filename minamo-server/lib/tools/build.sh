@@ -103,7 +103,7 @@ WORKDIR /service/${NAME}
 RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c \"git clone ${REPO} . --recursive && git checkout \$MINAMO_BRANCH_NAME\"; \
     su minamo -c \"npm run minamo-preinstall ; npm install ; npm run minamo-postinstall || true\"; \
     ls -l; node --version
-CMD /service/run.sh" > Dockerfile
+CMD [\"/service/run.sh\"]" > Dockerfile
 
 ## Start docker build
 echo ==================== >> $LOG_FILE
