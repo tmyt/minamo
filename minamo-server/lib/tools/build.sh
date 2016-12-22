@@ -96,17 +96,13 @@ ENV PORT=${PORT} MINAMO_BRANCH_NAME=master ${EXTRAENV}
 EXPOSE ${PORT}
 ${EXTRAPKGS}
 ADD created_at /tmp/created_at
-RUN node --version
-RUN adduser minamo
-RUN mkdir -p /service/${NAME}; chown -R minamo:minamo /service/
+RUN adduser minamo; mkdir -p /service/${NAME}; chown -R minamo:minamo /service/
 ADD run.sh /service/run.sh
 RUN chmod 755 /service/run.sh
 WORKDIR /service/${NAME}
-RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c \"git clone ${REPO} . --recursive && git checkout \$MINAMO_BRANCH_NAME\"
-USER minamo
-RUN npm run minamo-preinstall ; npm install ; npm run minamo-postinstall || true
-RUN ls -l
-USER root
+RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c \"git clone ${REPO} . --recursive && git checkout \$MINAMO_BRANCH_NAME\"; \
+    su minamo -c \"npm run minamo-preinstall ; npm install ; npm run minamo-postinstall || true\"; \
+    ls -l; node --version
 CMD /service/run.sh" > Dockerfile
 
 ## Start docker build
