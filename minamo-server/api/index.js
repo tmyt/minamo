@@ -205,7 +205,7 @@ class api {
   }
 
   list(req, res){
-    fs.readdir(config.repo_path, (err, files) => res.send(files));
+    fs.readdir(config.repo_path, (err, files) => res.send(files.filter(s=>s[0]!='.'&&!s.endsWith('.env'))));
   }
 
   status(req, res){
