@@ -1,3 +1,7 @@
+body {
+  display: block;
+}
+
 .navbar {
   .profile-image{
     margin: -12px 0px;
@@ -43,7 +47,7 @@ html body {
   height: 60px;
   background-color: #ecf0f1;
   .container .text-muted {
-    margin: 20px 0;
+    margin: 18px 0;
     text-align: center;
   }
 }

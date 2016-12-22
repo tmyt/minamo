@@ -1,5 +1,6 @@
 (function(){
   loadjs([
+    '/js/loader/minamo.loader.js',
     '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css'
   ])
   loadjs([
