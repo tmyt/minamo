@@ -117,8 +117,8 @@ class api {
 
   create(req, res){
     let name = checkParams(req, res);
-    let template = req.query.template || '';
-    let external = req.query.external || '';
+    let template = req.body.template || '';
+    let external = req.body.external || '';
     if(!name) return;
     // .git is no required. its seems library bug.
     let repo = path.join(config.repo_path, name);
