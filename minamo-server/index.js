@@ -66,6 +66,7 @@ app.use('/console', requireAuthentication, pugStatic(path.resolve('./views')));
 app.use('/', pugStatic(path.resolve('./views')));
 app.use('/', express.static('./public', {maxAge: '7d'}));
 require('./api/logstream.js')(io);
+require('./api/terminal.js')(io);
 
 // git
 let expressGit = require('express-git');

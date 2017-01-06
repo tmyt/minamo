@@ -1,0 +1,19 @@
+extends ../_base
+
+block vars
+  - var pageTitle = 'terminal'
+
+block links
+  link(rel='prerender', href='/console')
+
+block scripts
+  script(src='/js/loader/terminal.loader.js', defer)
+
+block header-nav
+  li: a(href='/console') console
+  li: a(href='/console/logstream') log stream
+  li: a.active(href='/console/terminal') terminal
+
+block content
+  h2 Terminal
+  #terminal
