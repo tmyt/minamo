@@ -32,6 +32,7 @@
     "passport-github": "^1.0.0",
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.3",
+    "passport.socketio": "^3.7.0",
     "pty.js": "^0.3.1",
     "pug": "^2.0.0-beta6",
     "session-file-store": "^1.0.0",

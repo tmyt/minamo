@@ -16,12 +16,9 @@ const pugStatic = appReq('./lib/pug/static')
     , cookieParser = require('cookie-parser')
     , app = express()
     , server = require('http').Server(app)
+    , passportSocketIo = require('passport.socketio')
     , io = require('socket.io')(server)
     , kvs = new (require('./lib/kvs'))();
-
-let gitusers = {};
-
-app.set('view engine', 'pug');
 
 // setup passport
 passport.serializeUser((user, done) => done(null, user));
@@ -39,10 +36,11 @@ app.use((req, res, next) => {
 });
 
 // setup auth
+let sessionStore = new FileStore({path: __dirname + '/data/sessions', retries: 2, ttl: 604800});
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSession({
-  store: new FileStore({path: __dirname + '/data/sessions', retries: 2, ttl: 604800}),
+  store: sessionStore,
   secret: 'kuroshio',
   resave: false,
   saveUninitialized: false
@@ -50,8 +48,14 @@ app.use(expressSession({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/auth', appReq('./lib/auth'));
+io.use(passportSocketIo.authorize({
+  cookieParser: cookieParser,
+  secret: 'kuroshio',
+  store: sessionStore
+}));
 
 // handlers
+app.set('view engine', 'pug');
 app.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
@@ -69,6 +73,7 @@ require('./api/logstream.js')(io);
 require('./api/terminal.js')(io);
 
 // git
+let gitusers = {};
 let expressGit = require('express-git');
 let githttp = express();
 let git = expressGit.serve(config.repo_path, {
