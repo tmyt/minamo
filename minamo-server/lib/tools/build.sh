@@ -68,15 +68,6 @@ fi
 PWD=$(pwd)
 mkdir /tmp/$$
 cd /tmp/$$
-date > created_at
-
-# generate startup script
-echo "#!/bin/sh
-chown minamo:minamo /data" > run.sh
-if [ "x$MINAMO_BUILD_REQUIRED_REDIS" != "x" ]; then
-  echo "/etc/init.d/redis-server start" >> run.sh
-fi
-echo "su minamo -c 'npm start'" >> run.sh
 
 # get docker0 ip addr
 DOCKER0=$(ip addr show docker0 | grep inet | grep global | awk '{print $2;}' | cut -f 1 -d '/')
@@ -90,20 +81,36 @@ if [ "x${EXTRAPKGS}" != "x" ]; then
   EXTRAPKGS="RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ${EXTRAPKGS}";
 fi
 
+# determine package manager
+PM="npm"
+PM_INSTALL=""
+if [ "x${MINAMO_BUILD_REQUIRED_YARN}" != "x" ]; then
+  PM="~/.yarn/bin/yarn"
+  PM_INSTALL="curl -o- -L https://yarnpkg.com/install.sh | bash; "
+fi
+
 # generate Dockerfile
 echo "FROM node:${MINAMO_NODE_VERSION}
 ENV PORT=${PORT} MINAMO_BRANCH_NAME=master ${EXTRAENV}
 EXPOSE ${PORT}
 ${EXTRAPKGS}
-ADD created_at /tmp/created_at
 RUN adduser minamo; mkdir -p /service/${NAME}; chown -R minamo:minamo /service/
 ADD run.sh /service/run.sh
 RUN chmod 755 /service/run.sh
 WORKDIR /service/${NAME}
 RUN echo ${DOCKER0} git.${DOMAIN} >> /etc/hosts; su minamo -c \"git clone ${REPO} . --recursive && git checkout \$MINAMO_BRANCH_NAME\"; \
-    su minamo -c \"npm run minamo-preinstall ; npm install ; npm run minamo-postinstall || true\"; \
+    su minamo -c \"${PM_INSTALL} ${PM} run minamo-preinstall ; ${PM} install ; ${PM} run minamo-postinstall || true\"; \
     ls -l; node --version
 CMD [\"/service/run.sh\"]" > Dockerfile
+
+# generate startup script
+echo "#!/bin/sh
+# $(date)
+chown -R minamo:minamo /data" > run.sh
+if [ "x$MINAMO_BUILD_REQUIRED_REDIS" != "x" ]; then
+  echo "/etc/init.d/redis-server start" >> run.sh
+fi
+echo "su minamo -c '${PM} start'" >> run.sh
 
 ## Start docker build
 echo ==================== >> $LOG_FILE
