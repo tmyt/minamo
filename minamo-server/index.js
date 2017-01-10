@@ -85,7 +85,7 @@ let gitBasicAuth = basicAuth((user, pass) => {
 });
 let gitComplexAuth = function(req, res, next){
   // accept access from container
-  if(req.headers['x-forwarded-for'].match(/^172.17/)){
+  if(req.headers['x-forwarded-for'].match(/^172\.17\./)){
     next();
     return true;
   }
