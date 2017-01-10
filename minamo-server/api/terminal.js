@@ -9,6 +9,8 @@ module.exports = function(io){
       cols: 80,
       rows: 24
     });
+    socket.emit('init');
+    socket.emit('data', '\r\n');
     term.on('data', d => socket.emit('data', d));
     socket.on('data', d => term.write(d));
     socket.on('resize', d => term.resize(d[0], d[1]));
