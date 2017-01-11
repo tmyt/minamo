@@ -5,7 +5,8 @@ const gulp = require('gulp')
     , concat = require('gulp-concat')
     , concatCss = require('gulp-concat-css')
     , cleanCss = require('gulp-clean-css')
-    , babel = require('gulp-babel');
+    , babel = require('gulp-babel')
+    , loadjsBuilder = require('./src/babel/loader/gulp-loadjs-builder.js')
 
 const paths = {
   'bootstrap': 'public/components/Umi/dist/css/',
@@ -36,6 +37,22 @@ gulp.babelTasks = function(...names){
   }
 }
 
+gulp.loadjsTask = function(name){
+  gulp.task(`loadjs-${name}`, () => {
+    return gulp.src([`${paths.babel}/loader/${name}.json`])
+      .pipe(loadjsBuilder())
+      .pipe(babel(BabelOptions))
+      .pipe(concat(`${name}.loader.js`))
+      .pipe(gulp.dest(`${paths.js}/loader`));
+  });
+}
+
+gulp.loadjsTasks = function(...names){
+  for(let i = 0; i < names.length; ++i){
+    gulp.loadjsTask(names[i]);
+  }
+}
+
 gulp.task('scss', () => {
   return gulp.src([paths.bootstrap + 'bootstrap.css', paths.scss + '**/*.scss'],
     {base: 'public/css'})
@@ -45,8 +62,10 @@ gulp.task('scss', () => {
     .pipe(gulp.dest(paths.css));
 });
 
-gulp.babelTasks('console', 'logstream');
+gulp.babelTasks('console', 'logstream', 'terminal');
+gulp.loadjsTasks('minamo', 'console', 'logstream', 'terminal');
 
-gulp.task('babel', ['babel-console', 'babel-logstream']);
+gulp.task('babel', ['babel-console', 'babel-logstream', 'babel-terminal']);
+gulp.task('loadjs', ['loadjs-minamo', 'loadjs-console', 'loadjs-logstream', 'loadjs-terminal']);
 
-gulp.task('build', ['babel', 'scss']);
+gulp.task('build', ['babel', 'loadjs', 'scss']);
