@@ -7,4 +7,4 @@ $(function(){
   socket.on('data', d => term.write(d));
   socket.on('init', () => socket.emit('resize', [term.cols, term.rows]));
   term.fit();
-);
+});
