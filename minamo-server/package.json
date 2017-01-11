@@ -13,7 +13,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "ansi2html-extended": "tmyt/ansi2html-extended#hotfix/coloring",
     "app-require": "tmyt/node-app-require",
     "basic-auth-connect": "^1.0.0",
     "body-parser": "^1.14.2",
