@@ -1,6 +1,6 @@
 module.exports = {
   provides: [
-    '/components/xterm.js/dist/addons/fit/fit.js'
+    '/js/xterm.fit.js'
   ],
   depends: ['xterm']
 }

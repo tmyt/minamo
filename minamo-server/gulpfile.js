@@ -63,9 +63,9 @@ gulp.task('scss', () => {
 });
 
 gulp.babelTasks('console', 'logstream', 'terminal');
-gulp.loadjsTasks('minamo', 'console', 'logstream', 'terminal');
+gulp.loadjsTasks('minamo', 'console', 'logstream', 'terminal', 'terminal_popup');
 
 gulp.task('babel', ['babel-console', 'babel-logstream', 'babel-terminal']);
-gulp.task('loadjs', ['loadjs-minamo', 'loadjs-console', 'loadjs-logstream', 'loadjs-terminal']);
+gulp.task('loadjs', ['loadjs-minamo', 'loadjs-console', 'loadjs-logstream', 'loadjs-terminal', 'loadjs-terminal_popup']);
 
 gulp.task('build', ['babel', 'loadjs', 'scss']);

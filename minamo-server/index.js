@@ -17,7 +17,7 @@ const pugStatic = appReq('./lib/pug/static')
     , app = express()
     , server = require('http').Server(app)
     , passportSocketIo = require('passport.socketio')
-    , io = require('socket.io')(server)
+    , io = require('socket.io')(server, {perMessageDeflate: {threshold: 128}})
     , kvs = new (require('./lib/kvs'))();
 
 // setup passport

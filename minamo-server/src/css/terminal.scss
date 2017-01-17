@@ -1,4 +1,29 @@
 #terminal {
   font-size: 13px;
   margin-bottom: 12px;
+
+  &.popup {
+    margin: 0;
+    background: #000;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0,74,99,0.7);
+  }
+
+  ::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(0,74,99,0.7);
+  }
 }
+
