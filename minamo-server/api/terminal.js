@@ -18,6 +18,7 @@ module.exports = function(io){
     socket.emit('init');
     socket.emit('data', '\r\n');
     term.on('data', d => socket.compress(true).emit('data', d));
+    term.on('exit', d => socket.emit('exit', d));
     socket.on('data', d => term.write(d));
     socket.on('resize', d => term.resize(d[0], d[1]));
     socket.on('disconnect', () => term.destroy());

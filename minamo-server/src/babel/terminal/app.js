@@ -14,6 +14,7 @@ $(function(){
       timer = setTimeout(() => term.fit(), 100);
     });
     term.on('title', d => document.title = d);
+    socket.on('exit', d => window.close());
   }
   // handle button click
   let openPopup = document.getElementById('open_popup');
