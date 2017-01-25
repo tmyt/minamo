@@ -1,17 +1,18 @@
 'use strict';
 
-const path = require('path')
+const promisifyAll = require('bluebird').promisifyAll
+    , path = require('path')
     , crypto = require('crypto')
     , crc = require('crc').crc32
-    , fs = require('fs-extra')
-    , tarball = require('tarball-extract')
+    , fs = promisifyAll(require('fs-extra'))
+    , tarball = promisifyAll(require('tarball-extract'))
     , init = require('git-init')
     , head = require('githead')
     , appReq = require('app-require')
-    , shellescape = require('shell-escape');
+    , shellescape = require('shell-escape')
 
 const Docker = require('dockerode')
-    , docker = new Docker({socketPath: '/var/run/docker.sock'});
+    , docker = promisifyAll(new Docker());
 
 const config = appReq('./config')
     , tools = appReq('./lib/tools');
@@ -61,61 +62,57 @@ class api {
     return app;
   }
 
-  initializeKvs(){
-    docker.listContainers({all: true}, (err, containers) => {
-      fs.readdir(config.repo_path, (err, files) => {
-        let names = containers.map(x => x.Names[0]);
-        let repos = files.filter(x => x[0] !== '.' && !isEnvFile(x))
-          .filter(x => names.indexOf('/' + x) >= 0);
-        for(let i = 0; i < repos.length; ++i){
-          this.kvs.addHost(`${repos[i]}.${config.domain}`);
-        }
-      });
-    });
+  async initializeKvs(){
+    const containers = await docker.listContainersAsync({all: true});
+    const files = await fs.readdirAsync(config.repo_path);
+    let names = containers.map(x => x.Names[0]);
+    let repos = files.filter(x => x[0] !== '.' && !isEnvFile(x))
+      .filter(x => names.indexOf('/' + x) >= 0);
+    for(let i = 0; i < repos.length; ++i){
+      this.kvs.addHost(`${repos[i]}.${config.domain}`);
+    }
   }
 
-  getContainerStatuses(cb){
-    docker.listContainers({all: true}, (err, containers) => {
-      let statuses = {};
-      fs.readdir(config.repo_path, (err, files) => {
-        for(let i = 0; i < files.length; ++i){
-          if(files[i][0] === '.') continue;
-          let stat = fs.statSync(path.join(config.repo_path, files[i]));
-          if(stat.isFile() && files[i].endsWith('.env')) continue;
-          statuses[files[i]] = {
-            'status': 'stopped',
-            'uptime': '',
-            'created': '',
-            'head': head(path.join(config.repo_path, files[i])),
-            'repo': 'local'
-          };
-          if(stat.isFile()){
-            statuses[files[i]].repo = 'external';
-            statuses[files[i]].key = hmac(config.secret || 'minamo.io', files[i]);
-          }
-          for(let j = 0; j < containers.length; ++j){
-            if(containers[j].Names[0] === ('/' + files[i])){
-              statuses[files[i]].status = containers[j].State;
-              statuses[files[i]].uptime = containers[j].Status;
-              statuses[files[i]].created = containers[j].Created * 1000;
-              break;
-            }
-          }
-          try{
-            fs.statSync('/tmp/minamo/' + files[i] + '.prep');
-            statuses[files[i]].status = 'prepareing';
-          }catch(e){ }
-          try{
-            fs.statSync('/tmp/minamo/' + files[i] + '.term');
-            statuses[files[i]].status = 'stopping';
-          }catch(e){ }
+  async getContainerStatusesAsync(){
+    const containers = await docker.listContainersAsync({all: true});
+    const files = await fs.readdirAsync(config.repo_path);
+    let statuses = {};
+    for(let i = 0; i < files.length; ++i){
+      if(files[i][0] === '.') continue;
+      const stat = await fs.statAsync(path.join(config.repo_path, files[i]));
+      if(stat.isFile() && files[i].endsWith('.env')) continue;
+      statuses[files[i]] = {
+        'status': 'stopped',
+        'uptime': '',
+        'created': '',
+        'head': head(path.join(config.repo_path, files[i])),
+        'repo': 'local'
+      };
+      if(stat.isFile()){
+        statuses[files[i]].repo = 'external';
+        statuses[files[i]].key = hmac(config.secret || 'minamo.io', files[i]);
+      }
+      for(let j = 0; j < containers.length; ++j){
+        if(containers[j].Names[0] === ('/' + files[i])){
+          statuses[files[i]].status = containers[j].State;
+          statuses[files[i]].uptime = containers[j].Status;
+          statuses[files[i]].created = containers[j].Created * 1000;
+          break;
         }
-        cb(statuses);
-      });
-    });
+      }
+      try{
+        await fs.statAsync('/tmp/minamo/' + files[i] + '.prep');
+        statuses[files[i]].status = 'prepareing';
+      }catch(e){ }
+      try{
+        await fs.statAsync('/tmp/minamo/' + files[i] + '.term');
+        statuses[files[i]].status = 'stopping';
+      }catch(e){ }
+    }
+    return statuses;
   }
 
-  create(req, res){
+  async create(req, res){
     let name = checkParams(req, res);
     let template = req.body.template || '';
     let external = req.body.external || '';
@@ -142,13 +139,12 @@ class api {
     }else{
       let rand = Math.floor(Math.random() * 65535);
       let tmpl = '/tmp/minamo-' + rand + '/';
-      tarball.extractTarball(templatePath, tmpl, err => {
-        initFunc(tmpl, () => fs.removeSync(tmpl));
-      });
+      await tarball.extractTarballAsync(templatePath, tmpl);
+      initFunc(tmpl, () => fs.remove(tmpl));
     }
   }
 
-  destroy(req, res){
+  async destroy(req, res){
     let name = checkParams(req, res);
     if(!name) return;
     // .git is no required. its seems library bug.
@@ -158,7 +154,9 @@ class api {
     }else{
       this.kvs.delHost(`${name}.${config.domain}`);
       tools.terminate(name, true);
-      fs.remove(repo, () => fs.remove(repo + '.env', () => res.send('destroy OK')));
+      await fs.removeAsync(repo);
+      await fs.removeAsync(repo + '.env');
+      res.send('destroy OK');
     }
   }
 
@@ -204,12 +202,13 @@ class api {
     }
   }
 
-  list(req, res){
-    fs.readdir(config.repo_path, (err, files) => res.send(files.filter(s=>s[0]!='.'&&!s.endsWith('.env'))));
+  async list(req, res){
+    const files = await fs.readdir(config.repo_path);
+    res.send(files.filter(s => s[0] != '.' && !s.endsWith('.env')));
   }
 
-  status(req, res){
-    this.getContainerStatuses(statuses => res.send(statuses));
+  async status(req, res){
+    res.send(await this.getContainerStatusesAsync());
   }
 
   env(req, res){
@@ -266,25 +265,21 @@ class api {
 
   wsStatuses(socket){
     let cookie = undefined;
-    let gen = (cb, flag) => {
-      this.getContainerStatuses(statuses => {
-        let local = crc(JSON.stringify(statuses)).toString(16);
-        if(!flag && local === cookie) return;
-        cookie = local;
-        cb({statuses, cookie: local});
-      });
-    };
-    let iid = setInterval(() => {
-      gen(state => socket.emit('statuses', state));
-    }, 5 * 1000);
-    socket.on('fetch', cookie => {
-      gen(state => {
-        if(state.cookie === cookie) return;
-        socket.emit('statuses', state);
-      }, 1);
+    const generateAsync = (async function(force){
+      const statuses = await this.getContainerStatusesAsync();
+      const local = crc(JSON.stringify(statuses)).toString(16);
+      if(!force && local === cookie) return null;
+      return {statuses, cookie: cookie = local};
+    }).bind(this);
+    const sendStatuses = (async function(lCookie){
+      const state = await generateAsync(lCookie !== undefined);
+      if(!state || state.cookie === lCookie) return;
+      socket.emit('statuses', state);
     });
+    const iid = setInterval(sendStatuses, 5 * 1000);
+    socket.on('fetch', sendStatuses);
     socket.on('disconnect', () => clearInterval(iid));
-    gen(state => socket.emit('statuses', state));
+    sendStatuses();
   }
 };
 
