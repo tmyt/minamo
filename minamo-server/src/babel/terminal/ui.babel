@@ -1,0 +1,34 @@
+(function(){
+
+const Alert = ReactBootstrap.Alert;
+
+const ExtensionTipsComponent = React.createClass({
+  getInitialState: function(){
+    return { visible: true };
+  },
+  handleDismiss: function(){
+    this.setState({visible: false});
+  },
+  render: function(){
+    if(!this.state.visible) return <span />;
+    return(
+      <Alert bsStyle="info" onDismiss={this.handleDismiss}>
+        <strong>Tips</strong> <a href="https://chrome.google.com/webstore/detail/ppdhipnblajeianfgkcbneadiebfkped/" className="alert-link" target="_blank">minamo.io Terminal Extension</a> more better terminal experience!
+      </Alert>
+    );
+  }
+});
+
+setTimeout(() => {
+  // check chrome extension availability
+  if(typeof(chrome) !== 'object') return;
+  if(document.getElementById('x-minamo-openterminal-extension')) return;
+  
+  // create tips
+  let element = document.createElement('div');
+  ReactDOM.render(<ExtensionTipsComponent />, element);
+  let header = document.getElementById('content-header');
+  if(header === null) return;
+  header.insertAdjacentElement('beforebegin', element);
+}, 1000);
+})();
