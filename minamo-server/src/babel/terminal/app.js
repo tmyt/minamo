@@ -1,4 +1,10 @@
 $(function(){
+  document.addEventListener('keydown', e => {
+    if(!e.altKey && e.ctrlKey && e.shiftKey && e.key === 'C'){
+      e.preventDefault();
+      document.execCommand('copy');
+    }
+  });
   const term = new Terminal(80, 30);
   const socket = io('/term');
   term.open(document.getElementById('terminal'));
