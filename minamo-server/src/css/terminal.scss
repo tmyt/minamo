@@ -14,6 +14,16 @@
     background-color: transparent;
   }
 
+  .xterm-viewport {
+    width: 8px;
+    overflow-x: hidden;
+    margin-left: auto;
+  }
+
+  .xterm {
+    z-index: 1;
+  }
+
   .xterm-rows {
     z-index: -1;
   }
