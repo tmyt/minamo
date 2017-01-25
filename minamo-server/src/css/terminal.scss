@@ -1,12 +1,21 @@
 #terminal {
   font-size: 13px;
   margin-bottom: 12px;
+  background-color: #000;
 
   &.popup {
     margin: 0;
     background: #000;
     height: 100vh;
     overflow: hidden;
+  }
+
+  .terminal, .xterm-viewport {
+    background-color: transparent;
+  }
+
+  .xterm-rows {
+    z-index: -1;
   }
 
   ::-webkit-scrollbar {
