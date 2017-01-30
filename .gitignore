@@ -6,3 +6,4 @@ minamo-server/repos/*/
 minamo-server/public/components
 minamo-server/public/css/**
 minamo-server/public/js/**
+minamo-server/public/bundle.js

@@ -17,6 +17,9 @@ const Docker = require('dockerode')
 const config = appReq('./config')
     , tools = appReq('./lib/tools');
 
+const ContainerRegexpString = '[a-z][a-z0-9-]*[a-z0-9]';
+const ContainerRegexp = new RegExp(`^${ContainerRegexpString}\$`);
+
 const hmac = (key, data) => {
   return crypto.createHmac('sha1', key).update(data).digest('hex');
 };
@@ -27,8 +30,8 @@ function checkParams(req, res){
     res.status(400).send('error: no service');
     return;
   }
-  if(!name.match(/^[a-z][a-z0-9-]*[a-z]$/)){
-    res.status(400).send('error: service should be [a-z][a-z0-9-]*[a-z]');
+  if(!ContainerRegexp.test(name)){
+    res.status(400).send(`error: service should be ${ContainerRegexpString}`);
     return;
   }
   return name;
@@ -45,7 +48,6 @@ class api {
     this.initializeKvs();
     /* v2 api */
     let svcBase = '/services/:service';
-    app.get('/config.js', this.getConfigJs);
     app.get(`/services`, this.list);
     app.get(`/services/status`, this.status.bind(this));
     app.put(`${svcBase}`, this.create);
@@ -221,14 +223,6 @@ class api {
     }else{
       fs.readFile(repo + '.env', (err, data) => res.send(data));
     }
-  }
-
-  getConfigJs(req, res){
-    let json = JSON.stringify({
-      proto: config.proto + ':',
-      domain: config.domain,
-    });
-    res.set('Cache-Control', 'max-age=604800').send(`var MinamoConfig = ${json}`);
   }
 
   updateEnv(req, res){
