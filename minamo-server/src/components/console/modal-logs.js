@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, FormControl } from 'react-bootstrap';
 
 export default class ModalLogs extends React.Component{
   constructor(){
@@ -23,7 +23,7 @@ export default class ModalLogs extends React.Component{
           <Modal.Title>Logs</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <textarea className='form-control' readOnly rows='15' value={this.state.logs} />
+          <FormControl componentClass='textarea' readOnly rows='15' value={this.state.logs} />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.close.bind(this)}>close</Button>
