@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
 
@@ -46,7 +46,7 @@ export default class ConsoleConfigureComponent extends React.Component{
             <FormControl type='password' onChange={this.handleChange.bind(this)}/>
             <FormControl.Feedback />
           </FormGroup>
-          <input className='btn btn-primary' type='submit' value='update' disabled={!this.isValidPassword()}/>
+          <Button bsStyle='primary' type='submit' disabled={!this.isValidPassword()}>update</Button>
         </form>
       </div>
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel, Row, Col,FormGroup, FormControl, InputGroup } from 'react-bootstrap';
+import { Panel, Row, Col, Button, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
 
 import FontAwesome from '../components/font-awesome';
 import PageRoot from '../components/page-root';
@@ -9,14 +9,14 @@ class SocialLoginPane extends React.Component{
     return (
       <Col sm={6}>
         <h4 className='header'>social account</h4>
-        <a className='btn btn-large btn-block btn-primary' href='/auth/twitter'>
+        <Button bsStyle='primary' href='/auth/twitter' block>
           <FontAwesome icon='twitter' />
           <span>Login with Twitter</span>
-        </a>
-        <a className='btn btn-large btn-block btn-primary' href='/auth/github'>
+        </Button>
+        <Button bsStyle='primary' href='/auth/github' block>
           <FontAwesome icon='github' />
           <span>Login with GitHub</span>
-        </a>
+        </Button>
       </Col>
     );
   }
@@ -43,7 +43,7 @@ class LocalLoginPane extends React.Component{
             </InputGroup>
           </FormGroup>
           <FormGroup>
-            <input className='btn btn-large btn-primary btn-block' type='submit' value='Sign In' />
+            <Button bsStyle='primary' type='submit' block>Sign In</Button>
           </FormGroup>
         </form>
       </Col>

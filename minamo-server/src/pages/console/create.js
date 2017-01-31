@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
 
@@ -73,7 +73,7 @@ export default class ConsoleCreateComponent extends React.Component{
             <ControlLabel>External Repository (optional)</ControlLabel>
             <FormControl value={this.state.external} onChange={this.handleChange('external')}/>
           </FormGroup>
-          <input className='btn btn-primary' type='submit' value='create' disabled={this.getValidationState() !== 'success'}/>
+          <Button bsStyle='primary' type='submit' disabled={this.getValidationState() !== 'success'}>create</Button>
         </form>
       </div>
     );
