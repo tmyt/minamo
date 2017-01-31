@@ -37,11 +37,7 @@ module.exports = {
     rules: [
       { test: /\.js$/, use: 'babel-loader' },
       { test: /\.scss$/, use: ['style-loader', 'css-loader?minimize', 'sass-loader'] },
-      { test: /\.css$/, use: ['style-loader', 'css-loader?minimize'] },
-      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?mimetype=image/svg+xml' },
-      { test: /\.woff(\d+)?(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?mimetype=application/font-woff' },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?mimetype=application/font-woff' },
-      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?mimetype=application/font-woff' },
+      { test: /\.css$/, use: ['style-loader', 'css-loader?minimize&-url', 'remove-urlimport-loader'] },
     ]
   },
   plugins

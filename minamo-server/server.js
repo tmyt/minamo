@@ -79,11 +79,6 @@ app.get('/logout', (req, res) => {
 app.get('/api/hooks/:repo', appReq('./api/hooks')(kvs));
 app.post('/api/hooks/:repo', appReq('./api/hooks')(kvs));
 app.get('/api/verify', (req, res) => res.send({isAuthenticated: req.isAuthenticated() ? 1 : 0}));
-app.get('/api/config.js', (req, res) => {
-  const json = JSON.stringify({ proto: config.proto + ':', domain: config.domain });
-  res.set('Cache-Control', 'max-age=604800').send(`var MinamoConfig = ${json}`);
-});
-
 
 // routers
 let api = appReq('./api');
@@ -170,10 +165,12 @@ function handleReactRouter(req, res){
       res.redirect(302, redirectLocation.pathname + redirectLocation.search);
     }else if(props){
       const auth = {isAuthenticated: req.isAuthenticated(), profile: req.user};
+      const configJson = {proto: `${config.proto}:`, domain: config.domain};
       props.router.auth = auth;
       const markup = renderToString(<RouterContext {...props} />);
       const appProps = `window.APP_PROPS = ${JSON.stringify(auth)};`;
-      res.render('index', {markup, appProps});
+      const configJs = `window.MinamoConfig = ${JSON.stringify(configJson)};`;
+      res.render('index', {markup, appProps, configJs});
     }else{
       res.sendStatus(404);
     }
