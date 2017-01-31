@@ -16,31 +16,32 @@ let plugins = [
 
 if(process.env.NODE_ENV === 'production'){
   plugins = plugins.concat([
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      compress: true,
+      compress: { warnings: false },
       mangle: true,
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
   ]);
 }
 
 module.exports = {
-  entry: path.join(process.cwd(), 'src/client.js'),
+  entry: {
+    bundle: './src/client.js',
+    styles: './src/loader.js',
+  },
   output: {
     path: './public',
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
   module: {
-    loaders: [
-      { test: /\.js$/, loader: 'babel' },
-      { test: /\.scss$/, loaders: ['style-loader', 'css-loader', 'sass-loader'] },
-      { test: /\.css$/, loaders: ['style-loader', 'css-loader'] },
-      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?mimetype=image/svg+xml' },
-      { test: /\.woff(\d+)?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?mimetype=application/font-woff' },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?mimetype=application/font-woff' },
-      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?mimetype=application/font-woff' },
+    rules: [
+      { test: /\.js$/, use: 'babel-loader' },
+      { test: /\.scss$/, use: ['style-loader', 'css-loader?minimize', 'sass-loader'] },
+      { test: /\.css$/, use: ['style-loader', 'css-loader?minimize'] },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?mimetype=image/svg+xml' },
+      { test: /\.woff(\d+)?(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?mimetype=application/font-woff' },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?mimetype=application/font-woff' },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?mimetype=application/font-woff' },
     ]
   },
   plugins
