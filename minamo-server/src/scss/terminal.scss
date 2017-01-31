@@ -2,6 +2,19 @@
   font-size: 13px;
   margin-bottom: 12px;
   background-color: #000;
+  position: relative;
+
+  .external-button {
+    position: absolute;
+    z-index: 9999;
+    right: 0;
+    font-size: 18px;
+    color: #bbb;
+    background: transparent;
+    border: transparent;
+    margin: 8px;
+    opacity: 0.7;
+  }
 
   &.popup {
     margin: 0;

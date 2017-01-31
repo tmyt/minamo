@@ -43,7 +43,9 @@ export default class Xterm extends React.Component{
   }
   render(){
     return (
-      <div className={this.props.className} id='terminal' ref={(div) => this.divTerminal = div} />
+      <div className={this.props.className} id='terminal' ref={(div) => this.divTerminal = div}>
+        {this.props.children}
+      </div>
     );
   }
 }

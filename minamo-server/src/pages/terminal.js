@@ -2,6 +2,7 @@ import React from 'react';
 import PageRoot from '../components/page-root';
 import ExtensionTips from '../components/extension-tips';
 import Xterm from '../components/xterm';
+import FontAwesome from '../components/font-awesome';
 
 export default class TerminalComponent extends React.Component{
   constructor(){
@@ -44,8 +45,11 @@ export default class TerminalComponent extends React.Component{
       <PageRoot title='terminal'>
         <ExtensionTips visible={this.state.tipsVisible}/>
         <h2>Terminal</h2>
-        <button onClick={this.openPopup}>external</button>
-        <Xterm />
+        <Xterm>
+          <button onClick={this.openPopup} className='external-button'>
+            <FontAwesome icon='external-link' />
+          </button>
+        </Xterm>
       </PageRoot>
     );
   }
