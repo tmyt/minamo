@@ -1,7 +1,7 @@
 import React from 'react';
-import Terminal from 'xterm';
+import Terminal from 'xterm/dist/xterm';
 import Socket from 'socket.io-client';
-import 'xterm/lib/addons/fit/fit';
+import '../lib/xterm.fit';
 
 export default class Xterm extends React.Component{
   constructor(){

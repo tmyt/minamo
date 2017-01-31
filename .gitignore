@@ -7,3 +7,5 @@ minamo-server/public/components
 minamo-server/public/css/**
 minamo-server/public/js/**
 minamo-server/public/bundle.js
+minamo-server/public/*.bundle.js
+minamo-server/public/styles.js

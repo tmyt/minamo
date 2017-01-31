@@ -15,13 +15,13 @@
         /*
          * CommonJS environment
          */
-        module.exports = fit(require('../../xterm'));
+        module.exports = fit(require('xterm/dist/xterm'));
     }
     else if (typeof define == 'function') {
         /*
          * Require.js is available
          */
-        define(['../../xterm'], fit);
+        define(['xterm/dist/xterm'], fit);
     }
     else {
         /*

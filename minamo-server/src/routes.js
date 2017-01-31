@@ -1,12 +1,5 @@
 import PopupComponent from './pages/popup';
 import AppComponent from './pages/app';
-import IndexComponent from './pages/index';
-import LoginComponent from './pages/login';
-import ConsoleComponent from './pages/console';
-import LogStreamComponent from './pages/logstream';
-import TerminalComponent from './pages/terminal';
-import PopupTerminalComponent from './pages/popup-terminal';
-
 import Authorized from './components/authorized';
 
 const routes = {
@@ -18,11 +11,15 @@ const routes = {
     childRoutes: [
     {
       path: '/',
-      component: IndexComponent
+      getComponent: (location, callback) => {
+        System.import('./pages/index').then(component => callback(null, component.default));
+      }
     },
     {
       path: '/login',
-      component: LoginComponent
+      getComponent: (location, callback) => {
+        System.import('./pages/login').then(component => callback(null, component.default));
+      }
     },
     {
       component: Authorized,
@@ -30,15 +27,21 @@ const routes = {
       childRoutes: [
       {
         path: '/console',
-        component: ConsoleComponent
+        getComponent: (location, callback) => {
+          System.import('./pages/console').then(component => callback(null, component.default));
+        }
       },
       {
         path: '/console/logstream',
-        component: LogStreamComponent
+        getComponent: (location, callback) => {
+          System.import('./pages/logstream').then(component => callback(null, component.default));
+        }
       },
       {
         path: '/console/terminal',
-        component: TerminalComponent
+        getComponent: (location, callback) => {
+          System.import('./pages/terminal').then(component => callback(null, component.default));
+        }
       }]
     }]
   },
@@ -48,7 +51,9 @@ const routes = {
     childRoutes: [
     {
       path: '/console/terminal_popup',
-      component: PopupTerminalComponent
+      getComponent: (location, callback) => {
+        System.import('./pages/popup-terminal').then(component => callback(null, component.default));
+      }
     }]
   }]
 };

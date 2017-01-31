@@ -31,11 +31,13 @@ module.exports = {
   },
   output: {
     path: './public',
-    filename: '[name].js'
+    filename: '[name].js',
+    chunkFilename: '[id].bundle.js',
+    publicPath: '/'
   },
   module: {
     rules: [
-      { test: /\.js$/, use: 'babel-loader' },
+      { test: /\.js$/, use: [{ loader: 'babel-loader', options: { presets: ['es2015', 'react'], babelrc: false }}] },
       { test: /\.scss$/, use: ['style-loader', 'css-loader?minimize', 'sass-loader'] },
       { test: /\.css$/, use: ['style-loader', 'css-loader?minimize&-url', 'remove-urlimport-loader'] },
     ]
