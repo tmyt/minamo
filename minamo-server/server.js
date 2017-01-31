@@ -68,7 +68,8 @@ io.use(passportSocketIo.authorize({
   store: sessionStore
 }));
 
-app.use(express.static('public'));
+app.use(express.static('public', {maxage: '14d'}));
+app.use('/fonts', express.static('node_modules/Umi/dist/fonts', {maxage: '14d'}));
 app.set('view engine', 'pug');
 
 // handlers
