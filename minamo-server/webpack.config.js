@@ -1,5 +1,30 @@
+'use strict';
+
 const webpack = require('webpack')
     , path = require('path');
+
+let plugins = [
+  new webpack.DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  }),
+  new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery',
+    toastr: 'toastr',
+  }),
+];
+
+if(process.env.NODE_ENV === 'production'){
+  plugins = plugins.concat([
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: true,
+      mangle: true,
+    }),
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
+  ]);
+}
 
 module.exports = {
   entry: path.join(process.cwd(), 'src/client.js'),
@@ -18,11 +43,5 @@ module.exports = {
       { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?mimetype=application/font-woff' },
     ]
   },
-  plugins: [
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      toastr: 'toastr',
-    })
-  ]
+  plugins
 }
