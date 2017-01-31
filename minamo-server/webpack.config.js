@@ -18,16 +18,16 @@ if(process.env.NODE_ENV === 'production'){
   plugins = plugins.concat([
     new webpack.optimize.UglifyJsPlugin({
       compress: { warnings: false },
-      mangle: true,
+      mangle: true
     }),
-    new webpack.optimize.AggressiveMergingPlugin(),
   ]);
 }
 
 module.exports = {
   entry: {
     bundle: './src/client.js',
-    styles: './src/loader.js',
+    styles: './src/styles.js',
+    loader: './src/loader.js',
   },
   output: {
     path: './public',
