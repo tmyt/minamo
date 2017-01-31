@@ -25,8 +25,7 @@ const path = require('path')
     , config = appReq('./config');
 
 // WebUI
-const pugStatic = appReq('./lib/pug/static')
-    , expressSession = require('express-session')
+const expressSession = require('express-session')
     , FileStore = require('session-file-store')(expressSession)
     , passport = require('passport')
     , basicAuth = require('basic-auth-connect')
