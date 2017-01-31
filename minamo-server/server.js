@@ -131,9 +131,9 @@ try{
 // load credentials & listen
 fs.readJson(gitusersPath, (err, data) => {
   if(!err) gitusers = data;
-  server.listen(3100, '127.0.0.1');
-  githttp.listen(7100, '127.0.0.1');
-  kvs.listen(config.redis_port);
+  server.listen(config.http_port || 3000, '127.0.0.1');
+  githttp.listen(config.git_port || 7000, '127.0.0.1');
+  kvs.listen(config.redis_port || 16379);
 });
 
 // watch auth file update
