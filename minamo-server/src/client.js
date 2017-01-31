@@ -9,10 +9,10 @@ import createBrowserHistory from 'history/lib/createBrowserHistory';
 import 'Umi/dist/css/bootstrap.css';
 import './scss/styles';
 import 'xterm/dist/xterm.css';
-import 'font-awesome/css/font-awesome.css';
 import 'toastr/toastr.scss';
 
 import 'Umi/dist/js/bootstrap.js';
+import './loadjs/index';
 
 ReactDOM.render(
   <Router routes={routes} history={createBrowserHistory()} />,
