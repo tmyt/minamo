@@ -20,12 +20,12 @@ export default class ConsoleConfigureComponent extends React.Component{
   }
 
   getValidationState(){
-    if(!this.state.name) return null;
-    return ContainerRegexp.test(this.state.name) ? 'success' : 'error'
+    if(!this.state.password) return null;
+    return this.isValidPassword() ? 'success' : 'error'
   }
 
   handleChange(e){
-    this.setState({[field]: e.target.value});
+    this.setState({password: e.target.value});
   }
 
   isValidPassword(){
@@ -43,10 +43,10 @@ export default class ConsoleConfigureComponent extends React.Component{
           </FormGroup>
           <FormGroup validationState={this.getValidationState()}>
             <ControlLabel>Git Password</ControlLabel>
-            <FormControl componentClass='password' onChange={this.handleChange}/>
+            <FormControl type='password' onChange={this.handleChange.bind(this)}/>
             <FormControl.Feedback />
           </FormGroup>
-          <input className='btn btn-primary' type='submit' value='update' disabled={this.isValidPassword}/>
+          <input className='btn btn-primary' type='submit' value='update' disabled={this.isValidPassword()}/>
         </form>
       </div>
     );
