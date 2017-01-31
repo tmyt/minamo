@@ -46,7 +46,7 @@ export default class ConsoleConfigureComponent extends React.Component{
             <FormControl type='password' onChange={this.handleChange.bind(this)}/>
             <FormControl.Feedback />
           </FormGroup>
-          <input className='btn btn-primary' type='submit' value='update' disabled={this.isValidPassword()}/>
+          <input className='btn btn-primary' type='submit' value='update' disabled={!this.isValidPassword()}/>
         </form>
       </div>
     );
