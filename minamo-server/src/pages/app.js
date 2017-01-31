@@ -9,17 +9,14 @@ export default class AppComponent extends React.Component {
     this.state = {tabbar: null};
   }
   componentDidMount(){
+    document.body.style.marginBottom = '60px';
     // congirue toastr
     toastr.options.closeButton = true;
     toastr.options.progressBar = true;
   }
   getChildContext(){
-    const auth = typeof window === 'object'
-      ? window.APP_PROPS : this.context.router.auth;
     return {
       setTabbar: this.setTabbar.bind(this),
-      isAuthenticated: auth.isAuthenticated,
-      profile: auth.profile || {avater:'', username: ''}
     };
   }
   setTabbar(tabbar){
@@ -35,11 +32,6 @@ export default class AppComponent extends React.Component {
     );
   }
 }
-AppComponent.contextTypes = {
-  router: React.PropTypes.object
-};
 AppComponent.childContextTypes = {
   setTabbar: React.PropTypes.func,
-  isAuthenticated: React.PropTypes.bool,
-  profile: React.PropTypes.object,
 };
