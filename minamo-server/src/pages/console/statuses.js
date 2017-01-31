@@ -9,7 +9,7 @@ import ContainerGroup from '../../components/console/container-group';
 export default class ConsoleStatusesComponent extends React.Component{
   constructor(){
     super();
-    this.state = {data:{}};
+    this.state = {data:(typeof window === 'object' && window['x-minamo-cache-statuses']) || {}};
     this.modalLogs = (<ModalLogs ref={x => this.modalLogsInstance = x} />);
     this.modalEnv = (<ModalEnv ref={x => this.modalEnvInstance = x} />);
   }
@@ -20,6 +20,7 @@ export default class ConsoleStatusesComponent extends React.Component{
     const socket = Socket('/status');
     socket.on('statuses', data => {
       this.setState({data});
+      window['x-minamo-cache-statuses'] = data;
     });
     this.socket = socket;
   }
