@@ -1,16 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router } from 'react-router';
+import { match, Router, RouterContext } from 'react-router';
+import createBrowserHistory from 'history/lib/createBrowserHistory';
 
 import { routes } from './routes';
-
-import createBrowserHistory from 'history/lib/createBrowserHistory';
 
 import 'xterm/dist/xterm.css';
 import 'toastr/toastr.scss';
 import 'Umi/dist/js/bootstrap.js';
 
-ReactDOM.render(
-  <Router routes={routes} history={createBrowserHistory()} />,
-  document.getElementById('app')
-);
+match({ routes, history: createBrowserHistory() }, (error, redirect, renderProps) => {
+  ReactDOM.render(
+    <Router {...renderProps} />,
+    document.getElementById('app')
+  );
+});
