@@ -33,7 +33,7 @@ export default class HeaderComponent extends React.Component {
             </Navbar.Header>
             <Navbar.Collapse id='navbar-main'>
               <div className='nav navbar-right'>
-                <Avatar />
+                <Avatar visible={this.context.isAuthenticated}/>
               </div>
               <Nav navbar={true} onSelect={this.onSelect}>
                 <LinkContainer to='/console'><NavItem>console</NavItem></LinkContainer>
@@ -47,4 +47,7 @@ export default class HeaderComponent extends React.Component {
       </header>
     );
   }
+}
+HeaderComponent.contextTypes = {
+  isAuthenticated: React.PropTypes.bool
 }

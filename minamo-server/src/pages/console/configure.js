@@ -39,7 +39,7 @@ export default class ConsoleConfigureComponent extends React.Component{
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
             <ControlLabel>Git Username</ControlLabel>
-            <FormControl disabled={true}/>
+            <FormControl disabled={true} value={this.context.profile.username}/>
           </FormGroup>
           <FormGroup validationState={this.getValidationState()}>
             <ControlLabel>Git Password</ControlLabel>
@@ -51,4 +51,7 @@ export default class ConsoleConfigureComponent extends React.Component{
       </div>
     );
   }
+}
+ConsoleConfigureComponent.contextTypes = {
+  profile: React.PropTypes.object
 }

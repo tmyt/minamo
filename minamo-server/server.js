@@ -92,37 +92,9 @@ require('./api/logstream.js')(io);
 require('./api/terminal.js')(io);
 
 // handle authorized uris
-app.get('/console/*', requireAuthentication, (req, res) => {
-  match({routes, location: req.url}, (err, redirectLocation, props) => {
-    if(err){
-      res.status(500).send(err.message);
-    }else if(redirectLocation){
-      res.redirect(302, redirectLocation.pathname + redirectLocation.search);
-    }else if(props){
-      const markup = renderToString(<RouterContext {...props} />);
-      res.render('index', {markup});
-    }else{
-      res.sendStatus(404);
-    }
-  });
-});
-
+app.get('/console(/*)?', requireAuthentication, handleReactRouter);
 // handle others
-app.get('*', (req, res) => {
-  match({routes, location: req.url}, (err, redirectLocation, props) => {
-    if(err){
-      res.status(500).send(err.message);
-    }else if(redirectLocation){
-      res.redirect(302, redirectLocation.pathname + redirectLocation.search);
-    }else if(props){
-      const markup = renderToString(<RouterContext {...props} />);
-      res.render('index', {markup});
-    }else{
-      res.sendStatus(404);
-    }
-  });
-});
-
+app.get('*', handleReactRouter);
 
 // git
 let gitusers = {};
@@ -189,3 +161,22 @@ function rejectIfNotAuthenticated(req, res, next){
   if(req.isAuthenticated()) { return next(); }
   res.status(401).send();
 }
+
+function handleReactRouter(req, res){
+  match({routes, location: req.url}, (err, redirectLocation, props) => {
+    if(err){
+      res.status(500).send(err.message);
+    }else if(redirectLocation){
+      res.redirect(302, redirectLocation.pathname + redirectLocation.search);
+    }else if(props){
+      const auth = {isAuthenticated: req.isAuthenticated(), profile: req.user};
+      props.router.auth = auth;
+      const markup = renderToString(<RouterContext {...props} />);
+      const appProps = `window.APP_PROPS = ${JSON.stringify(auth)};`;
+      res.render('index', {markup, appProps});
+    }else{
+      res.sendStatus(404);
+    }
+  });
+}
+

@@ -14,7 +14,13 @@ export default class AppComponent extends React.Component {
     toastr.options.progressBar = true;
   }
   getChildContext(){
-    return {setTabbar: this.setTabbar.bind(this)}
+    const auth = typeof window === 'object'
+      ? window.APP_PROPS : this.context.router.auth;
+    return {
+      setTabbar: this.setTabbar.bind(this),
+      isAuthenticated: auth.isAuthenticated,
+      profile: auth.profile || {avater:'', username: ''}
+    };
   }
   setTabbar(tabbar){
     this.setState({tabbar});
@@ -29,6 +35,11 @@ export default class AppComponent extends React.Component {
     );
   }
 }
+AppComponent.contextTypes = {
+  router: React.PropTypes.object
+};
 AppComponent.childContextTypes = {
-  setTabbar: React.PropTypes.func
+  setTabbar: React.PropTypes.func,
+  isAuthenticated: React.PropTypes.bool,
+  profile: React.PropTypes.object,
 };

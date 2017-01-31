@@ -23,3 +23,6 @@ export default class Authorized extends React.Component{
     });
   }
 }
+Authorized.contextTypes = {
+  isAuthenticated: React.PropTypes.bool
+}
