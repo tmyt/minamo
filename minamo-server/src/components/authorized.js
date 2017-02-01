@@ -7,10 +7,14 @@ export default class Authorized extends React.Component{
   static verifyCredentials(nextState, replaceState, callback){
     if(typeof $ !== 'function'){
       // here is server side render
-      callback();
-      return;
+      return callback();
     }
     // here is client side render
+    if(window.isVerified){
+      // request already verified
+      delete window.isVerified;
+      return callback();
+    }
     $.ajax({
       url: '/api/verify'
     }).done(data => {

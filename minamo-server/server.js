@@ -139,6 +139,7 @@ let watcher = fs.watch(gitusersPath, (name, e) => {
 });
 
 function requireAuthentication(req, res, next){
+  req.requireAuthentication = true;
   if(req.query._token){
     res.cookie('connect.sid', req.query._token);
     if(req.isAuthenticated()) return next();
@@ -164,7 +165,8 @@ function handleReactRouter(req, res){
       const configJson = {proto: `${config.proto}:`, domain: config.domain};
       props.router.auth = auth;
       const markup = renderToString(<RouterContext {...props} />);
-      const appProps = `window.APP_PROPS = ${JSON.stringify(auth)};`;
+      const appProps = `window.APP_PROPS = ${JSON.stringify(auth)};`
+        + ((req.requireAuthentication && auth.isAuthenticated && 'window.isVerified = true;') || '');
       const configJs = `window.MinamoConfig = ${JSON.stringify(configJson)};`;
       res.render('index', {markup, appProps, configJs});
     }else{
