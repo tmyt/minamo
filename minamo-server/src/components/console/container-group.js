@@ -16,15 +16,20 @@ export default class ContainerGroupComponent extends React.Component {
     this.setState({data: state.statuses || []});
   }
   render(){
-    return (
-      <div>
-        <div className="hidden-xs">
-          <ContainerListLargeComponent data={this.state.data}/>
+    if(this.context.viewSize === ''){
+      return (
+        <div>
+          <ContainerListSmallComponent className='visible-xs' data={this.state.data}/>
+          <ContainerListLargeComponent className='hidden-xs' data={this.state.data}/>
         </div>
-        <div className="visible-xs">
-          <ContainerListSmallComponent data={this.state.data}/>
-        </div>
-      </div>
-    );
+      );
+    }
+    const list = this.context.viewSize === 'xs'
+      ? <ContainerListSmallComponent data={this.state.data}/>
+      : <ContainerListLargeComponent data={this.state.data}/>;
+    return (list);
   }
+}
+ContainerGroupComponent.contextTypes = {
+  viewSize: React.PropTypes.string,
 }

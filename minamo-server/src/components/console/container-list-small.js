@@ -6,6 +6,6 @@ export default class ContainerListSmallComponent extends React.Component{
     let data = this.props.data;
     let rows = Object.keys(data).map(container =>
       (<ContainerPaneComponent name={container} data={data[container]} key={`${container}_xs`} />));
-    return (<div>{rows}</div>);
+    return (<div className={this.props.className}>{rows}</div>);
   }
 }

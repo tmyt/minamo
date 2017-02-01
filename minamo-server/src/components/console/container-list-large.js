@@ -9,14 +9,16 @@ export default class ContainerListLargeComponent extends React.Component{
     let rows = Object.keys(data).map(container =>
       (<ContainersTableRowComponent name={container} data={data[container]} key={container} />));
     return (
-      <Table hover>
-        <thead>
-          <ContainersTableHeaderComponent />
-        </thead>
-        <tbody>
-          {rows}
-        </tbody>
-      </Table>
+      <div className={this.props.className}>
+        <Table hover>
+          <thead>
+            <ContainersTableHeaderComponent />
+          </thead>
+          <tbody>
+            {rows}
+          </tbody>
+        </Table>
+      </div>
     );
   }
 }

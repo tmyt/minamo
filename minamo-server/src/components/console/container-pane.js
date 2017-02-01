@@ -13,9 +13,9 @@ import ContainerStatus from './container-status';
 
 export default class ContainerPaneComponent extends React.Component{
   render(){
-    let data = this.props.data;
-    let status = new ContainerStatus(data.status);
-    let header = (
+    const data = this.props.data;
+    const status = new ContainerStatus(data.status);
+    const header = (
       <Row>
         <Col xs={6}>
           <h4 className="visible-xs-inline">{this.props.name}</h4>
