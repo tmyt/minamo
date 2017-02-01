@@ -46,6 +46,10 @@ class Tools{
     }
   }
 
+  restart(repo){
+    exec(path.join(__dirname, 'restart.sh') + ' ' + repo);
+  }
+
   destroy(repo){
     docker.getContainer(repo).remove((err, data) => {
       docker.getImage(`minamo/${repo}`).remove(()=>{});

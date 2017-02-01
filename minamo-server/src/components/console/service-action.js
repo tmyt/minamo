@@ -22,20 +22,27 @@ export default class ServiceActionComponent extends React.Component{
   stop(){
     Http.post(`/api/services/${this.props.name}/stop`);
   }
-  restart(){
-    Http.post(`/api/services/${this.props.name}/restart`);
+  restart(quick){
+    const args = quick ? '?quick' : '';
+    Http.post(`/api/services/${this.props.name}/restart${args}`);
+  }
+  restartquick(){
+    this.restart(true);
   }
   onSelect(key, e){
-    this[key]();
+    this[key.replace(/[()\s]/g,'')]();
   }
   render(){
-    let commands = ['logs', '---'];
+    let commands = ['logs'];
     if(this.props.status.isRunning()){
-      commands.push('stop', 'restart', '---');
+      commands.push('---', 'stop', 'restart', 'restart (quick)');
     }else if(this.props.status.isStopped()){
-      commands.push('start', '---');
+      commands.push('---', 'start');
     }
-    commands.push('config');
+    if(this.props.status.isExited()){
+      commands.push('restart (quick)');
+    }
+    commands.push('---', 'config');
     let items = commands.map((item,i) => item === '---'
       ? (<MenuItem divider key={`---${i}`}/>)
       : (<MenuItem eventKey={item} key={item}>{item}</MenuItem>));
