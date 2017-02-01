@@ -19,6 +19,7 @@ const app = express()
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { match, RouterContext } from 'react-router';
+import DocumentTitle from 'react-document-title';
 import { routes } from './src/routes';
 // WebUI
 const expressSession = require('express-session')
@@ -168,7 +169,8 @@ function handleReactRouter(req, res){
       const appProps = `window.APP_PROPS = ${JSON.stringify(auth)};`
         + ((req.requireAuthentication && auth.isAuthenticated && 'window.isVerified = true;') || '');
       const configJs = `window.MinamoConfig = ${JSON.stringify(configJson)};`;
-      res.render('index', {markup, appProps, configJs});
+      const title = DocumentTitle.rewind();
+      res.render('index', {markup, appProps, configJs, title});
     }else{
       res.sendStatus(404);
     }
