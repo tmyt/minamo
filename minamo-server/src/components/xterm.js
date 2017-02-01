@@ -4,9 +4,6 @@ import Socket from 'socket.io-client';
 import '../lib/xterm.fit';
 
 export default class Xterm extends React.Component{
-  constructor(){
-    super();
-  }
   documentKeyDown(e){
     if(!e.altKey && e.ctrlKey && e.shiftKey && e.key === 'C'){
       e.preventDefault();
@@ -25,7 +22,7 @@ export default class Xterm extends React.Component{
     socket.on('data', d => term.write(d));
     socket.on('init', () => socket.emit('resize', [term.cols, term.rows]));
     term.fit();
-    if(typeof(isExported) !== 'undefined'){
+    if(this.props.isExported){
       let timer = null;
       window.addEventListener('resize', () => {
         clearTimeout(timer);
@@ -49,3 +46,6 @@ export default class Xterm extends React.Component{
     );
   }
 }
+Xterm.defaultProps = {
+  isExported: false
+};
