@@ -17,7 +17,6 @@ export default class AppComponent extends React.Component {
     this.handleResize();
     // handle events
     window.addEventListener('resize', this.handleResize);
-    document.body.style.marginBottom = '60px';
     // congirue toastr
     toastr.options.closeButton = true;
     toastr.options.progressBar = true;
@@ -51,7 +50,9 @@ export default class AppComponent extends React.Component {
     return (
       <div>
         <HeaderComponent tabs={this.state.tabbar} />
-        {this.props.children}
+        <div style={{marginBottom: '60px'}}>
+          {this.props.children}
+        </div>
         <FooterComponent />
       </div>
     );
