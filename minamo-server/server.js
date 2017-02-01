@@ -1,29 +1,25 @@
 'use strict';
 
 // nodejs modules
-import express from 'express';
-import http from 'http';
-import SocketIo from 'socket.io';
-
-// react modules
-import React from 'react';
-import { renderToString } from 'react-dom/server';
-import { match, RouterContext } from 'react-router';
-
+const express = require('express')
+    , http = require('http')
+    , SocketIo = require('socket.io')
+    , path = require('path')
+    , fs = require('fs-extra')
 // app modules
-import { routes } from './src/routes';
-import RedisServer from './lib/kvs';
-
+const appReq = require('app-require')
+    , config = appReq('./config')
+    , RedisServer = require('./lib/kvs');
+// app instance
 const app = express()
     , server = http.createServer(app)
     , io = SocketIo(server,  {perMessageDeflate: {threshold: 128}})
-    , kvs = new RedisServer();
-
-const path = require('path')
-    , fs = require('fs-extra')
-    , appReq = require('app-require')
-    , config = appReq('./config');
-
+    , kvs = new RedisServer(config.domain);
+// React
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { match, RouterContext } from 'react-router';
+import { routes } from './src/routes';
 // WebUI
 const expressSession = require('express-session')
     , FileStore = require('session-file-store')(expressSession)
