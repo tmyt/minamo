@@ -209,7 +209,7 @@ class api {
   }
 
   async list(req, res){
-    const files = await fs.readdir(config.repo_path);
+    const files = await fs.readdirAsync(config.repo_path);
     res.send(files.filter(s => s[0] != '.' && !s.endsWith('.env')));
   }
 
