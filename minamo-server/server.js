@@ -23,12 +23,15 @@ import DocumentTitle from 'react-document-title';
 import { routes } from './src/routes';
 // WebUI
 const expressSession = require('express-session')
+    , morgan = require('morgan')
     , FileStore = require('session-file-store')(expressSession)
     , passport = require('passport')
     , basicAuth = require('basic-auth-connect')
     , bodyParser = require('body-parser')
     , cookieParser = require('cookie-parser')
     , passportSocketIo = require('passport.socketio')
+
+
 
 // setup passport
 passport.serializeUser((user, done) => done(null, user));
@@ -38,12 +41,9 @@ passport.use(appReq('./lib/auth/twitter'));
 passport.use(appReq('./lib/auth/github'));
 passport.use(appReq('./lib/auth/local'));
 
-// simple logger
-app.use((req, res, next) => {
-  console.log('%s - - [%s] %s %s (%s)', req.headers['x-forwarded-for'],
-    (new Date()).toLocaleString(), req.method, req.url, req.headers['user-agent']);
-  next();
-});
+// enable log
+app.enable('trust proxy');
+app.use(morgan('combined'));
 
 // setup auth
 let sessionStore = new FileStore({path: __dirname + '/data/sessions', retries: 2, ttl: 604800});
