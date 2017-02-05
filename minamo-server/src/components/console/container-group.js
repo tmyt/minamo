@@ -8,6 +8,9 @@ export default class ContainerGroupComponent extends React.Component {
     super();
     this.state = {data: []};
   }
+  componentWillMount(){
+    this.updateState(this.props.data || {});
+  }
   componentWillReceiveProps(newProps){
     this.updateState(newProps.data);
   }
