@@ -5,6 +5,7 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import Avatar from './avatar';
 import Container from './container';
 import Hamburger from './hamburger';
+import ConsoleTabs from './console/tabs';
 
 export default class HeaderComponent extends React.Component {
   onSelect(){
@@ -16,8 +17,8 @@ export default class HeaderComponent extends React.Component {
   }
   render(){
     let extraTabMenu = null;
-    if(this.props.tabs){
-      extraTabMenu = this.props.tabs;
+    if(this.context.router && this.context.router.isActive('/console', true)){
+      extraTabMenu = (<ConsoleTabs />);
     }
     return (
       <header>
@@ -49,5 +50,6 @@ export default class HeaderComponent extends React.Component {
   }
 }
 HeaderComponent.contextTypes = {
+  router: React.PropTypes.object,
   isAuthenticated: React.PropTypes.bool
 }
