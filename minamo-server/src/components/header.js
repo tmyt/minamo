@@ -36,7 +36,7 @@ export default class HeaderComponent extends React.Component {
                 <Avatar visible={this.context.isAuthenticated}/>
               </div>
               <Nav navbar={true} onSelect={this.onSelect}>
-                <LinkContainer to='/console'><NavItem>console</NavItem></LinkContainer>
+                <LinkContainer to='/console' onlyActiveOnIndex={true}><NavItem>console</NavItem></LinkContainer>
                 <LinkContainer to='/console/logstream'><NavItem>log stream</NavItem></LinkContainer>
                 <LinkContainer to='/console/terminal'><NavItem>terminal</NavItem></LinkContainer>
               </Nav>

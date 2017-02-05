@@ -3,42 +3,41 @@ import AppComponent from './pages/app';
 import Authorized from './components/authorized';
 
 const routes = {
-  path: '',
   component: PopupComponent,
   childRoutes: [
   {
+    path: '/',
     component: AppComponent,
-    childRoutes: [
-    {
-      path: '/',
+    indexRoute: {
       getComponent: (location, callback) => {
         System.import('./pages/index').then(component => callback(null, component.default));
       }
     },
+    childRoutes: [
     {
-      path: '/login',
+      path: 'login',
       getComponent: (location, callback) => {
         System.import('./pages/login').then(component => callback(null, component.default));
       }
     },
     {
+      path: 'console',
       component: Authorized,
       onEnter: Authorized.verifyCredentials,
-      childRoutes: [
-      {
-        path: '/console',
+      indexRoute: {
         getComponent: (location, callback) => {
           System.import('./pages/console').then(component => callback(null, component.default));
         }
       },
+      childRoutes: [
       {
-        path: '/console/logstream',
+        path: 'logstream',
         getComponent: (location, callback) => {
           System.import('./pages/logstream').then(component => callback(null, component.default));
         }
       },
       {
-        path: '/console/terminal',
+        path: 'terminal',
         getComponent: (location, callback) => {
           System.import('./pages/terminal').then(component => callback(null, component.default));
         }
