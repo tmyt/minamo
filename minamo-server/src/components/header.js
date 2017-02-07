@@ -11,7 +11,6 @@ export default class HeaderComponent extends React.Component {
   onSelect(){
     const display = $('#expand-button').css('display');
     if(display === 'none') return;
-    console.log(display);
     if(!$('#navbar-main').hasClass('in')) return;
     $('#expand-button').click();
   }
