@@ -55,3 +55,7 @@ i.fa {
 .container h2:nth-of-type(1) {
   margin-top: 0px;
 }
+
+.tab-pane h2 ~ form {
+  margin-bottom: 24px;
+}
