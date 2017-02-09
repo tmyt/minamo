@@ -74,8 +74,6 @@ app.get('/logout', (req, res) => {
 // routers
 let api = appReq('./api');
 app.use('/api', new api(express.Router(), kvs, io));
-require('./api/logstream.js')(io);
-require('./api/terminal.js')(io);
 
 // handle authorized uris
 app.get('/console(/*)?', requireAuthentication, handleReactRouter);
