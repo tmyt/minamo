@@ -30,6 +30,11 @@ export default class Xterm extends React.Component{
       });
       term.on('title', d => document.title = d);
       socket.on('exit', d => window.close());
+    }else{
+      socket.on('exit', d => {
+        socket.disconnect();
+        socket.connect();
+      });
     }
     this.socket = socket;
   }
