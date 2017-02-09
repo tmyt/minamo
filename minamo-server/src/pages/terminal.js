@@ -34,7 +34,7 @@ export default class TerminalComponent extends React.Component{
     };
     const features = Object.keys(popupWindowFeatures).map(x => `${x}=${popupWindowFeatures[x]}`).join(',');
     if(document.getElementById('x-minamo-openterminal-extension')){
-      let e = new CustomEvent('x-minamo-openterminal', {detail: { url: location.protocol + location.host + '/console/terminal_popup'}});
+      let e = new CustomEvent('x-minamo-openterminal', {detail: { url: location.protocol + '//' + location.host + '/console/terminal_popup'}});
       window.dispatchEvent(e);
       return;
     }
