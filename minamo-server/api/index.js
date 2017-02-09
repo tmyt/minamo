@@ -1,6 +1,7 @@
 'use strict';
 
 const promisifyAll = require('bluebird').promisifyAll
+    , express = require('express')
     , path = require('path')
     , crypto = require('crypto')
     , crc = require('crc').crc32
@@ -46,21 +47,31 @@ class api {
   constructor(app, kvs, io){
     this.kvs = kvs;
     this.initializeKvs();
+    /* public api */
+    const pub = express.Router();
+    const hooks = require('./hooks')(kvs);
+    pub.get('/hooks/:repo', hooks);
+    pub.post('/hooks/:repo', hooks);
+    pub.get('/verify', this.verifyCredentials);
     /* v2 api */
-    let svcBase = '/services/:service';
-    app.get(`/services`, this.list);
-    app.get(`/services/status`, this.status.bind(this));
-    app.put(`${svcBase}`, this.create);
-    app.delete(`${svcBase}`, this.destroy.bind(this));
-    app.post(`${svcBase}/start`, this.start.bind(this));
-    app.post(`${svcBase}/stop`, this.stop.bind(this));
-    app.post(`${svcBase}/restart`, this.restart.bind(this));
-    app.get(`${svcBase}/logs`, this.logs);
-    app.get(`${svcBase}/env`, this.env);
-    app.post(`${svcBase}/env/update`, this.updateEnv);
-    app.post('/credentials/update', this.updateCredentials);
+    const priv = express.Router();
+    const svcBase = '/services/:service';
+    priv.get(`/services`, this.list);
+    priv.get(`/services/status`, this.status.bind(this));
+    priv.put(`${svcBase}`, this.create);
+    priv.delete(`${svcBase}`, this.destroy.bind(this));
+    priv.post(`${svcBase}/start`, this.start.bind(this));
+    priv.post(`${svcBase}/stop`, this.stop.bind(this));
+    priv.post(`${svcBase}/restart`, this.restart.bind(this));
+    priv.get(`${svcBase}/logs`, this.logs);
+    priv.get(`${svcBase}/env`, this.env);
+    priv.post(`${svcBase}/env/update`, this.updateEnv);
+    priv.post('/credentials/update', this.updateCredentials);
     // io
     io.of('/status').on('connection', this.wsStatuses.bind(this));
+    // install
+    app.use(ignoreCaches, pub);
+    app.use(ignoreCaches, rejectIfNotAuthenticated, priv);
     return app;
   }
 
@@ -112,6 +123,10 @@ class api {
       }catch(e){ }
     }
     return statuses;
+  }
+
+  verifyCredentials(req, res){
+    res.send({isAuthenticated: req.isAuthenticated() ? 1 : 0});
   }
 
   async create(req, res){
@@ -288,6 +303,17 @@ function pathExists(name){
     return false;
   }
   return true;
+}
+
+function rejectIfNotAuthenticated(req, res, next){
+  if(req.isAuthenticated()) { return next(); }
+  res.status(401).send();
+}
+
+function ignoreCaches(req, res, next){
+  res.set('Cache-Control', 'no-cache');
+  res.set('ETag', 'IGNORE_ETAG');
+  next();
 }
 
 module.exports = api;

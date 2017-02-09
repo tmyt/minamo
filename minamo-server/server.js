@@ -31,8 +31,6 @@ const expressSession = require('express-session')
     , cookieParser = require('cookie-parser')
     , passportSocketIo = require('passport.socketio')
 
-
-
 // setup passport
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
@@ -73,13 +71,9 @@ app.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
-app.get('/api/hooks/:repo', appReq('./api/hooks')(kvs));
-app.post('/api/hooks/:repo', appReq('./api/hooks')(kvs));
-app.get('/api/verify', (req, res) => res.send({isAuthenticated: req.isAuthenticated() ? 1 : 0}));
-
 // routers
 let api = appReq('./api');
-app.use('/api', rejectIfNotAuthenticated, new api(express.Router(), kvs, io));
+app.use('/api', new api(express.Router(), kvs, io));
 require('./api/logstream.js')(io);
 require('./api/terminal.js')(io);
 
@@ -148,11 +142,6 @@ function requireAuthentication(req, res, next){
   }
   if(req.isAuthenticated()) { return next(); }
   res.redirect('/login');
-}
-
-function rejectIfNotAuthenticated(req, res, next){
-  if(req.isAuthenticated()) { return next(); }
-  res.status(401).send();
 }
 
 function handleReactRouter(req, res){
