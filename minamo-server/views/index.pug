@@ -6,13 +6,11 @@ html
   meta(name='viewport', content='width=device-width, initial-scale=1')
   title !{title}
   style.
-    body { display: none; background-color: #f9f9f9; }
+    body{display:none;background-color:#f9f9f9;}
  body
   #app !{markup}
   script.
-    !{appProps || ''}
-    !{configJs || ''}
-    window.setTimeout(function(){document.body.style.display='block'},1500);
+    !{appProps || ''};!{configJs || ''};window.setTimeout(function(){document.body.style.display='block'},1500);
   script(src='/styles.js', async)
   script(src='/loader.js', async)
   script(src='/bundle.js', async)
