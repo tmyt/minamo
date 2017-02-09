@@ -4,11 +4,11 @@
  * Redis protocol based light weight kvs implementation.
  */
 
-const net = require('net')
-    , config = require('../../config.js');
+const net = require('net');
 
-const Docker = require('dockerode')
-    , docker = new Docker({socketPath: '/var/run/docker.sock'});
+const $ = require('bluebird').promisifyAll
+    , Docker = require('dockerode')
+    , docker = $(new Docker());
 
 function escapeRegExp(string) {
   return string.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
@@ -16,11 +16,12 @@ function escapeRegExp(string) {
 
 class Kvs
 {
-  constructor(){
+  constructor(rootDomain){
     this.methods = {
       get: this.get,
       keys: this.keys
     };
+    this.rootDomain = `.${rootDomain}`;
     this.hosts = {};
     this.server = net.createServer(this.serverCreated.bind(this));
   }
@@ -49,7 +50,7 @@ class Kvs
         rest -= 1;
       }
       if(rest === 0){
-        let method = args.shift().toLowerCase();
+        const method = args.shift().toLowerCase();
         if(this.methods[method]){
           args.unshift(client);
           this.methods[method].apply(this, args);
@@ -75,33 +76,36 @@ class Kvs
     this.delHost(host);
     this.addHost(host);
   }
-  getContainerEndpoint(host, callback){
-    if(!host.endsWith(config.domain)) return callback('');
-    let container = host.substr(0, host.length - config.domain.length - 1);
-    docker.getContainer(container).inspect((err, data) => {
-      if(err || !data.NetworkSettings.Ports) return callback('');
-      let bind = Object.keys(data.NetworkSettings.Ports)[0];
-      let port = bind.split('/')[0];
-      callback(`http://${data.NetworkSettings.IPAddress}:${port}`);
-    });
+  async getContainerEndpointAsync(host){
+    if(!host.endsWith(this.rootDomain)) return '';
+    const name = host.slice(0, -this.rootDomain.length);
+    const container = $(docker.getContainer(name));
+    try{
+      const data = await container.inspectAsync();
+      if(!data.NetworkSettings.Ports) return ''
+      const bind = Object.keys(data.NetworkSettings.Ports)[0];
+      const port = bind.split('/')[0];
+      return `http://${data.NetworkSettings.IPAddress}:${port}`;
+    }catch(e){
+      return '';
+    }
   }
   //
-  get(res, key){
+  async get(res, key){
     if(!!this.hosts[key]){
       res.write('$' + this.hosts[key].length + '\r\n');
       res.write(this.hosts[key] + '\r\n');
     }else if(this.hosts[key] === ''){
-      this.getContainerEndpoint(key, endpoint => {
-        res.write('$' + endpoint.length + '\r\n');
-        res.write(endpoint + '\r\n');
-        this.hosts[key] = endpoint;
-      });
+      const endpoint = await this.getContainerEndpointAsync(key);
+      res.write('$' + endpoint.length + '\r\n');
+      res.write(endpoint + '\r\n');
+      this.hosts[key] = endpoint;
     }else{
       res.write('$-1\r\n');
     }
   }
   keys(res, pattern){
-    let re = new RegExp('^' + escapeRegExp(pattern).replace('\\*', '.*'));
+    const re = new RegExp('^' + escapeRegExp(pattern).replace('\\*', '.*'));
     let k = Object.keys(this.hosts).filter(s => re.test(s));
     res.write(`*${k.length}\r\n`);
     for(let i = 0; i < k.length; ++i){

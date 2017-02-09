@@ -1,16 +1,16 @@
-extends _base
-
-block links
-  if profile
-    link(rel='prerender', href='/console/')
-  else
-    link(rel='prerender', href='/login')
-
-block content
-  .jumbotron
-    h1 minamo.io
-    p private PaaS platform for you
-    if profile
-      p: a.btn.btn-primary.btn-lg(href='/console/', role='button') console
-    else
-      p: a.btn.btn-primary.btn-lg(href='/login', role='button') login
+doctype html
+html
+ head
+  meta(charset='utf-8')
+  meta(http-equiv='X-UA-Compatible', content='IE=edge')
+  meta(name='viewport', content='width=device-width, initial-scale=1')
+  title !{title}
+  style.
+    body{display:none;background-color:#f9f9f9;}
+ body
+  #app !{markup}
+  script.
+    !{appProps || ''};!{configJs || ''};window.setTimeout(function(){document.body.style.display='block'},1500);
+  script(src='/styles.js', async)
+  script(src='/loader.js', async)
+  script(src='/bundle.js', async)

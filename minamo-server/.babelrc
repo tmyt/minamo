@@ -1,0 +1,6 @@
+{
+  "plugins": [
+    "system-import-transformer"
+  ],
+  "presets": ["es2015-node", "react"]
+}
