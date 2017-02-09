@@ -13,7 +13,7 @@ const hmac = (key, data) => {
 module.exports = function(kvs){
   return function(req, res){
     let repo = req.params.repo;
-    if(!repo.match(/^[a-z0-9-]+$/)){
+    if(!repo.match(/^[a-z][a-z0-9-]*[a-z0-9]$/)){
      return res.sendStatus(400);
     }
     fs.readFile(path.join(config.repo_path, repo), (err, json) => {
