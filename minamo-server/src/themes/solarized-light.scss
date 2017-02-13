@@ -1,14 +1,18 @@
-$solarizedLight: #002b36, #cb4b16, #586e75, #657b83, #839496, #6c71c4, #93a1a1, #fdf6e3,
-                 #073642, #dc322f, #859900, #b58900, #268bd2, #d33682, #2aa198, #eee8d5;
+$solarizedLight: #073642, #dc322f, #859900, #b58900, #268bd2, #d33682, #2aa198, #eee8d5,
+                 #002b36, #cb4b16, #586e75, #657b83, #839496, #6c71c4, #93a1a1, #fdf6e3;
 $foreground: #657b83;
 $background: #fdf6e3;
+$foregroundBold: #586E75;
+$backgroundBold: #fdf6e3;
 
 @import 'cursor';
 
 .xterm-theme-solarized-light {
   color: $foreground;
   background-color: $background;
-
+  .xterm-bold {
+    color: $foregroundBold;
+  }
   @for $i from 1 through length($solarizedLight) {
     .xterm-color-#{$i - 1} {
       color: nth($solarizedLight, $i);
