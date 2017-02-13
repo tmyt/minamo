@@ -9,11 +9,11 @@ class SocialLoginPane extends React.Component{
     return (
       <Col sm={6}>
         <h4 className='header'>social account</h4>
-        <Button bsStyle='primary' href='/auth/twitter' block>
+        <Button bsStyle='primary' href={`/auth/twitter${this.context.router.location.search}`} block>
           <FontAwesome icon='twitter' />
           <span>Login with Twitter</span>
         </Button>
-        <Button bsStyle='primary' href='/auth/github' block>
+        <Button bsStyle='primary' href={`/auth/github${this.context.router.location.search}`} block>
           <FontAwesome icon='github' />
           <span>Login with GitHub</span>
         </Button>
@@ -21,13 +21,16 @@ class SocialLoginPane extends React.Component{
     );
   }
 }
+SocialLoginPane.contextTypes = {
+  router: React.PropTypes.object
+};
 
 class LocalLoginPane extends React.Component{
   render(){
     return (
       <Col sm={6}>
         <h4 className='header'>minamo id</h4>
-        <form method='post' action='/auth/local'>
+        <form method='post' action={`/auth/local${this.context.router.location.search}`}>
           <FormGroup className='vertical-grouped'>
             <InputGroup>
               <InputGroup.Addon>
@@ -50,6 +53,9 @@ class LocalLoginPane extends React.Component{
     );
   }
 }
+LocalLoginPane.contextTypes = {
+  router: React.PropTypes.object
+};
 
 export default class LoginComponent extends React.Component{
   render(){

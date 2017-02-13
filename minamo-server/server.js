@@ -139,7 +139,7 @@ function requireAuthentication(req, res, next){
     return res.redirect(req.baseUrl);
   }
   if(req.isAuthenticated()) { return next(); }
-  res.redirect('/login');
+  res.redirect('/login?_redir=' + encodeURIComponent(req.originalUrl));
 }
 
 function handleReactRouter(req, res){

@@ -15,14 +15,15 @@ export default class Authorized extends React.Component{
       delete window.isVerified;
       return callback();
     }
+    const redir = '/login?_redir=' + encodeURIComponent(nextState.location.pathname);
     $.ajax({
       url: '/api/verify'
     }).done(data => {
       if(data.isAuthenticated){ callback(); }
-      replaceState('/login');
+      replaceState(redir);
       callback();
     }).fail(() => {
-      replaceState('/login');
+      replaceState(redir);
       callback();
     });
   }

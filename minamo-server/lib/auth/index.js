@@ -4,20 +4,23 @@ const express = require('express')
     , router = express.Router()
     , passport = require('passport');
 
-function auth(provider, failure){
-  let opt = undefined;
-  if(failure) opt = {failureRedirect: failure};
-  return passport.authenticate(provider, opt);
-}
-
 function authRouter(provider){
-  let r = express.Router();
-  let authFunc = auth(provider, '/login');
-  let callback = function(req, res){ res.redirect('/'); };
-  r.get(`/${provider}/`, authFunc, callback);
-  r.get(`/${provider}/callback`, authFunc, callback);
-  r.post(`/${provider}/`, authFunc, callback);
-  r.post(`/${provider}/callback`, authFunc, callback);
+  const r = express.Router();
+  const opts = { failureRedirect: '/login' };
+  const _next = passport.authenticate(provider, opts);
+  const _start = (req, res, next) => {
+    req.session.redir = req.query._redir;
+    _next(req, res, next);
+  };
+  const _callback = (req, res) => {
+    const redir = req.session.redir;
+    delete req.session.redir;
+    res.redirect(redir || '/');
+  };
+  r.get(`/${provider}/`, _start);
+  r.get(`/${provider}/callback`, _next, _callback);
+  r.post(`/${provider}/`, _start);
+  r.post(`/${provider}/callback`, _start, _callback);
   return r;
 }
 
