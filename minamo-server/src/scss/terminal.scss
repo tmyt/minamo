@@ -1,7 +1,9 @@
+.xterm-theme-default {
+  background: #000;
+}
 #terminal {
   font-size: 13px;
   margin-bottom: 12px;
-  background-color: #000;
   position: relative;
   height: 640px;
 
@@ -19,12 +21,11 @@
 
   &.popup {
     margin: 0;
-    background: #000;
     height: 100vh;
     overflow: hidden;
   }
 
-  .terminal, .xterm-viewport {
+  .xterm-viewport {
     background-color: transparent;
   }
 

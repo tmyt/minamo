@@ -1,0 +1,31 @@
+@mixin xterm-themed-cursor($foreground, $background) {
+  .terminal:not(.xterm-cursor-style-underline):not(.xterm-cursor-style-bar).focus .terminal-cursor {
+    background-color: $foreground;
+    color: $background;
+  }
+  
+  .terminal:not(.focus) .terminal-cursor {
+      outline: 1px solid $foreground;
+      background: transparent;
+  }
+  
+  @keyframes xterm-cursor-blink {
+      0% {
+          background-color: $foreground;
+          color: $background;
+      }
+      50% {
+          background-color: transparent;
+          color: $foreground;
+      }
+  }
+  
+  .terminal.xterm-cursor-style-bar .terminal-cursor::before,
+  .terminal.xterm-cursor-style-underline .terminal-cursor::before {
+      background-color: $foreground;
+  }
+  @keyframes xterm-cursor-non-bar-blink {
+      0% { background-color: $foreground; }
+      50% { background-color: transparent; }
+  }
+}

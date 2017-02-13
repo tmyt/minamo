@@ -5,8 +5,6 @@ import createBrowserHistory from 'history/lib/createBrowserHistory';
 
 import { routes } from './routes';
 
-import 'xterm/dist/xterm.css';
-import 'toastr/toastr.scss';
 import 'Umi/dist/js/bootstrap.js';
 
 match({ routes, history: createBrowserHistory() }, (error, redirect, renderProps) => {

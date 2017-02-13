@@ -10,11 +10,23 @@ export default class Xterm extends React.Component{
       document.execCommand('copy');
     }
   }
+  loadTheme(){
+    switch(this.props.theme){
+      case 'solarized-light':
+        System.import('../themes/solarized-light.scss');
+        break;
+      case 'solarized-dark':
+        System.import('../themes/solarized-dark.scss');
+        break;
+    }
+  }
   componentDidMount(){
+    // load theme
+    if(this.props.theme !== 'default'){ this.loadTheme(); }
     // handle copy hotkey
     document.addEventListener('keydown', this.documentKeyDown);
     // activate terminal
-    const term = new Terminal(80, 30);
+    const term = new Terminal({cols: 80, rows: 30, theme: this.props.theme});
     const socket = Socket('/term');
     term.open(this.divTerminal);
     term.on('data', d => socket.emit('data', d.replace(/\x0D\x0A/g, '\n')));
@@ -36,6 +48,7 @@ export default class Xterm extends React.Component{
         socket.connect();
       });
     }
+    this.divTerminal.className += ` xterm-theme-${this.props.theme}`;
     this.socket = socket;
   }
   componentWillUnmount(){
@@ -59,12 +72,14 @@ export default class Xterm extends React.Component{
   }
   render(){
     return (
-      <div className={this.props.className} id='terminal' ref={(div) => this.divTerminal = div} onDragOver={this.dragOver.bind(this)} onDrop={this.drop.bind(this)}>
+      <div className={`${this.props.className||''} xterm-theme-default`} id='terminal'
+            ref={(div) => this.divTerminal = div} onDragOver={this.dragOver.bind(this)} onDrop={this.drop.bind(this)}>
         {this.props.children}
       </div>
     );
   }
 }
 Xterm.defaultProps = {
-  isExported: false
+  isExported: false,
+  theme: 'solarized-dark'
 };
