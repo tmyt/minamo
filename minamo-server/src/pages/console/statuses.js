@@ -10,11 +10,13 @@ export default class ConsoleStatusesComponent extends React.Component{
   constructor(){
     super();
     this.state = {data:(typeof window === 'object' && window['x-minamo-cache-statuses']) || {}};
-    this.modalLogs = (<ModalLogs ref={x => this.modalLogsInstance = x} />);
-    this.modalEnv = (<ModalEnv ref={x => this.modalEnvInstance = x} />);
   }
   getChildContext(){
     return {modalLogs: this.modalLogsInstance, modalEnv: this.modalEnvInstance};
+  }
+  componentWillMount(){
+    this.modalLogs = (<ModalLogs ref={x => this.modalLogsInstance = x} />);
+    this.modalEnv = (<ModalEnv ref={x => this.modalEnvInstance = x} />);
   }
   componentDidMount(){
     const socket = Socket('/status');
