@@ -1,13 +1,23 @@
 import React from 'react';
+import qs from 'qs';
 import PageRoot from '../components/page-root';
 import ExtensionTips from '../components/extension-tips';
 import Xterm from '../components/xterm';
 import FontAwesome from '../components/font-awesome';
 
+const BrowserExtensionElement = 'x-minamo-openterminal-extension';
+const BrowserExtensionEvent = 'x-minamo-openterminal';
+
 export default class TerminalComponent extends React.Component{
   constructor(){
     super();
-    this.state = {tipsVisible: false};
+    this.state = {tipsVisible: false, theme: undefined};
+  }
+  componentWillMount(){
+    const search = this.context.router.location.search;
+    if(search[0] !== '?'){ return; }
+    const args = qs.parse(search.substring(1));
+    this.setState({theme: args.theme});
   }
   componentDidMount(){
     setTimeout(() => {
@@ -15,38 +25,28 @@ export default class TerminalComponent extends React.Component{
     }, 1000);
   }
   checkExtensionAvailability(){
-    if(typeof(chrome) === 'object' && !document.getElementById('x-minamo-openterminal-extension')){
+    if(typeof(chrome) === 'object' && !document.getElementById(BrowserExtensionElement)){
       this.setState({tipsVisible: true});
     }
   }
   openPopup(){
-    const popupWindowFeatures = {
-      width: 800,
-      height: 480,
-      menubar: 'no',
-      toolbar: 'no',
-      location: 'no',
-      directories: 'no',
-      personalbar: 'no',
-      status: 'no',
-      resizable: 'yes',
-      scrollbars: 'no',
-    };
-    const features = Object.keys(popupWindowFeatures).map(x => `${x}=${popupWindowFeatures[x]}`).join(',');
-    if(document.getElementById('x-minamo-openterminal-extension')){
-      let e = new CustomEvent('x-minamo-openterminal', {detail: { url: location.protocol + '//' + location.host + '/console/terminal_popup'}});
-      window.dispatchEvent(e);
-      return;
+    const theme = this.state.theme ? '?theme=' + this.state.theme : '';
+    const path = '/console/terminal_popup' + theme;
+    if(document.getElementById(BrowserExtensionElement)){
+      const url = location.protocol + '//' + location.host + path;
+      const e = new CustomEvent(BrowserExtensionEvent, { detail: { url } });
+      return window.dispatchEvent(e);
     }
-    window.open('/console/terminal_popup', `terminal-${Date.now()}`, features);
+    const popupWindowFeatures = 'width=800,height=480,resizable=yes';
+    window.open(path, `terminal-${Date.now()}`, popupWindowFeatures);
   }
   render(){
     return (
       <PageRoot title='terminal'>
         <ExtensionTips visible={this.state.tipsVisible}/>
         <h2>Terminal</h2>
-        <Xterm>
-          <button onClick={this.openPopup} className='external-button'>
+        <Xterm theme={this.state.theme}>
+          <button onClick={this.openPopup.bind(this)} className='external-button'>
             <FontAwesome icon='external-link' />
           </button>
         </Xterm>
@@ -54,3 +54,6 @@ export default class TerminalComponent extends React.Component{
     );
   }
 }
+TerminalComponent.contextTypes = {
+  router: React.PropTypes.object
+};
