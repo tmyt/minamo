@@ -43,9 +43,23 @@ export default class Xterm extends React.Component{
     document.removeEventListener('keydown', this.documentKeyDown);
     this.socket.disconnect();
   }
+  drop(e){
+    e.preventDefault();
+    e.stopPropagation();
+    const file = e.dataTransfer.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = content => {
+      this.socket.emit('data', content.target.result);
+    };
+    reader.readAsBinaryString(file);
+  }
+  dragOver(e){
+    e.preventDefault();
+  }
   render(){
     return (
-      <div className={this.props.className} id='terminal' ref={(div) => this.divTerminal = div}>
+      <div className={this.props.className} id='terminal' ref={(div) => this.divTerminal = div} onDragOver={this.dragOver.bind(this)} onDrop={this.drop.bind(this)}>
         {this.props.children}
       </div>
     );
