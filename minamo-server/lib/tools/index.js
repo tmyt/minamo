@@ -12,7 +12,8 @@ const bluebird = require('bluebird')
     , config = appReq('./config');
 
 const Docker = require('./docker')
-    , docker = $(new Docker());
+    , docker = $(new Docker())
+    , logger = new (require('./logger'))('/tmp/minamo/build.log');
 
 function waitForStreamEndAsync(stream){
   return new Promise(resolve => {
@@ -62,7 +63,7 @@ class Tools{
     await fs.mkdirpAsync('/tmp/minamo').catch(()=>{});
     let cont = docker.getContainer(repo);
     if(cont){
-      // LOG(stopping...)
+      logger.emit('stopping...');
       // remove current container & image
       await fs.writeFileAsync(`/tmp/minamo/${repo}.term`, '');
       await cont.stopAsync().catch(()=>{});
@@ -124,23 +125,23 @@ class Tools{
     context.pipe(writer);
     await waitForStreamEndAsync(context);
     // Start docker build
-    // LOG('====================');
-    // LOG('Building with');
-    // LOG(dockerfile);
-    // LOG('Pulling image...')
+    logger.emit('====================');
+    logger.emit('Building with');
+    logger.emit(dockerfile);
+    logger.emit('Pulling image...');
     const pullStream = await docker.pullAsync(`node:${version}`);
-    pullStream.pipe(process.stdout);
+    logger.emit(pullStream);
     await waitForStreamEndAsync(pullStream);
     const buildStream = await docker.buildImageAsync(buildContext, {t: `minamo/${repo}:latest`, rm: true, forcerm: true});
-    buildStream.pipe(process.stdout);
+    logger.emit(buildStream, true);
     await waitForStreamEndAsync(buildStream);
     // LOG('Docker build exited with ${?}')
     // run container
-    // LOG('Starting container ${repo}')
+    logger.emit(`Starting container ${repo}`);
     await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, VolumesFrom: [ `${repo}-data` ]});
     await docker.getContainer(repo).startAsync();
-    // LOG('started')
-    // cleanup tmp dir
+    logger.emit('started');
+    // cleanup context
     await fs.unlinkAsync(buildContext);
     // cleanup prep file
     await fs.unlinkAsync(`/tmp/minamo/${repo}.prep`);
