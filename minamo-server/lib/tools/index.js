@@ -1,9 +1,12 @@
 'use strict';
 
-const $ = require('bluebird').promisifyAll
+const bluebird = require('bluebird')
+    , $ = bluebird.promisifyAll
+    , os = require('os')
     , path = require('path')
     , exec = require('child_process').exec
     , fs = $(require('fs-extra'))
+    , tar = $(require('tar-stream'))
     , shellescape = require('shell-escape')
     , appReq = require('app-require')
     , config = appReq('./config');
@@ -11,22 +14,28 @@ const $ = require('bluebird').promisifyAll
 const Docker = require('./docker')
     , docker = $(new Docker());
 
+function waitForStreamEndAsync(stream){
+  return new Promise(resolve => {
+    stream.on('end', resolve);
+  });
+}
+
 class Tools{
   getRequiredPackages(extraEnv){
     let extraPackages = {};
-    let packages = (extraEnv['MINAMO_REQUIRED_PACKAGES'] || '').split(',');
+    const packages = (extraEnv['MINAMO_REQUIRED_PACKAGES'] || '').split(',');
     for(let i = 0; i < packages.length; ++i){
       if(!packages[i].trim()) continue;
-      extraPackages['MINAMO_BUILD_REQUIRED_' + packages[i].toUpperCase()] = 'true';
+      extraPackages[packages[i].toLowerCase()] = 'true';
     }
     return extraPackages;
   }
 
-  build(repo){
-    let extraEnv = fs.readJsonSync(path.join(config.repo_path, repo) + '.env');
+  async build(repo){
+    const extraEnv = await fs.readJsonAsync(path.join(config.repo_path, repo) + '.env');
+    const envKeys = Object.keys(extraEnv);
+    const extras = this.getRequiredPackages(extraEnv);
     let envString = '';
-    let envKeys = Object.keys(extraEnv);
-    let extraPackages = this.getRequiredPackages(extraEnv);
     for(let i = 0; i < envKeys.length; ++i){
       if(envKeys[i] === 'MINAMO_REQUIRED_PACKAGES') continue;
       if(envKeys[i] === 'MINAMO_NODE_VERSION') continue;
@@ -34,9 +43,109 @@ class Tools{
     }
     let engine = extraEnv['MINAMO_NODE_VERSION'] || '';
     if(!engine.match('^[0-9.]+$')) engine = '';
-    let env = Object.assign({'DOMAIN': config.domain, 'EXTRAENV': envString,
-      'MINAMO_NODE_VERSION': engine || 'latest'}, extraPackages);
-    exec(path.join(__dirname, 'build.sh') + ' ' + repo, {env: env});
+    const version = engine || 'latest';
+    if(!repo) return;
+    const port = ~~(Math.random() * 32768) + 3000;
+    let repoUri = `http://git.${config.domain}/${repo}.git`;
+    // check lock
+    if((await fs.statAsync(`/tmp/minamo/${repo}.lock`).catch(()=>{}))){
+      // locked
+      return;
+    }
+    await fs.writeFileAsync(`/tmp/minamo/${repo}.lock`, '');
+    // read external repo uri if available
+    const type = (await fs.statAsync(`${config.repo_path}/${repo}`).catch(()=>{}));
+    if(type.isFile()){
+      repoUri = await fs.readFileAsync(`${config.repo_path}/${repo}`);
+    }
+    // stopping flag
+    await fs.mkdirpAsync('/tmp/minamo').catch(()=>{});
+    let cont = docker.getContainer(repo);
+    if(cont){
+      // LOG(stopping...)
+      // remove current container & image
+      await fs.writeFileAsync(`/tmp/minamo/${repo}.term`, '');
+      await cont.stopAsync().catch(()=>{});
+      await cont.removeAsync().catch(()=>{});
+      await docker.getImage(`minamo/${repo}`).removeAsync().catch(()=>{});
+      await fs.unlinkAsync(`/tmp/minamo/${repo}.term`);
+    }
+    // prepareing flag
+    await fs.writeFileAsync(`/tmp/minamo/${repo}.prep`, '');
+    // create data container
+    const dataCont = docker.getContainer(`${repo}-data`);
+    if(!dataCont){
+      await docker.create({Image: 'busybox', name: `${repo}-data`, Volumes: {'/data':{}}});
+    }
+    // prepare building
+    const buildContext = `/tmp/minamo-${port}.tar`;
+    // get docker0 ip addr
+    const docker0 = os.networkInterfaces()['docker0'].filter(i=>i.family==='IPv4')[0].address;
+    // listup extra packages
+    let pkgs = '';
+    if(extras['redis']){
+      pkgs = `${pkgs} redis-server`;
+    }
+    if(pkgs !== ''){
+      pkgs = `RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get instal -y ${pkgs}`;
+    }
+    // determine package manager
+    let pm = 'npm';
+    let pmInstall = '';
+    if(extras['yarn']){
+      pm = '~/.yarn/bin/yarn';
+      pmInstall = 'curl -o- -L https://yarnpkg.com/install.sh | bash; ';
+    }
+    // generate Dockerfile
+    const dockerfile = `FROM node:${version}\n`
+                     + `ENV PORT=${port} MINAMO_BRANCH_NAME=master ${envString}\n`
+                     + `EXPOSE ${port}\n`
+                     + `${pkgs}\n`
+                     + `RUN adduser minamo; mkdir -p /service/${repo}; chown -R minamo:minamo /service/\n`
+                     + `ADD run.sh /service/run.sh\n`
+                     + `RUN chmod 755 /service/run.sh\n`
+                     + `WORKDIR /service/${repo}\n`
+                     + `RUN echo ${docker0} git.${config.domain} >> /etc/hosts; su minamo -c "git clone ${repoUri} . --recursive && git checkout \$MINAMO_BRANCH_NAME"; \\\n`
+                     + `    su minamo -c "${pmInstall} ${pm} run minamo-preinstall ; ${pm} install ; ${pm} run minamo-postinstall || true"; \\\n`
+                     + `    ls -l; node --version\n`
+                     + `CMD ["/service/run.sh"]`
+    // generate startup script
+    const runSh = `#!/bin/sh\n`
+                + `# ${(new Date()).toLocaleString()}\n`
+                + `chown -R minamo:minamo /data\n`
+                + (extras['redis'] ? `/etc/init.d/redis-server start\n` : '')
+                + `su minamo -c '${pm} start'`;
+    // pack context
+    const context = tar.pack();
+    context.entry({name: 'Dockerfile'}, dockerfile);
+    context.entry({name: 'run.sh'}, runSh);
+    context.finalize();
+    const writer = fs.createWriteStream(buildContext);
+    context.pipe(writer);
+    await waitForStreamEndAsync(context);
+    // Start docker build
+    // LOG('====================');
+    // LOG('Building with');
+    // LOG(dockerfile);
+    // LOG('Pulling image...')
+    const pullStream = await docker.pullAsync(`node:${version}`);
+    pullStream.pipe(process.stdout);
+    await waitForStreamEndAsync(pullStream);
+    const buildStream = await docker.buildImageAsync(buildContext, {t: `minamo/${repo}:latest`, rm: true, forcerm: true});
+    buildStream.pipe(process.stdout);
+    await waitForStreamEndAsync(buildStream);
+    // LOG('Docker build exited with ${?}')
+    // run container
+    // LOG('Starting container ${repo}')
+    await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, VolumesFrom: [ `${repo}-data` ]});
+    await docker.getContainer(repo).startAsync();
+    // LOG('started')
+    // cleanup tmp dir
+    await fs.unlinkAsync(buildContext);
+    // cleanup prep file
+    await fs.unlinkAsync(`/tmp/minamo/${repo}.prep`);
+    // clear lock file
+    await fs.unlinkAsync(`/tmp/minamo/${repo}.lock`);
   }
 
   async terminate(repo, destroy){
@@ -60,7 +169,7 @@ class Tools{
     if(!repo) return;
     const cont = docker.getContainer(repo);
     // container has not built
-    if(!cont){ return this.build(repo); }
+    if(!cont){ return await this.build(repo); }
     // preparing flag
     await fs.mkdirpAsync('/tmp/minamo/').catch(()=>{});
     await fs.writeFileAsync(`/tmp/minamo/${repo}.prep`, '');
