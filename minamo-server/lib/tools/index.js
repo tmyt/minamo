@@ -7,11 +7,11 @@ const path = require('path')
     , appReq = require('app-require')
     , config = appReq('./config');
 
-const Docker = require('dockerode')
-    , docker = new Docker({socketPath: '/var/run/docker.sock'});
+const $ = require('bluebird').promisifyAll
+    , Docker = require('dockerode')
+    , docker = $(new Docker());
 
 class Tools{
-
   getRequiredPackages(extraEnv){
     let extraPackages = {};
     let packages = (extraEnv['MINAMO_REQUIRED_PACKAGES'] || '').split(',');
@@ -39,26 +39,42 @@ class Tools{
     exec(path.join(__dirname, 'build.sh') + ' ' + repo, {env: env});
   }
 
-  terminate(repo, destroy){
-    exec(path.join(__dirname, 'terminate.sh') + ' ' + repo);
+  async terminate(repo, destroy){
+    if(!repo) return;
+    // stopping flag
+    await $(fs).mkdirAsync('/tmp/minamo/').catch(()=>{});
+    await $(fs).writeFileAsync(`/tmp/minamo/${repo}.term`);
+    // remove current container & image
+    const cont = $(docker.getContainer(repo));
+    await cont.stopAsync().catch(()=>{});
+    await cont.removeAsync().catch(()=>{});
+    await $(docker.getImage(`minamo/${repo}`)).removeAsync().catch(()=>{});
     if(destroy){
-      this.destroy(repo);
+      await this.destroy(repo);
     }
+    // remove flag
+    await $(fs).unlinkAsync(`/tmp/minamo/${repo}.term`).catch(()=>{});
   }
 
-  restart(repo){
-    exec(path.join(__dirname, 'restart.sh') + ' ' + repo);
+  async restart(repo){
+    if(!repo) return;
+    const cont = docker.getContainer(repo);
+    // container has not built
+    if(!cont){ return this.build(repo); }
+    // preparing flag
+    await $(fs).mkdirAsync('/tmp/minamo/').catch(()=>{});
+    await $(fs).writeFileAsync(`/tmp/minamo/${repo}.prep`);
+    // restart container
+    await $(cont).restart().catch(()=>{});
+    await $(fs).unlinkAsync(`/tmp/minamo/${repo}.prep`).catch(()=>{});
   }
 
-  destroy(repo){
-    docker.getContainer(repo).remove((err, data) => {
-      docker.getImage(`minamo/${repo}`).remove(()=>{});
-    });
-    docker.getContainer(`${repo}-data`).remove((err, data) => {
-      docker.getImage(`minamo/${repo}-data`).remove(()=>{});
-    });
+  async destroy(repo){
+    await $(docker.getContainer(repo)).removeAsync().catch(()=>{});
+    await $(docker.getImage(`minamo/${repo}`)).removeAsync().catch(()=>{});
+    await $(docker.getContainer(`${repo}-data`)).removeAsync().catch(()=>{});
+    await $(docker.getImage(`minamo/${repo}-data`)).removeAsync().catch(()=>{});
   }
-
 }
 
 module.exports = new Tools();
