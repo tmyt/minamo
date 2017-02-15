@@ -24,6 +24,9 @@ const ContainerRegexp = new RegExp(`^${ContainerRegexpString}\$`);
 const hmac = (key, data) => {
   return crypto.createHmac('sha1', key).update(data).digest('hex');
 };
+const hash = (data) => {
+  return crypto.createHash('sha1').update(data).digest('hex');
+};
 
 function checkParams(req, res){
   let name = req.params.service || req.query.service || req.body.service;
@@ -67,6 +70,11 @@ class api {
     priv.get(`${svcBase}/env`, this.env);
     priv.post(`${svcBase}/env/update`, this.updateEnv);
     priv.post('/credentials/update', this.updateCredentials);
+    priv.post('/fido/register', async function(req, res){
+      const id = req.body.id.toLowerCase();
+      await fs.writeFileAsync(path.join(__dirname, `../data/fido2/${hash(id)}.json`), req.body.key);
+      res.sendStatus(200);
+    });
     // io
     io.of('/status').on('connection', this.wsStatuses.bind(this));
     require('./logstream.js')(io);

@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
+import '../../lib/webauthn.js';
 
 export default class ConsoleConfigureComponent extends React.Component{
   constructor(){
@@ -32,6 +33,22 @@ export default class ConsoleConfigureComponent extends React.Component{
     return this.state.password.length >= 8;
   }
 
+  registerCredential(){
+    const p = this.context.profile;
+    const account = { rpDisplayName: p.username, userDisplayName: p.username, imageUri: p.avater };
+    const cryptoParams = [{ type: 'FIDO_2_0', algorithm: 'RSASSA-PKCS1-v1_5' }];
+    navigator.authentication.makeCredential(account, cryptoParams)
+    .then(result => {
+      const key = JSON.stringify(result.publicKey);
+      const id = result.credential.id;
+      Http.post('/api/fido/register', {key, id},
+        () => Toast.show('FIDO key registered', 'success'),
+        () => Toast.show('failed', 'warning')
+      );
+      console.log(result);
+    });
+  }
+
   render(){
     return(
       <div>
@@ -48,6 +65,9 @@ export default class ConsoleConfigureComponent extends React.Component{
           </FormGroup>
           <Button bsStyle='primary' type='submit' disabled={!this.isValidPassword()}>update</Button>
         </form>
+        <h2>Register FIDO 2.0 credential</h2>
+        <p>currently only works on Microsoft Edge</p>
+        <Button bsStyle='primary' onClick={this.registerCredential.bind(this)}>register</Button>
       </div>
     );
   }

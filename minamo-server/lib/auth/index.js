@@ -24,6 +24,6 @@ function authRouter(provider){
 }
 
 const router = express.Router()
-router.use('/', authRouter('github'), authRouter('twitter'), authRouter('local'));
+router.use('/', authRouter('github'), authRouter('twitter'), authRouter('local'), authRouter('fido2'));
 
 module.exports = router;
