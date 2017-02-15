@@ -1,6 +1,6 @@
 'use strict';
 
-let path = require('path');
+const path = require('path');
 
 module.exports = {
   proto: "https",
@@ -22,5 +22,5 @@ module.exports = {
 
   // Local password authentication
   LOCAL_USERS: (process.env.LOCAL_USERS || '').split(',').map(s => s.split(':'))
-    .reduce((p, c) => { p[c[0]] = c[1]; return p; }, {})
+    .reduce((p, c) => ((p[c[0]] = c[1]), p), {})
 };
