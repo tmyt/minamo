@@ -2,7 +2,7 @@
 
 // Editor's draft of spec at https://w3c.github.io/webauthn/#api
 
-if(typeof navigator !== 'undefined'){
+if(typeof navigator !== 'undefined' && navigator.authentication === undefined){
 navigator.authentication = navigator.authentication || (function () {
 
 	const webauthnDB = (function() {
