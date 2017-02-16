@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import FontAwesome from '../components/font-awesome';
+import EdgeButton from './edge-button';
+import FontAwesome from './font-awesome';
 import '../lib/webauthn.js';
 
 export default class Fido2LoginComponent extends React.Component{
@@ -19,10 +20,10 @@ export default class Fido2LoginComponent extends React.Component{
   }
   render(){
     return(
-      <Button bsStyle='primary' onClick={this.authenticate.bind(this)} block>
+      <EdgeButton bsStyle='primary' onClick={this.authenticate.bind(this)} block>
         <FontAwesome icon='id-card' />
         <span>Login with FIDO 2.0</span>
-      </Button>
+      </EdgeButton>
     );
   }
 }

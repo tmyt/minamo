@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
+import EdgeButton from '../../components/edge-button';
 import '../../lib/webauthn.js';
 
 export default class ConsoleConfigureComponent extends React.Component{
@@ -53,6 +54,7 @@ export default class ConsoleConfigureComponent extends React.Component{
     return(
       <div>
         <h2>Configure credentials</h2>
+        <h3>Git credential</h3>
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
             <ControlLabel>Git Username</ControlLabel>
@@ -65,9 +67,10 @@ export default class ConsoleConfigureComponent extends React.Component{
           </FormGroup>
           <Button bsStyle='primary' type='submit' disabled={!this.isValidPassword()}>update</Button>
         </form>
-        <h2>Register FIDO 2.0 credential</h2>
-        <p>currently only works on Microsoft Edge</p>
-        <Button bsStyle='primary' onClick={this.registerCredential.bind(this)}>register</Button>
+        <h3>Register FIDO 2.0 credential</h3>
+        <form>
+          <EdgeButton bsStyle='primary' onClick={this.registerCredential.bind(this)}>register</EdgeButton>
+        </form>
       </div>
     );
   }
