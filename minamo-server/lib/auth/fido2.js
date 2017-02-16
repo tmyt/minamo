@@ -24,7 +24,7 @@ class Fido2Strategy extends passport.Strategy{
   }
   authenticate(req){
     const id = req.query.id;
-    this.readProfile(id, (err, key, profile) => {
+    this._readProfile(id, (err, key, profile) => {
       if(err || !key || !profile) { return this.fail({message: 'Could not find user'}, 400); }
       const digest = crypto.createHash('sha256').update(new Buffer(req.query.clientData, 'base64')).digest();
       const verify = crypto.createVerify('RSA-SHA256');
@@ -41,7 +41,7 @@ class Fido2Strategy extends passport.Strategy{
         if(this._passReqToCallback){
           this._verify(req, id, profile, verified);
         }else{
-          this._verify(id, verified);
+          this._verify(id, profile, verified);
         }
       }catch(e){
         return this.error(e);
