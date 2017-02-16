@@ -35,15 +35,15 @@ export default class ConsoleConfigureComponent extends React.Component{
 
   registerCredential(){
     const p = this.context.profile;
-    const account = { rpDisplayName: p.username, userDisplayName: p.username, imageUri: p.avater };
+    const account = { rpDisplayName: p.username, displayName: p.username, imageUri: p.avater };
     const cryptoParams = [{ type: 'FIDO_2_0', algorithm: 'RSASSA-PKCS1-v1_5' }];
     navigator.authentication.makeCredential(account, cryptoParams)
     .then(result => {
       const key = JSON.stringify(result.publicKey);
       const id = result.credential.id;
-      Http.post('/api/fido/register', {key, id},
+      Http.post('/api/credentials/fido/register', {key, id},
         () => Toast.show('FIDO key registered', 'success'),
-        () => Toast.show('failed', 'warning')
+        () => Toast.show('Key registration failed', 'warning')
       );
       console.log(result);
     });
