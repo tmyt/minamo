@@ -50,6 +50,10 @@ export default class ConsoleConfigureComponent extends React.Component{
     });
   }
 
+  resetCredential(){
+    window.indexedDB.deleteDatabase('_webauthn');
+  }
+
   render(){
     return(
       <div>
@@ -70,6 +74,7 @@ export default class ConsoleConfigureComponent extends React.Component{
         <h3>Register FIDO 2.0 credential</h3>
         <form>
           <EdgeButton bsStyle='primary' onClick={this.registerCredential.bind(this)}>register</EdgeButton>
+          <EdgeButton style={{marginLeft: '8px'}} bsStyle='danger' onClick={this.resetCredential}>reset</EdgeButton>
         </form>
       </div>
     );
