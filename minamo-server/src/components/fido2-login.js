@@ -2,14 +2,16 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import EdgeButton from './edge-button';
 import FontAwesome from './font-awesome';
+import Http from './console/http-verb';
+import Toast from './toast';
 import '../lib/webauthn.js';
 
 export default class Fido2LoginComponent extends React.Component{
-  authenticate(){
-    const challenge = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-    navigator.authentication.getAssertion(challenge)
+  sign(challenge){
+    navigator.authentication.getAssertion(challenge.c)
     .then(result => {
       const uri = '/auth/fido2?'
+        + `c=${challenge.c}&cs=${challenge.cs}&`
         + `authenticatorData=${result.authenticatorData}&`
         + `clientData=${result.clientData}&`
         + `signature=${result.signature}&`
@@ -17,6 +19,12 @@ export default class Fido2LoginComponent extends React.Component{
         + this.context.router.location.search.substring(1);
       window.location.href = uri;
     });
+  }
+  authenticate(){
+    Http.get('/auth/fido2/challenge', {},
+      c => this.sign(c),
+      () => Toast.show('Failed to exchange challenge', 'error')
+    );
   }
   render(){
     return(

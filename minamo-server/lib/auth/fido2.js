@@ -6,9 +6,7 @@ const passport = require('passport-strategy')
     , fs = require('fs')
     , crypto = require('crypto');
 
-const hash = data => {
-  return crypto.createHash('sha1').update(data).digest('hex');
-};
+const hmacSecret = 'secret';
 
 class Fido2Strategy extends passport.Strategy{
   constructor(options, verify){
@@ -51,14 +49,16 @@ class Fido2Strategy extends passport.Strategy{
 };
 
 module.exports = new Fido2Strategy({
+  passReqToCallback: true,
   readProfile: (id, callback) => {
-    const file = path.join(__dirname, `../../data/fido2/${hash(id)}.json`);
+    const hash = crypto.createHash('sha1').update(id).digest('hex');
+    const file = path.join(__dirname, `../../data/fido2/${hash}.json`);
     fs.readFile(file, (err, data) => {
       if(err) return callback(err, null, null);
       try{ data = JSON.parse(data) } catch(e) { return callback(e, null, null) }
       callback(null, data.key, data.profile);
     });
-  }}, function(id, profile, done){
+  }}, function(req, id, profile, done){
     process.nextTick(function(){
       return done(null, {
         username: profile.username,
@@ -68,3 +68,9 @@ module.exports = new Fido2Strategy({
     });
   }
 );
+
+module.exports.challenge = function(req, res){
+  const c = crypto.createHash('sha256').update(`${Date.now()}`).digest('hex');
+  const cs = crypto.createHmac('sha256', hmacSecret).update(c).digest('hex');
+  res.send({c, cs});
+};
