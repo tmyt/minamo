@@ -38,6 +38,7 @@ passport.deserializeUser((obj, done) => done(null, obj));
 passport.use(appReq('./lib/auth/twitter'));
 passport.use(appReq('./lib/auth/github'));
 passport.use(appReq('./lib/auth/local'));
+passport.use(appReq('./lib/auth/fido2'));
 
 // enable log
 app.enable('trust proxy');

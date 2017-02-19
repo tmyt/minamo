@@ -24,6 +24,9 @@ const ContainerRegexp = new RegExp(`^${ContainerRegexpString}\$`);
 const hmac = (key, data) => {
   return crypto.createHmac('sha1', key).update(data).digest('hex');
 };
+const hash = (data) => {
+  return crypto.createHash('sha1').update(data).digest('hex');
+};
 
 function checkParams(req, res){
   let name = req.params.service || req.query.service || req.body.service;
@@ -67,6 +70,7 @@ class api {
     priv.get(`${svcBase}/env`, this.env);
     priv.post(`${svcBase}/env/update`, this.updateEnv);
     priv.post('/credentials/update', this.updateCredentials);
+    priv.post('/credentials/fido/register', this.registerFidoCredentials);
     // io
     io.of('/status').on('connection', this.wsStatuses.bind(this));
     require('./logstream.js')(io);
@@ -276,6 +280,21 @@ class api {
     data[req.user.username] = req.body.password;
     fs.outputJsonSync(usersPath, data);
     res.send('OK');
+  }
+
+  async registerFidoCredentials(req, res){
+    const id = req.body.id;
+    const value = {
+      key: JSON.parse(req.body.key),
+      profile: req.user
+    };
+    const file = path.join(__dirname, `../data/fido2/${hash(id)}.json`);
+    try{
+      await fs.writeJsonAsync(file, value);
+      res.sendStatus(200);
+    }catch(e){
+      res.sendStatus(500);
+    }
   }
 
   wsStatuses(socket){

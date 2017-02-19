@@ -3,6 +3,7 @@ import { Panel, Row, Col, Button, FormGroup, FormControl, InputGroup } from 'rea
 
 import FontAwesome from '../components/font-awesome';
 import PageRoot from '../components/page-root';
+import Fido2LoginButton from '../components/fido2-login';
 
 class SocialLoginPane extends React.Component{
   render(){
@@ -17,6 +18,7 @@ class SocialLoginPane extends React.Component{
           <FontAwesome icon='github' />
           <span>Login with GitHub</span>
         </Button>
+        <Fido2LoginButton />
       </Col>
     );
   }

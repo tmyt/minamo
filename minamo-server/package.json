@@ -31,6 +31,7 @@
     "fs-extra": "^2.0.0",
     "git-init": "git+https://github.com/tmyt/git-init#bare",
     "githead": "git+https://github.com/tmyt/node-githead",
+    "jwk-to-pem": "^1.2.6",
     "morgan": "^1.8.0",
     "passport": "^0.3.2",
     "passport-github": "^1.0.0",
