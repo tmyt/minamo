@@ -1,18 +1,17 @@
 'use strict';
 
 const bluebird = require('bluebird')
-    , $ = bluebird.promisifyAll
     , os = require('os')
     , path = require('path')
     , exec = require('child_process').exec
-    , fs = $(require('fs-extra'))
-    , tar = $(require('tar-stream'))
+    , fs = bluebird.promisifyAll(require('fs-extra'))
+    , tar = bluebird-promisifyAll(require('tar-stream'))
     , shellescape = require('shell-escape')
     , appReq = require('app-require')
     , config = appReq('./config');
 
 const Docker = require('./docker')
-    , docker = $(new Docker())
+    , docker = new Docker()
     , logger = new (require('./logger'))('/tmp/minamo/build.log');
 
 function waitForStreamEndAsync(stream){
