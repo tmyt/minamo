@@ -15,4 +15,4 @@ for(let i = 0; i < names.length; ++i){
     return bluebird.promisifyAll(ret);
   }
 }
-module.exports = Docker;
+module.exports = bluebird.promisifyAll(Docker);

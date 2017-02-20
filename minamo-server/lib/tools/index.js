@@ -11,7 +11,7 @@ const bluebird = require('bluebird')
     , config = appReq('./config');
 
 const Docker = require('./docker')
-    , docker = new Docker()
+    , docker = bluebird.promisifyAll(new Docker())
     , logger = new (require('./logger'))('/tmp/minamo/build.log');
 
 function waitForStreamEndAsync(stream){
