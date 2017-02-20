@@ -9,7 +9,7 @@ class Logger {
   emit(str, json){
     return new Promise(resolve => {
       if(typeof(str) === 'string'){
-        fs.writeFile(this.path, `${str}\n`, {flags: 'a'}, resolve);
+        fs.appendFile(this.path, `${str}\n`, resolve);
       }else{
         const stream = fs.createWriteStream(this.path, {flags: 'a'});
         if(json){
