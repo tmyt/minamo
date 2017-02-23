@@ -14,7 +14,9 @@ module.exports = new TwitterStrategy({
     callbackURL: config.proto + "://" + config.domain + "/auth/twitter/callback"
   }, function(token, tokenSecret, profile, done){
     process.nextTick(function(){
-      if(trustedUsers.indexOf(profile.username) < 0) return done(null, false);
+      if(trustedUsers.indexOf(profile.username) < 0){
+        return done(null, false, {message: 'You are not authorized to access the requested resource.'});
+      }
       return done(null, {
         username: profile.username,
         provider: profile.provider,

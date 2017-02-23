@@ -10,7 +10,13 @@ function authRouter(provider){
     passport.authenticate(provider, (err, user, info) => {
       delete req.session.redir;
       if(err) { return next(err); }
-      if(!user) { return res.redirect(`/login${redir?`?_redir=${encodeURIComponent(redir)}`:''}`); }
+      if(!user) {
+        const queryParams = [];
+        const message = info && info.message;
+        if(redir) queryParams.push(`_redir=${encodeURIComponent(redir)}`);
+        if(message) queryParams.push(`_message=${encodeURIComponent(message)}`);
+        return res.redirect(`/login${queryParams.length > 0?`?${queryParams.join('&')}`:''}`);
+      }
       req.login(user, err => {
         if(err) { return next(err); }
         return res.redirect(redir || '/');

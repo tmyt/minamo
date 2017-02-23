@@ -14,7 +14,9 @@ module.exports = new GitHubStrategy({
     callbackURL: config.proto + "://" + config.domain + "/auth/github/callback"
   }, function(accessToken, refreshToken, profile, done){
     process.nextTick(function(){
-      if(trustedUsers.indexOf(profile.username) < 0) return done(null, false);
+      if(trustedUsers.indexOf(profile.username) < 0){
+        return done(null, false, {message: 'You are not authorized to access the requested resource.'});
+      }
       return done(null, {
         username: profile.username,
         provider: profile.provider,

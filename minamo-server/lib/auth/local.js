@@ -11,7 +11,7 @@ module.exports = new LocalStrategy({
   }, function(username, password, done){
     process.nextTick(function(){
       if(!users[username] || users[username] !== password){
-        return done(null, false);
+        return done(null, false, {message: 'Incorrect username or password'});
       }
       return done(null, {
         username: username,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
+import qs from 'qs';
 import EdgeButton from './edge-button';
 import FontAwesome from './font-awesome';
 import Http from './console/http-verb';
@@ -8,6 +9,7 @@ import '../lib/webauthn.js';
 
 export default class Fido2LoginComponent extends React.Component{
   sign(challenge){
+    const q = qs.parse(this.context.router.location.search.substring(1));
     navigator.authentication.getAssertion(challenge.c)
     .then(result => {
       const uri = '/auth/fido2?'
@@ -15,8 +17,8 @@ export default class Fido2LoginComponent extends React.Component{
         + `authenticatorData=${result.authenticatorData}&`
         + `clientData=${result.clientData}&`
         + `signature=${result.signature}&`
-        + `id=${result.credential.id}&`
-        + this.context.router.location.search.substring(1);
+        + `id=${result.credential.id}`
+        + (q._redir ? `&_redir=${encodeURIComponent(q._redir)}` : '');
       window.location.href = uri;
     });
   }

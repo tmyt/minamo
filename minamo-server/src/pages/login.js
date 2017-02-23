@@ -1,5 +1,6 @@
 import React from 'react';
-import { Panel, Row, Col, Button, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
+import { Alert, Panel, Row, Col, Button, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
+import qs from 'qs';
 
 import FontAwesome from '../components/font-awesome';
 import PageRoot from '../components/page-root';
@@ -7,14 +8,16 @@ import Fido2LoginButton from '../components/fido2-login';
 
 class SocialLoginPane extends React.Component{
   render(){
+    const q = qs.parse(this.context.router.location.search.substring(1));
+    const args = q._redir ? `?_redir=${encodeURIComponent(q._redir)}` : '';
     return (
       <Col sm={6}>
         <h4 className='header'>social account</h4>
-        <Button bsStyle='primary' href={`/auth/twitter${this.context.router.location.search}`} block>
+        <Button bsStyle='primary' href={`/auth/twitter${args}`} block>
           <FontAwesome icon='twitter' />
           <span>Login with Twitter</span>
         </Button>
-        <Button bsStyle='primary' href={`/auth/github${this.context.router.location.search}`} block>
+        <Button bsStyle='primary' href={`/auth/github${args}`} block>
           <FontAwesome icon='github' />
           <span>Login with GitHub</span>
         </Button>
@@ -29,10 +32,12 @@ SocialLoginPane.contextTypes = {
 
 class LocalLoginPane extends React.Component{
   render(){
+    const q = qs.parse(this.context.router.location.search.substring(1));
+    const args = q._redir ? `?_redir=${encodeURIComponent(q._redir)}` : '';
     return (
       <Col sm={6}>
         <h4 className='header'>minamo id</h4>
-        <form method='post' action={`/auth/local${this.context.router.location.search}`}>
+        <form method='post' action={`/auth/local${args}`}>
           <FormGroup className='vertical-grouped'>
             <InputGroup>
               <InputGroup.Addon>
@@ -62,8 +67,13 @@ LocalLoginPane.contextTypes = {
 export default class LoginComponent extends React.Component{
   render(){
     const title = (<h3>Sign In</h3>);
+    const q = qs.parse(this.context.router.location.search.substring(1));
+    const message = q._message
+      ? (<Alert bsStyle='danger'><strong>Error</strong> {q._message}</Alert>)
+      : null;
     return (
       <PageRoot title='login'>
+        {message}
         <div className='center-block' id='login-container'>
           <Panel header={title} bsStyle='primary'>
             <Row>
@@ -76,3 +86,6 @@ export default class LoginComponent extends React.Component{
     );
   }
 }
+LoginComponent.contextTypes = {
+  router: React.PropTypes.object
+};
