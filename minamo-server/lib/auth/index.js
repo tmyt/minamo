@@ -26,6 +26,8 @@ function authRouter(provider){
 const router = express.Router()
 router.use('/', authRouter('github'), authRouter('twitter'), authRouter('local'), authRouter('fido2'));
 // fido2 challenge
-router.get('/fido2/challenge', require('./fido2').challenge);
+const hmacSecret = 'secret';
+router.get('/fido2/challenge',
+  (req, res) => res.send(require('passport-fido2').challenge(hmacSecret)));
 
 module.exports = router;
