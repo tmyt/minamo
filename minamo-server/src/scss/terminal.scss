@@ -30,7 +30,7 @@
   }
 
   .xterm-viewport {
-    width: 8px;
+    width: 18px;
     overflow-x: hidden;
     margin-left: auto;
   }
@@ -43,21 +43,26 @@
     z-index: -1;
   }
 
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 10px;
-  }
+  &.chrome {
+    .xterm-viewport {
+      width: 8px;
+    }
 
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 10px;
+    }
 
-  ::-webkit-scrollbar-thumb {
-    background: rgba(0,74,99,0.7);
-  }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-  ::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(0,74,99,0.7);
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,74,99,0.7);
+    }
+
+    ::-webkit-scrollbar-thumb:window-inactive {
+      background: rgba(0,74,99,0.7);
+    }
   }
 }
-
