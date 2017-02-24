@@ -20,6 +20,15 @@ function waitForStreamEndAsync(stream){
   });
 }
 
+async function containerExistsAsync(container){
+  try{
+    await container.statsAsync();
+  }catch(e){
+    return false;
+  }
+  return true;
+}
+
 class Tools{
   getRequiredPackages(extraEnv){
     let extraPackages = {};
@@ -61,7 +70,7 @@ class Tools{
     // stopping flag
     await fs.mkdirpAsync('/tmp/minamo').catch(()=>{});
     let cont = docker.getContainer(repo);
-    if(cont){
+    if(await containerExistsAsync(cont)){
       logger.emit('stopping...');
       // remove current container & image
       await fs.writeFileAsync(`/tmp/minamo/${repo}.term`, '');
@@ -74,8 +83,8 @@ class Tools{
     await fs.writeFileAsync(`/tmp/minamo/${repo}.prep`, '');
     // create data container
     const dataCont = docker.getContainer(`${repo}-data`);
-    if(!dataCont){
-      await docker.create({Image: 'busybox', name: `${repo}-data`, Volumes: {'/data':{}}});
+    if(!await containerExistsAsync(dataCont)){
+      await docker.createContainerAsync({Image: 'busybox', name: `${repo}-data`, Volumes: {'/data':{}}});
     }
     // prepare building
     const buildContext = `/tmp/minamo-${port}.tar`;
