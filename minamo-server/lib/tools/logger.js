@@ -14,7 +14,7 @@ class Logger {
         const stream = fs.createWriteStream(this.path, {flags: 'a'});
         if(json){
           str.on('data', s => {
-            stream.write(JSON.parse(s).stream);
+            stream.write(JSON.parse(s).stream || '');
           });
         }else{
           str.pipe(stream);

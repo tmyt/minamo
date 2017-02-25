@@ -41,20 +41,7 @@ class Tools{
   }
 
   async build(repo){
-    const extraEnv = await fs.readJsonAsync(path.join(config.repo_path, repo) + '.env');
-    const envKeys = Object.keys(extraEnv);
-    const extras = this.getRequiredPackages(extraEnv);
-    let envString = '';
-    for(let i = 0; i < envKeys.length; ++i){
-      if(envKeys[i] === 'MINAMO_REQUIRED_PACKAGES') continue;
-      if(envKeys[i] === 'MINAMO_NODE_VERSION') continue;
-      envString += `${envKeys[i]}=${shellescape([extraEnv[envKeys[i]]])} `;
-    }
-    let engine = extraEnv['MINAMO_NODE_VERSION'] || '';
-    if(!engine.match('^[0-9.]+$')) engine = '';
-    const version = engine || 'latest';
     if(!repo) return;
-    const port = ~~(Math.random() * 32768) + 3000;
     let repoUri = `http://git.${config.domain}/${repo}.git`;
     // check lock
     if((await fs.statAsync(`/tmp/minamo/${repo}.lock`).catch(()=>{}))){
@@ -81,22 +68,46 @@ class Tools{
     }
     // prepareing flag
     await fs.writeFileAsync(`/tmp/minamo/${repo}.prep`, '');
+    try{
+      await this.buildAndRun(repo, repoUri);
+    }catch(e){ console.log(e)}
+    // cleanup prep file
+    await fs.unlinkAsync(`/tmp/minamo/${repo}.prep`);
+    // clear lock file
+    await fs.unlinkAsync(`/tmp/minamo/${repo}.lock`);
+  }
+
+  async buildAndRun(repo, repoUri){
+    const extraEnv = await fs.readJsonAsync(path.join(config.repo_path, repo) + '.env');
+    const envKeys = Object.keys(extraEnv);
+    const extras = this.getRequiredPackages(extraEnv);
+    let envString = '';
+    for(let i = 0; i < envKeys.length; ++i){
+      if(envKeys[i] === 'MINAMO_REQUIRED_PACKAGES') continue;
+      if(envKeys[i] === 'MINAMO_NODE_VERSION') continue;
+      envString += `${envKeys[i]}=${shellescape([extraEnv[envKeys[i]]])} `;
+    }
+    let engine = extraEnv['MINAMO_NODE_VERSION'] || '';
+    if(!engine.match('^[0-9.]+$')) engine = '';
+    const version = engine || 'latest';
     // create data container
     const dataCont = docker.getContainer(`${repo}-data`);
     if(!await containerExistsAsync(dataCont)){
       await docker.createContainerAsync({Image: 'busybox', name: `${repo}-data`, Volumes: {'/data':{}}});
     }
     // prepare building
+    const port = ~~(Math.random() * 32768) + 3000;
     const buildContext = `/tmp/minamo-${port}.tar`;
     // get docker0 ip addr
     const docker0 = os.networkInterfaces()['docker0'].filter(i=>i.family==='IPv4')[0].address;
     // listup extra packages
-    let pkgs = '';
+    let pkgs = Object.keys(extras).filter(x => x[0] === '@')
+      .map(x => shellescape([x.substring(1)])).join(' ');
     if(extras['redis']){
       pkgs = `${pkgs} redis-server`;
     }
-    if(pkgs !== ''){
-      pkgs = `RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get instal -y ${pkgs}`;
+    if(pkgs.trim() !== ''){
+      pkgs = `RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ${pkgs}`;
     }
     // determine package manager
     let pm = 'npm';
@@ -151,10 +162,6 @@ class Tools{
     logger.emit('started');
     // cleanup context
     await fs.unlinkAsync(buildContext);
-    // cleanup prep file
-    await fs.unlinkAsync(`/tmp/minamo/${repo}.prep`);
-    // clear lock file
-    await fs.unlinkAsync(`/tmp/minamo/${repo}.lock`);
   }
 
   async terminate(repo, destroy){
