@@ -1,11 +1,13 @@
 import React from 'react';
 import qs from 'qs';
 import Xterm from '../components/xterm';
+import DocumentTitle from 'react-document-title';
 
 export default class PopupTerminalComponent extends React.Component{
   constructor(){
     super();
     this.state = { theme: undefined };
+    this.onResize = this.onResize.bind(this);
   }
   componentWillMount(){
     const search = this.context.router.location.search;
@@ -13,12 +15,32 @@ export default class PopupTerminalComponent extends React.Component{
     const args = qs.parse(search.substring(1));
     this.setState({theme: args.theme});
   }
+  componentDidMount(){
+    if(this.isMobileChrome()){
+      window.addEventListener('resize', this.onResize);
+    }
+  }
+  componentWillUnmount(){
+    window.removeEventListener('resize', this.onResize);
+  }
+  isMobileChrome(){
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isAndroidChrome = /chrome/.test(userAgent) && /android/.test(userAgent);
+    const isIOSChrome = /crios/.test(userAgent);
+    return isAndroidChrome || isIOSChrome;
+  }
+  onResize(){
+    this.xterm.divTerminal.style.height = window.innerHeight + 'px';
+  }
   render(){
     return (
-      <Xterm className='popup' isExported={true} theme={this.state.theme} />
+      <DocumentTitle title='terminal'>
+        <Xterm className='popup' isExported={true} theme={this.state.theme} ref={(xterm) => this.xterm = xterm}/>
+      </DocumentTitle>
     );
   }
 }
 PopupTerminalComponent.contextTypes = {
   router: React.PropTypes.object
 };
+
