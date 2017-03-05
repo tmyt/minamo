@@ -9,18 +9,40 @@ const ContainerRegexp = new RegExp(`^${ContainerRegexpString}\$`);
 export default class ConsoleCreateComponent extends React.Component{
   constructor(){
     super();
-    this.state = { name: '', template: '', external: '' };
+    this.state = { name: '', template: '', external: '', checking: false, available: true };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.timerId = 0;
   }
 
   getValidationState(){
     if(!this.state.name) return null;
+    if(!this.state.checking && !this.state.available) return 'error';
     return ContainerRegexp.test(this.state.name) ? 'success' : 'error'
   }
 
   getValidationHelp(){
     if(this.getValidationState() !== 'error') return '';
+    if(!this.state.available) return `error: service name ${this.state.name} is already exists`;
     return `error: service name should be ${ContainerRegexpString}`;
+  }
+
+  checkContainerName(){
+    clearTimeout(this.timerId);
+    this.setState({checking: true, available: true});
+    this.timerId = setTimeout(() => {
+      if(this.getValidationState() !== 'success'){
+        this.updateNameAvailability(true);
+        return;
+      }
+      Http.get('/api/services/available', {service: this.state.name},
+        ret => {this.updateNameAvailability(ret.available)},
+        () => {this.updateNameAvailability(true)}
+      );
+    }, 500);
+  }
+
+  updateNameAvailability(isAvailable){
+    this.setState({checking: false, available: isAvailable});
   }
 
   isExternalRepository(){
@@ -30,6 +52,7 @@ export default class ConsoleCreateComponent extends React.Component{
   handleChange(field){
     return (e) => {
       this.setState({[field]: e.target.value});
+      if(field === 'name') this.checkContainerName();
     };
   }
 

@@ -56,6 +56,7 @@ class api {
     pub.get('/hooks/:repo', hooks);
     pub.post('/hooks/:repo', hooks);
     pub.get('/verify', this.verifyCredentials);
+    pub.get('/services/available', this.checkAvailability);
     /* v2 api */
     const priv = express.Router();
     const svcBase = '/services/:service';
@@ -133,6 +134,12 @@ class api {
 
   verifyCredentials(req, res){
     res.send({isAuthenticated: req.isAuthenticated() ? 1 : 0});
+  }
+
+  checkAvailability(req, res){
+    const name = checkParams(req, res);
+    if(!name) return;
+    res.send({available: !pathExists(path.join(config.repo_path, name))});
   }
 
   async create(req, res){
@@ -332,8 +339,7 @@ function rejectIfNotAuthenticated(req, res, next){
 }
 
 function ignoreCaches(req, res, next){
-  res.set('Cache-Control', 'no-cache');
-  res.set('ETag', 'IGNORE_ETAG');
+  res.set('Cache-Control', 'no-store');
   next();
 }
 
