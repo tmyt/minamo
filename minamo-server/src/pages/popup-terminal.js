@@ -18,6 +18,9 @@ export default class PopupTerminalComponent extends React.Component{
   componentDidMount(){
     if(this.isMobileChrome()){
       window.addEventListener('resize', this.onResize);
+      this.onResize();
+      const viewport = document.getElementsByClassName('xterm-viewport')[0];
+      viewport.style.width = '100vw';
     }
   }
   componentWillUnmount(){
