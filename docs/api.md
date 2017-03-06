@@ -113,6 +113,16 @@ Update custom env variables to container.
 - name: service name
 - env: JSON object for env variables
 
+**NOTE**
+
+These special env variables are available.
+
+- MINAMO\_REQUIRED\_PACKAGES: define extra packages. (available packages see below)
+   - yarn
+   - redis
+- MINAMO\_NODE\_VERSION: specify node version. (defualt: latest)
+- MINAMO\_BRANCH\_NAME: specify git branch name. (default: master)
+
 ### POST /credentials/update :lock:
 
 Update git credential
