@@ -125,3 +125,21 @@ Register FIDO2.0 public key
 
 - id: key id
 - key: public key
+
+## Socket.IO Endpoints
+
+- /term :lock:
+- /log :lock:
+- /status :lock:
+
+### /term
+
+Access isolated cloud shell.
+
+### /log
+
+Realtime log stream from docker.
+
+### /ststus
+
+Overall container status stream.
