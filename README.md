@@ -20,6 +20,13 @@ Concept
 
 ```
 
+Requirements
+---
+
+- Node >= 7.6.0
+- Docker
+- Nginx
+
 Install
 ---
 
@@ -36,7 +43,7 @@ Install
 5. Install dependency npm packages.
     - ``npm install``
 6. Run Minamo engine.
-    - ``node index.js``
+    - ``npm start``
 
 How to Use
 ---
