@@ -6,7 +6,7 @@ function extension(){
 function openTerminal(url){
   extension().windows.create({
     url: url,
-    type: 'panel',
+    type: 'popup',
     width: 800,
     height: 480
   });
