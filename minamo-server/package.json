@@ -32,7 +32,7 @@
     "git-init": "git+https://github.com/tmyt/git-init#bare",
     "githead": "git+https://github.com/tmyt/node-githead",
     "morgan": "^1.8.0",
-    "node-pty": "^0.6.2",
+    "node-pty": "^0.6.3",
     "passport": "^0.3.2",
     "passport-fido2": "0.0.1",
     "passport-github": "^1.0.0",

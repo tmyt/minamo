@@ -1,6 +1,6 @@
 'use strict';
 
-const pty = require('pty.js')
+const pty = require('node-pty')
     , crypto = require('crypto')
     , bluebird = require('bluebird')
     , Docker = require('../lib/tools/docker')
@@ -50,7 +50,6 @@ module.exports = function(io){
     socket.on('disconnect', async () => {
       term.destroy();
       await container.stopAsync().catch(()=>{});
-      await container.removeAsync().catch(()=>{});
     });
   });
 }
