@@ -103,7 +103,7 @@ class UserDB{
     }))[0];
   }
   async authenticateWithSocialId(provider, id){
-    const username = (this._db.select({
+    const username = (await this._db.select({
       type: 'social', provider, id
     })).map(x => x.relative)[0];
     if(!username) return null;
@@ -112,7 +112,7 @@ class UserDB{
     }))[0];
   }
   async authenticateWithFido2(id){
-    const username = (this._db.select({
+    const username = (await this._db.select({
       type: 'fido2', id
     })).map(x => x.relative)[0];
     if(!username) return null;
@@ -150,11 +150,13 @@ class UserDB{
       relative: userid,
       provider, id
     });
+    return true;
   }
   async removeSocialId(userid, provider, id){
     await this._db.delete({
       type: 'social', relative: userid, provider, id
     });
+    return true;
   }
   async addPublicKey(userid, publicKey, id){
     const socialId = (await this._db.select({
@@ -167,11 +169,13 @@ class UserDB{
       relative: userid,
       id
     });
+    return true;
   }
   async removePublicKey(userid, id){
     await this._db.delete({
       type: 'fido2', username: userid, id
     });
+    return true;
   }
 };
 
