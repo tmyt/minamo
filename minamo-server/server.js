@@ -9,7 +9,8 @@ const express = require('express')
 // app modules
 const appReq = require('app-require')
     , config = appReq('./config')
-    , RedisServer = require('./lib/kvs');
+    , RedisServer = require('./lib/kvs')
+    , userDb = new(require('./lib/auth/userdb'))(config.userdb);
 // app instance
 const app = express()
     , server = http.createServer(app)
@@ -88,13 +89,15 @@ let githttp = express();
 let git = expressGit.serve(config.repo_path, {
   auto_init: false
 });
-let gitBasicAuth = basicAuth((user, pass) => {
-  return user !== undefined && pass !== undefined &&
-    gitusers[user] !== undefined && gitusers[user] === pass;
+let gitBasicAuth = basicAuth((user, pass, next) => {
+  userDb.authenticate(user, pass)
+    .then(u => next(null, u))
+    .catch(e => next(e, null));
 });
 let gitComplexAuth = function(req, res, next){
   // accept access from container
-  if(req.headers['x-forwarded-for'].match(/^172\.17\./)){
+  const xForwardedFor = req.headers['x-forwarded-for'];
+  if(xForwardedFor && xForwardedFor.match(/^172\.17\./)){
     next();
     return true;
   }
