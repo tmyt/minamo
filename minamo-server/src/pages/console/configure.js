@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import SocialConnect from '../../components/console/social-connect';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
 import EdgeButton from '../../components/edge-button';
@@ -72,8 +73,7 @@ export default class ConsoleConfigureComponent extends React.Component{
           <Button bsStyle='primary' type='submit' disabled={!this.isValidPassword()}>update</Button>
         </form>
         <h3>Connect social account</h3>
-        <Button onClick={() => location.href = '/auth/twitter?_mode=connect&_redir=/console#tab-configure'}>twitter</Button>
-        <Button onClick={() => location.href = '/auth/github?_mode=connect&_redir=/console#tab-configure'}>github</Button>
+        <SocialConnect />
         <h3>Register FIDO 2.0 credential</h3>
         <form>
           <EdgeButton bsStyle='primary' onClick={this.registerCredential.bind(this)}>register</EdgeButton>
