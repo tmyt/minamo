@@ -53,7 +53,7 @@ class JsonDB{
       .then(d => {
         for(let i = 0; i < d.length; ++i){
           if(!this.match(d[i], where)) continue;
-          d = d.splice(i--, 1);
+          d.splice(i--, 1);
         }
         return d;
       })
