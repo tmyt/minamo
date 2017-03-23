@@ -120,6 +120,12 @@ class UserDB{
       type: 'local', username
     }))[0];
   }
+  async getConnectedSocialIds(userid){
+    return (await this._db.select({
+      type: 'social',
+      relative: userid
+    })).reduce((p,c) => ((p[c.provider] = c.id), p), {});
+  }
   async getPublicKeyForId(id){
     return (await this._db.select({
       type: 'fido2', id

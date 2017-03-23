@@ -71,6 +71,9 @@ class api {
     priv.get(`${svcBase}/logs`, this.logs);
     priv.get(`${svcBase}/env`, this.env);
     priv.post(`${svcBase}/env/update`, this.updateEnv);
+    priv.get('/credentials/connected', this.getConnectedCredentials);
+    priv.get('/credentials/:service/connect', this.connectSocialId);
+    priv.post('/credentials/:service/disconnect', this.disconnectSocialId);
     priv.post('/credentials/update', this.updateCredentials);
     priv.post('/credentials/fido/register', this.registerFidoCredentials);
     /* admin api */
@@ -283,6 +286,34 @@ class api {
     let process = require('child_process').spawn('docker', ['logs', name]);
     process.stdout.pipe(res);
     process.stderr.pipe(res);
+  }
+
+  async getConnectedCredentials(req, res){
+    const ids = await userDb.getConnectedSocialIds(req.user.username);
+    res.send({
+      twitter: !!ids.twitter,
+      github: !!ids.github
+    });
+  }
+
+  async connectSocialId(req, res){
+    const service = req.params.service;
+    if(service !== 'github' && service !== 'twitter'){
+      return res.send(400);
+    }
+    const uri = config.proto + '://' + config.domain
+              + '/auth/' + service
+              + '?_mode=connect&_redir=/console#tab-configure';
+    res.redirect(uri);
+  }
+
+  async disconnectSocialId(req, res){
+    const username = req.user.username;
+    const service = req.params.service;
+    const ids = await userDb.getConnectedSocialIds(username);
+    if(ids[service] === undefined) return res.send(400);
+    await userDb.removeSocialId(username, service, ids[service]);
+    res.send(200);
   }
 
   async updateCredentials(req, res){
