@@ -14,11 +14,12 @@ export default class ConsoleConfigureComponent extends React.Component{
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(){
+  handleSubmit(e){
     Http.post('/api/credentials/update', {password: this.state.password},
       () => Toast.show('Credential update successful', 'success'),
       () => Toast.show('Credential update failed', 'warning')
     );
+    e.preventDefault();
     return false;
   }
 
