@@ -9,6 +9,7 @@ module.exports = {
   http_port: 3000,
   git_port: 7000,
   redis_port: 16379,
+  userdb: path.join(path.resolve('data'), 'userdb.json'),
 
   // GitHub appid and trusted users
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '',
@@ -19,8 +20,4 @@ module.exports = {
   TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY || '',
   TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET || '',
   TWITTER_TRUSTED_USERS: (process.env.TWITTER_TRUSTED_USERS || '').split(','),
-
-  // Local password authentication
-  LOCAL_USERS: (process.env.LOCAL_USERS || '').split(',').map(s => s.split(':'))
-    .reduce((p, c) => ((p[c[0]] = c[1]), p), {})
 };
