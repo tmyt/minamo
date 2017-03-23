@@ -129,14 +129,14 @@ class UserDB{
     const user = (await this._db.select({
       type: 'local',
       username: userid,
-      password: this.hashPassword(password)
+      //password: this.hashPassword(password)
     }))[0];
     if(!user) return false;
     user.password = this.hashPassword(newPassword);
     await this._db.update(user, {
       type: 'local',
       username: userid,
-      password: this.hashPassword(password)
+      //password: this.hashPassword(password)
     });
     return true;
   }

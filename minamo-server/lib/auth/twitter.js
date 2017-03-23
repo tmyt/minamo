@@ -9,10 +9,15 @@ const TWITTER_CONSUMER_KEY = config.TWITTER_CONSUMER_KEY;
 const TWITTER_CONSUMER_SECRET = config.TWITTER_CONSUMER_SECRET;
 
 module.exports = new TwitterStrategy({
+    passReqToCallback: true,
     consumerKey: TWITTER_CONSUMER_KEY,
     consumerSecret: TWITTER_CONSUMER_SECRET,
     callbackURL: config.proto + "://" + config.domain + "/auth/twitter/callback"
-  }, function(token, tokenSecret, profile, done){
+  }, async function(req, token, tokenSecret, profile, done){
+    if(req.user && req.session.mode === 'connect'){
+      await userDb.addSocialId(req.user.username, profile.provider, profile.id);
+      return done(null, req.user);
+    }
     process.nextTick(async function(){
       const user = await userDb.authenticateWithSocialId(profile.provider, profile.id);
       if(!user){
@@ -21,6 +26,7 @@ module.exports = new TwitterStrategy({
       return done(null, {
         username: user.username,
         provider: 'obsolete',
+        role: user.role,
         avatar: user.avatar
       });
     });

@@ -9,11 +9,16 @@ const path = require('path')
     , Fido2Strategy = require('passport-fido2').Strategy;
 
 module.exports = new Fido2Strategy({
+  passReqToCallback: true,
   readProfile: async (id, callback) => {
     const key = await userDb.getPublicKeyForId(id);
     if(!key) return callback('key does not exists', null, null);
     callback(null, key, {});
-  }}, function(id, profile, done){
+  }}, async function(req, id, profile, done){
+    if(req.user && req.session.mode === 'connect'){
+      await userDb.addSocialId(req.user.username, profile.provider, profile.id);
+      return done(null, req.user);
+    }
     process.nextTick(async function(){
       const user = await userDb.authenticateWithFido2(id);
       if(!user){
@@ -22,6 +27,7 @@ module.exports = new Fido2Strategy({
       return done(null, {
         username: user.username,
         provider: 'obsolete',
+        role: user.role,
         avatar: user.avatar
       });
     });

@@ -71,6 +71,9 @@ export default class ConsoleConfigureComponent extends React.Component{
           </FormGroup>
           <Button bsStyle='primary' type='submit' disabled={!this.isValidPassword()}>update</Button>
         </form>
+        <h3>Connect social account</h3>
+        <Button onClick={() => location.href = '/auth/twitter?_mode=connect&_redir=/console#tab-configure'}>twitter</Button>
+        <Button onClick={() => location.href = '/auth/github?_mode=connect&_redir=/console#tab-configure'}>github</Button>
         <h3>Register FIDO 2.0 credential</h3>
         <form>
           <EdgeButton bsStyle='primary' onClick={this.registerCredential.bind(this)}>register</EdgeButton>

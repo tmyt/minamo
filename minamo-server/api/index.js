@@ -16,6 +16,7 @@ const Docker = require('dockerode')
     , docker = promisifyAll(new Docker());
 
 const config = appReq('./config')
+    , userDb = new(appReq('./lib/auth/userdb'))(config.userdb)
     , tools = appReq('./lib/tools');
 
 const ContainerRegexpString = '[a-z][a-z0-9-]*[a-z0-9]';
@@ -72,6 +73,11 @@ class api {
     priv.post(`${svcBase}/env/update`, this.updateEnv);
     priv.post('/credentials/update', this.updateCredentials);
     priv.post('/credentials/fido/register', this.registerFidoCredentials);
+    /* admin api */
+    const admin = express.Router();
+    admin.get('/users/new', this.newUser);
+    // TODO: check admin rights
+    priv.use(admin);
     // io
     io.of('/status').on('connection', this.wsStatuses.bind(this));
     require('./logstream.js')(io);
@@ -279,13 +285,10 @@ class api {
     process.stderr.pipe(res);
   }
 
-  updateCredentials(req, res){
-    let usersPath = path.join(__dirname, '../data/gitusers.json');
+  async updateCredentials(req, res){
     if(!req.user.username || !req.body.password ||
       req.user.username === '' || req.body.password === '') return res.send(400);
-    let data = fs.readJsonSync(usersPath);
-    data[req.user.username] = req.body.password;
-    fs.outputJsonSync(usersPath, data);
+    await userDb.updateCredential(req.user.username, null, req.body.password);
     res.send('OK');
   }
 
@@ -302,6 +305,14 @@ class api {
     }catch(e){
       res.sendStatus(500);
     }
+  }
+
+  async newUser(req, res){
+    const username = req.query.username;
+    if(!username) return res.sendStatus(400);
+    if(await userDb.findUser(username)) return res.sendStatus(400);
+    const password = await userDb.createUser(username);
+    res.send(password);
   }
 
   wsStatuses(socket){
