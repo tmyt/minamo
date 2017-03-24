@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Label, FormGroup, ControlLabel } from 'react-bootstrap';
 import Http from './http-verb';
 
 class SocialConnectButton extends React.Component{
@@ -27,10 +27,15 @@ class SocialConnectButton extends React.Component{
     }
   }
   render(){
-    const label = (this.state.connected ? 'Disconnect from ' : 'Connect to ') + this.props.label;
-    const style = this.state.connected ? 'danger' : 'primary';
+    const label = this.state.connected ? 'disconnect' : 'connect';
+    const style = this.state.connected ? 'warning' : 'primary';
     return(
-      <Button bsStyle={style} onClick={this.handleClick}>{label}</Button>
+      <FormGroup>
+        <div>
+          <ControlLabel>{this.props.label}</ControlLabel>
+        </div>
+        <Button bsStyle={style} onClick={this.handleClick}>{label}</Button>
+      </FormGroup>
     );
   }
 }

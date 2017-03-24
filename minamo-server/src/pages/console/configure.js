@@ -60,14 +60,14 @@ export default class ConsoleConfigureComponent extends React.Component{
     return(
       <div>
         <h2>Configure credentials</h2>
-        <h3>Git credential</h3>
+        <h3>minamo id</h3>
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
-            <ControlLabel>Git Username</ControlLabel>
+            <ControlLabel>Username</ControlLabel>
             <FormControl disabled={true} value={this.context.profile.username}/>
           </FormGroup>
           <FormGroup validationState={this.getValidationState()}>
-            <ControlLabel>Git Password</ControlLabel>
+            <ControlLabel>Password</ControlLabel>
             <FormControl type='password' onChange={this.handleChange.bind(this)}/>
             <FormControl.Feedback />
           </FormGroup>
