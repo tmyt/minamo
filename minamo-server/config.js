@@ -14,10 +14,8 @@ module.exports = {
   // GitHub appid and trusted users
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '',
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || '',
-  GITHUB_TRUSTED_USERS: (process.env.GITHUB_TRUSTED_USERS || '').split(','),
 
   // Twitter appid and trusted users
   TWITTER_CONSUMER_KEY: process.env.TWITTER_CONSUMER_KEY || '',
   TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET || '',
-  TWITTER_TRUSTED_USERS: (process.env.TWITTER_TRUSTED_USERS || '').split(','),
 };
