@@ -102,6 +102,17 @@ class UserDB{
     await this._db.update(user, where);
     return true;
   }
+  async updateRole(userid, role){
+    const where = {
+      type: 'local',
+      username: userid
+    };
+    const user = (await this._db.select(where))[0];
+    if(!user) return false;
+    user.role = role;
+    await this._db.update(user, where);
+    return true;
+  }
   async resetCredential(userid){
     const where = {
       type: 'local',

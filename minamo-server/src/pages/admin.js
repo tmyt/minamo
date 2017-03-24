@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, DropdownButton, Button, MenuItem, FormGroup, FormControl, Glyphicon } from 'react-bootstrap';
+import { Table, DropdownButton, Button, MenuItem, FormGroup, FormControl, Glyphicon, InputGroup } from 'react-bootstrap';
 
 import PageRoot from '../components/page-root';
 import Http from '../components/console/http-verb';
@@ -14,7 +14,7 @@ class UserListRow extends React.Component{
     this.state = {password: ''};
   }
   componentWillMount(){
-    this.setState({password: this.props.password});
+    this.setState({password: this.props.password, role: this.props.role});
   }
   handleSelect(key, e){
     key();
@@ -42,12 +42,31 @@ class UserListRow extends React.Component{
       () => Toast.show('User delete failed', 'error')
     );
   }
+  handleChangeRoleFor(role){
+    return () => {
+      Http.post('/api/users/role', {username: this.props.username, role},
+        () => {
+          this.setState({role});
+          Toast.show('User role updated', 'success')
+        },
+        () => Toast.show('Faild to change role', 'error')
+      );
+    }
+  }
   render(){
     return(
       <tr>
         <td>{this.props.username}</td>
         <td>{this.state.password || '●●●●●●●●'}</td>
-        <td>{this.props.role}</td>
+        <td>
+          <InputGroup>
+            <FormControl type='text' value={this.state.role} readOnly className='readonly-dropdown-input'/>
+            <DropdownButton componentClass={InputGroup.Button} pullRight id='user-role' onSelect={this.handleSelect} title=''>
+              <MenuItem eventKey={this.handleChangeRoleFor('admin')}>admin</MenuItem>
+              <MenuItem eventKey={this.handleChangeRoleFor('user')}>user</MenuItem>
+            </DropdownButton>
+          </InputGroup>
+        </td>
         <td>
           <DropdownButton bsStyle='primary' title='action' onSelect={this.handleSelect} id='user-action'>
             <MenuItem eventKey={this.handleResetPassword}>reset password</MenuItem>
@@ -91,7 +110,7 @@ class UserListNewUserRow extends React.Component{
     Http.post('/api/users/create', {username},
       (ret) => {
         Toast.show('User created', 'success');
-        this.props.onCreate({username, password: ret});
+        this.props.onCreate({username, password: ret, role: 'user'});
       },
       () => Toast.show('User create failed', 'error')
     );

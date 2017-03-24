@@ -12,6 +12,7 @@ class AdminApi {
     app.post('/users/create', this.createUser);
     app.post('/users/delete', this.deleteUser);
     app.post('/users/reset_password', this.resetPassword);
+    app.post('/users/role', this.updateRole);
     app.get('/admin/verify', this.verifyAdminCredentials);
   }
 
@@ -47,6 +48,14 @@ class AdminApi {
     if(!username) return res.sendStatus(400);
     const password = await userDb.resetCredential(username);
     res.send(password);
+  }
+
+  async updateRole(req, res){
+    const username = req.body.username;
+    const role = req.body.role;
+    if(!username || !role) return res.sendStatus(400);
+    await userDb.updateRole(username, role);
+    res.send(200);
   }
 
   verifyAdminCredentials(req, res){

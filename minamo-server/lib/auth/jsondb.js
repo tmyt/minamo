@@ -11,7 +11,7 @@ class JsonDB{
   loadData(){
     return fs.readFileAsync(this._dataPath)
       .then(JSON.parse)
-      .catch(() => ([]));
+      .catch(() => []);
   }
   saveData(data){
     return Promise.resolve(JSON.stringify(data))

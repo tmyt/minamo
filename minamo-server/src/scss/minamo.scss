@@ -78,3 +78,7 @@ i.fa {
 .tab-pane h2 ~ form {
   margin-bottom: 24px;
 }
+
+.form-control.readonly-dropdown-input {
+  background-color: #fff;
+}
