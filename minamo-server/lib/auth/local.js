@@ -21,7 +21,6 @@ module.exports = new LocalStrategy({
       }
       return done(null, {
         username: user.username,
-        provider: 'obsolete',
         role: user.role,
         avatar: user.avatar
       });

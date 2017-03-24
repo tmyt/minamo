@@ -25,7 +25,6 @@ module.exports = new TwitterStrategy({
       }
       return done(null, {
         username: user.username,
-        provider: 'obsolete',
         role: user.role,
         avatar: user.avatar
       });

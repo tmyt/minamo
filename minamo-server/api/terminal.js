@@ -10,7 +10,7 @@ module.exports = function(io){
   io.of('/term').on('connection', async (socket) => {
     const user = socket.request.user;
     const userData = 'shelldata.' + crypto.createHash('sha1')
-      .update(`${user.provider.split(':').slice(-1)[0]}:${user.name}`).digest('hex')
+      .update(`${user.name}`).digest('hex')
     const name = 'tmp' + crypto.createHash('sha1').update(`${Date.now()}`).digest('hex');
     const dataCont = docker.getContainer(userData);
     let isFirstTime = '';

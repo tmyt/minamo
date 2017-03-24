@@ -26,7 +26,6 @@ module.exports = new Fido2Strategy({
       }
       return done(null, {
         username: user.username,
-        provider: 'obsolete',
         role: user.role,
         avatar: user.avatar
       });
