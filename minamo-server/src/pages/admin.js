@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, DropdownButton, Button, MenuItem, FormGroup, FormControl } from 'react-bootstrap';
+import { Table, DropdownButton, Button, MenuItem, FormGroup, FormControl, Glyphicon } from 'react-bootstrap';
 
 import PageRoot from '../components/page-root';
 import Http from '../components/console/http-verb';
@@ -69,13 +69,18 @@ class UserListNewUserRow extends React.Component{
   }
   handleChange(e){
     clearTimeout(this.timerId);
+    this.setState({username: e.target.value});
+    if(!e.target.value || e.target.value.length < 3){
+      this.setState({pending: false, available: true});
+      return;
+    }
     this.timerId = setTimeout(() => {
       Http.get('/api/users/exists', {username: this.state.username},
         () => this.setState({pending: false, available: false}),
         () => this.setState({pending: false, available: true})
       );
     }, 500);
-    this.setState({pending: true, username: e.target.value});
+    this.setState({pending: true});
   }
   handleClick(){
     const username = this.state.username;
@@ -93,16 +98,17 @@ class UserListNewUserRow extends React.Component{
   }
   validate(){
     if(this.state.username.length === 0) return null;
-    return this.state.username.length >= 3 && (this.state.pending || this.state.available)
-      ? 'success' : 'error';
+    if(this.state.pending) return 'warning';
+    return this.state.username.length >= 3 && this.state.available ? 'success' : 'error';
   }
   render(){
+    const loading = this.state.pending ? (<Glyphicon className='loading' glyph='refresh' />) : null;
     return(
       <tr>
         <td>
           <FormGroup validationState={this.validate()}>
             <FormControl type='text' placeholder='new username' value={this.state.username} onChange={this.handleChange}/>
-            <FormControl.Feedback />
+            <FormControl.Feedback>{loading}</FormControl.Feedback>
           </FormGroup>
         </td>
         <td><FormControl value='●●●●●●●●' disabled/></td>
