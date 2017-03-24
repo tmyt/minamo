@@ -78,9 +78,12 @@ class api {
     priv.post('/credentials/fido/register', this.registerFidoCredentials);
     /* admin api */
     const admin = express.Router();
-    admin.get('/users/new', this.newUser);
-    // TODO: check admin rights
-    priv.use(admin);
+    admin.get('/users', this.listUsers);
+    admin.get('/users/exists', this.existsUser);
+    admin.post('/users/create', this.createUser);
+    admin.post('/users/delete', this.deleteUser);
+    admin.post('/users/resetPassword', this.resetPassword);
+    priv.use(requireAdminRights, admin);
     // io
     io.of('/status').on('connection', this.wsStatuses.bind(this));
     require('./logstream.js')(io);
@@ -338,12 +341,38 @@ class api {
     }
   }
 
-  async newUser(req, res){
-    const username = req.query.username;
+  async listUsers(req, res){
+    const users = await userDb.getUsers();
+    res.send(users);
+  }
+
+  async existsUser(req, res){
+    const username = req.body.username;
+    if(!username) return res.sendStatus(400);
+    const exists = await userDb.findUser(username);
+    res.sendStatus(exists ? 200 : 404);
+  }
+
+  async createUser(req, res){
+    const username = req.body.username;
     if(!username) return res.sendStatus(400);
     if(await userDb.findUser(username)) return res.sendStatus(400);
     const password = await userDb.createUser(username);
     res.send(password);
+  }
+
+  async deleteUser(req, res){
+    const username = req.body.username;
+    if(!username) return res.sendStatus(400);
+    await userDb.removeUser(username);
+    res.sendStatus(200);
+  }
+
+  async resetPassword(req, res){
+    const username = req.body.username;
+    if(!username) return res.sendStatus(400);
+    await userDb.resetCredential(username);
+    res.sendStatus(200);
   }
 
   wsStatuses(socket){
@@ -378,6 +407,11 @@ function pathExists(name){
 function rejectIfNotAuthenticated(req, res, next){
   if(req.isAuthenticated()) { return next(); }
   res.status(401).send();
+}
+
+function requireAdminRights(req, res, next){
+  if(req.user.role === 'admin') { return next(); }
+  res.status(404).send();
 }
 
 function ignoreCaches(req, res, next){

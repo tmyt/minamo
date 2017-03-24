@@ -22,6 +22,9 @@ class UserDB{
   async findUser(userid){
     return !!(await this._db.select({type: 'local', username: userid})).length;
   }
+  async getUsers(){
+    return (await this._db.select({type: 'local'})).map(x => x.username);
+  }
   async createUser(userid){
     if(await this.findUser(userid)) return null;
     const password = this.makePassword();
@@ -98,6 +101,18 @@ class UserDB{
     user.avatar = avatar;
     await this._db.update(user, where);
     return true;
+  }
+  async resetCredential(userid){
+    const where = {
+      type: 'local',
+      username: userid,
+    };
+    const user = (await this._db.select(where))[0];
+    if(!user) return null;
+    const password = this.makePassword();
+    user.password = this.hashPassword(password);
+    await this._db.update(user, where);
+    return password;
   }
   async addSocialId(userid, provider, id){
     const socialId = (await this._db.select({
