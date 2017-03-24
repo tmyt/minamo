@@ -39,6 +39,9 @@ class AdminApi {
   async deleteUser(req, res){
     const username = req.body.username;
     if(!username) return res.sendStatus(400);
+    if(username === req.user.username){
+      return res.status(500).send('Could not remove yourself');
+    }
     const ret = await userDb.removeUser(username);
     res.sendStatus(ret ? 200 : 500);
   }
