@@ -46,14 +46,8 @@ class JsonDB{
       .then(d => this.saveData(d));
   }
   delete(where){
-    this.loadData()
-      .then(d => {
-        for(let i = 0; i < d.length; ++i){
-          if(!this.match(d[i], where)) continue;
-          d.splice(i--, 1);
-        }
-        return d;
-      })
+    return this.loadData()
+      .then(d => d.filter(x => !this.match(x, where)))
       .then(d => this.saveData(d));
   }
 }
