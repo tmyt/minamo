@@ -77,13 +77,7 @@ class api {
     priv.post('/credentials/update', this.updateCredentials);
     priv.post('/credentials/fido/register', this.registerFidoCredentials);
     /* admin api */
-    const admin = express.Router();
-    admin.get('/users', this.listUsers);
-    admin.get('/users/exists', this.existsUser);
-    admin.post('/users/create', this.createUser);
-    admin.post('/users/delete', this.deleteUser);
-    admin.post('/users/reset_password', this.resetPassword);
-    admin.get('/admin/verify', this.verifyAdminCredentials);
+    const admin = require('./admin')();
     priv.use(requireAdminRights, admin);
     // io
     io.of('/status').on('connection', this.wsStatuses.bind(this));
@@ -340,44 +334,6 @@ class api {
     }catch(e){
       res.sendStatus(500);
     }
-  }
-
-  async listUsers(req, res){
-    const users = await userDb.getUsers();
-    res.send(users);
-  }
-
-  async existsUser(req, res){
-    const username = req.query.username;
-    if(!username) return res.sendStatus(400);
-    const exists = await userDb.findUser(username);
-    res.sendStatus(exists ? 200 : 404);
-  }
-
-  async createUser(req, res){
-    const username = req.body.username;
-    if(!username) return res.sendStatus(400);
-    if(await userDb.findUser(username)) return res.sendStatus(400);
-    const password = await userDb.createUser(username);
-    res.send(password);
-  }
-
-  async deleteUser(req, res){
-    const username = req.body.username;
-    if(!username) return res.sendStatus(400);
-    const ret = await userDb.removeUser(username);
-    res.sendStatus(ret ? 200 : 500);
-  }
-
-  async resetPassword(req, res){
-    const username = req.body.username;
-    if(!username) return res.sendStatus(400);
-    const password = await userDb.resetCredential(username);
-    res.send(password);
-  }
-
-  verifyAdminCredentials(req, res){
-    res.send({isAuthenticated: req.isAuthenticated() && req.user.role === 'admin' ? 1 : 0});
   }
 
   wsStatuses(socket){
