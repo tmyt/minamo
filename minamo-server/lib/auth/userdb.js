@@ -1,65 +1,9 @@
 'use strict';
 
-const bluebird = require('bluebird')
-    , fs = bluebird.promisifyAll(require('fs'))
+const JsonDB = require('./jsondb')
     , crypto = require('crypto');
 
 const PasswordBase = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{};:,./<>?`~';
-
-class JsonDB{
-  constructor(path){
-    this._dataPath = path;
-    this._dataStore = {};
-  }
-  loadData(){
-    return fs.readFileAsync(this._dataPath)
-      .then(JSON.parse)
-      .catch(() => ([]));
-  }
-  saveData(data){
-    return Promise.resolve(JSON.stringify(data))
-      .then(d => fs.writeFileAsync(this._dataPath, d));
-  }
-  match(d, where){
-    if(!where) return true;
-    const keys = Object.keys(where);
-    for(let i = 0; i < keys.length; ++i){
-      if(d[keys[i]] !== where[keys[i]]) return false;
-    }
-    return true;
-  }
-  select(where){
-    return this.loadData()
-      .then(d => d.filter(x => this.match(x, where)));
-  }
-  insert(object){
-    return this.loadData()
-      .then(d => d.concat([object]))
-      .then(d => this.saveData(d));
-  }
-  update(object, where){
-    return this.loadData()
-      .then(d => {
-        for(let i = 0; i < d.length; ++i){
-          if(!this.match(d[i], where)) continue;
-          d[i] = object;
-        }
-        return d;
-      })
-      .then(d => this.saveData(d));
-  }
-  delete(where){
-    this.loadData()
-      .then(d => {
-        for(let i = 0; i < d.length; ++i){
-          if(!this.match(d[i], where)) continue;
-          d.splice(i--, 1);
-        }
-        return d;
-      })
-      .then(d => this.saveData(d));
-  }
-}
 
 class UserDB{
   constructor(path){
@@ -93,6 +37,8 @@ class UserDB{
   async removeUser(userid){
     if(!await this.findUser(userid)) return false;
     await this._db.delete({type: 'local', username: userid});
+    await this._db.delete({type: 'social', relative: userid});
+    await this._db.delete({type: 'fido2', relative: userid});
     return true;
   }
   async authenticate(userid, password){
@@ -132,18 +78,25 @@ class UserDB{
     })).map(d => d.key)[0];
   }
   async updateCredential(userid, password, newPassword){
-    const user = (await this._db.select({
+    const where = {
       type: 'local',
       username: userid,
-      //password: this.hashPassword(password)
-    }))[0];
+    };
+    const user = (await this._db.select(where))[0];
     if(!user) return false;
     user.password = this.hashPassword(newPassword);
-    await this._db.update(user, {
+    await this._db.update(user, where);
+    return true;
+  }
+  async updateAvatar(userid, avatar){
+    const where = {
       type: 'local',
       username: userid,
-      //password: this.hashPassword(password)
-    });
+    };
+    const user = (await this._db.select(where))[0];
+    if(!user) return false;
+    user.avatar = avatar;
+    await this._db.update(user, where);
     return true;
   }
   async addSocialId(userid, provider, id){
