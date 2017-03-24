@@ -42,6 +42,16 @@ const routes = {
           System.import('./pages/terminal').then(component => callback(null, component.default));
         }
       }]
+    },
+    {
+      path: 'admin',
+      component: Authorized,
+      onEnter: Authorized.verifyAdminCredentials,
+      indexRoute: {
+        getComponent: (location, callback) => {
+          System.import('./pages/admin').then(component => callback(null, component.default));
+        }
+      }
     }]
   },
   {

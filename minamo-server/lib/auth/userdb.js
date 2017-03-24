@@ -23,7 +23,8 @@ class UserDB{
     return !!(await this._db.select({type: 'local', username: userid})).length;
   }
   async getUsers(){
-    return (await this._db.select({type: 'local'})).map(x => x.username);
+    return (await this._db.select({type: 'local'}))
+      .map(x => ({username: x.username, role: x.role}));
   }
   async createUser(userid){
     if(await this.findUser(userid)) return null;
@@ -40,8 +41,7 @@ class UserDB{
   async removeUser(userid){
     if(!await this.findUser(userid)) return false;
     await this._db.delete({type: 'local', username: userid});
-    await this._db.delete({type: 'social', relative: userid});
-    await this._db.delete({type: 'fido2', relative: userid});
+    await this._db.delete({relative: userid});
     return true;
   }
   async authenticate(userid, password){

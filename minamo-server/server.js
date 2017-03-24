@@ -79,6 +79,7 @@ app.use('/api', new api(express.Router(), kvs, io));
 
 // handle authorized uris
 app.get('/console(/*)?', requireAuthentication, handleReactRouter);
+app.get('/admin(/*)?', requireAdminAuthentication, handleReactRouter);
 // handle others
 app.get('*', handleReactRouter);
 
@@ -144,6 +145,12 @@ function requireAuthentication(req, res, next){
   }
   if(req.isAuthenticated()) { return next(); }
   res.redirect('/login?_redir=' + encodeURIComponent(req.originalUrl));
+}
+
+function requireAdminAuthentication(req, res, next){
+  req.requireAuthentication = true;
+  if(req.isAuthenticated() && req.user.role === 'admin') { return next(); }
+  res.send(404);
 }
 
 function handleReactRouter(req, res){

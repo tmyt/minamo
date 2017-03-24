@@ -16,8 +16,12 @@ export default class HeaderComponent extends React.Component {
   }
   render(){
     let extraTabMenu = null;
+    let adminTabItem = null;
     if(this.context.router && this.context.router.isActive('/console', true)){
       extraTabMenu = (<ConsoleTabs />);
+    }
+    if(this.context.profile && this.context.profile.role === 'admin'){
+      adminTabItem = (<LinkContainer to='/admin'><NavItem>admin</NavItem></LinkContainer>);
     }
     return (
       <header>
@@ -39,6 +43,7 @@ export default class HeaderComponent extends React.Component {
                 <LinkContainer to='/console' onlyActiveOnIndex={true}><NavItem>console</NavItem></LinkContainer>
                 <LinkContainer to='/console/logstream'><NavItem>log stream</NavItem></LinkContainer>
                 <LinkContainer to='/console/terminal'><NavItem>terminal</NavItem></LinkContainer>
+                {adminTabItem}
               </Nav>
             </Navbar.Collapse>
           </Container>
@@ -50,5 +55,6 @@ export default class HeaderComponent extends React.Component {
 }
 HeaderComponent.contextTypes = {
   router: React.PropTypes.object,
-  isAuthenticated: React.PropTypes.bool
+  isAuthenticated: React.PropTypes.bool,
+  profile: React.PropTypes.object,
 }

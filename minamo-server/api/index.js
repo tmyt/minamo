@@ -82,7 +82,8 @@ class api {
     admin.get('/users/exists', this.existsUser);
     admin.post('/users/create', this.createUser);
     admin.post('/users/delete', this.deleteUser);
-    admin.post('/users/resetPassword', this.resetPassword);
+    admin.post('/users/reset_password', this.resetPassword);
+    admin.get('/admin/verify', this.verifyAdminCredentials);
     priv.use(requireAdminRights, admin);
     // io
     io.of('/status').on('connection', this.wsStatuses.bind(this));
@@ -347,7 +348,7 @@ class api {
   }
 
   async existsUser(req, res){
-    const username = req.body.username;
+    const username = req.query.username;
     if(!username) return res.sendStatus(400);
     const exists = await userDb.findUser(username);
     res.sendStatus(exists ? 200 : 404);
@@ -364,15 +365,19 @@ class api {
   async deleteUser(req, res){
     const username = req.body.username;
     if(!username) return res.sendStatus(400);
-    await userDb.removeUser(username);
-    res.sendStatus(200);
+    const ret = await userDb.removeUser(username);
+    res.sendStatus(ret ? 200 : 500);
   }
 
   async resetPassword(req, res){
     const username = req.body.username;
     if(!username) return res.sendStatus(400);
-    await userDb.resetCredential(username);
-    res.sendStatus(200);
+    const password = await userDb.resetCredential(username);
+    res.send(password);
+  }
+
+  verifyAdminCredentials(req, res){
+    res.send({isAuthenticated: req.isAuthenticated() && req.user.role === 'admin' ? 1 : 0});
   }
 
   wsStatuses(socket){
