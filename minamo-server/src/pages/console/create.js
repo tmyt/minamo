@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, ControlLabel, HelpBlock, Glyphicon } from 'react-bootstrap';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
 
@@ -9,15 +9,19 @@ const ContainerRegexp = new RegExp(`^${ContainerRegexpString}\$`);
 export default class ConsoleCreateComponent extends React.Component{
   constructor(){
     super();
-    this.state = { name: '', template: '', external: '', checking: false, available: true };
+    this.state = { name: '', template: '', external: '', pending: false, available: false };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.timerId = 0;
   }
 
+  validateName(name){
+    return ContainerRegexp.test(name);
+  }
+
   getValidationState(){
     if(!this.state.name) return null;
-    if(!this.state.checking && !this.state.available) return 'error';
-    return ContainerRegexp.test(this.state.name) ? 'success' : 'error'
+    if(this.state.pending) return 'warning';
+    return this.state.available && this.validateName(this.state.name) ? 'success' : 'error'
   }
 
   getValidationHelp(){
@@ -26,14 +30,14 @@ export default class ConsoleCreateComponent extends React.Component{
     return `error: service name should be ${ContainerRegexpString}`;
   }
 
-  checkContainerName(){
+  checkContainerName(name){
     clearTimeout(this.timerId);
-    this.setState({checking: true, available: true});
+    this.setState({pending: true, available: true});
+    if(!this.validateName(name)){
+      this.setState({pending: false, available: true});
+      return;
+    }
     this.timerId = setTimeout(() => {
-      if(this.getValidationState() !== 'success'){
-        this.updateNameAvailability(true);
-        return;
-      }
       Http.get('/api/services/available', {service: this.state.name},
         ret => {this.updateNameAvailability(ret.available)},
         () => {this.updateNameAvailability(true)}
@@ -42,7 +46,7 @@ export default class ConsoleCreateComponent extends React.Component{
   }
 
   updateNameAvailability(isAvailable){
-    this.setState({checking: false, available: isAvailable});
+    this.setState({pending: false, available: isAvailable});
   }
 
   isExternalRepository(){
@@ -52,7 +56,7 @@ export default class ConsoleCreateComponent extends React.Component{
   handleChange(field){
     return (e) => {
       this.setState({[field]: e.target.value});
-      if(field === 'name') this.checkContainerName();
+      if(field === 'name') this.checkContainerName(e.target.value);
     };
   }
 
@@ -74,6 +78,7 @@ export default class ConsoleCreateComponent extends React.Component{
   }
 
   render(){
+    const loading = this.state.pending ? (<Glyphicon className='loading' glyph='refresh' />) : null;
     return (
       <div>
         <h2>Create containers</h2>
@@ -81,7 +86,7 @@ export default class ConsoleCreateComponent extends React.Component{
           <FormGroup validationState={this.getValidationState()}>
             <ControlLabel>Name</ControlLabel>
             <FormControl value={this.state.name} onChange={this.handleChange('name')}/>
-            <FormControl.Feedback />
+            <FormControl.Feedback>{loading}</FormControl.Feedback>
             <HelpBlock>{this.getValidationHelp()}</HelpBlock>
           </FormGroup>
           <FormGroup>

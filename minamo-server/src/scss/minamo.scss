@@ -82,3 +82,12 @@ i.fa {
 .form-control.readonly-dropdown-input {
   background-color: #fff;
 }
+
+.loading {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
+}
