@@ -9,15 +9,15 @@ class UserDB{
   constructor(path){
     this._db = new JsonDB(path);
   }
-  makePassword(){
+  makePassword(n){
     let password = '';
-    for(let i = 0; i < 9; ++i){
+    for(let i = 0; i < n; ++i){
       password += PasswordBase[(Math.random() * PasswordBase.length) | 0];
     }
     return password;
   }
-  hashPassword(s){
-    return crypto.createHash('sha256').update(s).digest('hex');
+  hashPassword(s, salt){
+    return crypto.createHash('sha256').update(salt + s).digest('hex');
   }
   async findUser(userid){
     return !!(await this._db.select({type: 'local', username: userid})).length;
@@ -28,11 +28,12 @@ class UserDB{
   }
   async createUser(userid){
     if(await this.findUser(userid)) return null;
-    const password = this.makePassword();
+    const password = this.makePassword(9);
+    const salt = this.makePassword(2);
     await this._db.insert({
       type: 'local',
       username: userid,
-      password: this.hashPassword(password),
+      password: salt + this.hashPassword(password, salt),
       avatar: '/img/default.gif',
       role: 'user'
     });
@@ -45,11 +46,14 @@ class UserDB{
     return true;
   }
   async authenticate(userid, password){
-    return (await this._db.select({
+    const user = (await this._db.select({
       type: 'local',
       username: userid,
-      password: this.hashPassword(password)
     }))[0];
+    if(!user) return null;
+    const salt = user.password.substring(0, 2);
+    const hashed = salt + this.hashPassword(password, salt);
+    return user.password === hashed ? user : null;
   }
   async authenticateWithSocialId(provider, id){
     const username = (await this._db.select({
@@ -87,7 +91,8 @@ class UserDB{
     };
     const user = (await this._db.select(where))[0];
     if(!user) return false;
-    user.password = this.hashPassword(newPassword);
+    const salt = this.makePassword(2);
+    user.password = salt + this.hashPassword(newPassword, salt);
     await this._db.update(user, where);
     return true;
   }
@@ -120,8 +125,9 @@ class UserDB{
     };
     const user = (await this._db.select(where))[0];
     if(!user) return null;
-    const password = this.makePassword();
-    user.password = this.hashPassword(password);
+    const password = this.makePassword(9);
+    const salt = this.makePassword(2);
+    user.password = salt + this.hashPassword(password, salt);
     await this._db.update(user, where);
     return password;
   }
