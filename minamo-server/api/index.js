@@ -100,6 +100,13 @@ class api {
     }
   }
 
+  async getBranchForRepoAsync(repo){
+    const env = path.join(config.repo_path, repo + '.env');
+    const json = await fs.readFileAsync(env).catch(() => '{}');
+    const vars = JSON.parse(json);
+    return vars['MINAMO_BRANCH_NAME'] || 'master';
+  }
+
   async getContainerStatusesAsync(){
     const containers = await docker.listContainersAsync({all: true});
     const files = await fs.readdirAsync(config.repo_path);
@@ -108,11 +115,12 @@ class api {
       if(files[i][0] === '.') continue;
       const stat = await fs.statAsync(path.join(config.repo_path, files[i]));
       if(stat.isFile() && files[i].endsWith('.env')) continue;
+      const branch = await this.getBranchForRepoAsync(files[i]);
       statuses[files[i]] = {
         'status': 'stopped',
         'uptime': '',
         'created': '',
-        'head': head(path.join(config.repo_path, files[i])),
+        'head': head(path.join(config.repo_path, files[i]), branch),
         'repo': 'local'
       };
       if(stat.isFile()){
