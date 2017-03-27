@@ -79,6 +79,10 @@ i.fa {
   margin-bottom: 24px;
 }
 
+.form-control.readonly-dropdown-input {
+  background-color: #fff;
+}
+
 .loading {
   animation: spin 1.5s linear infinite;
 }

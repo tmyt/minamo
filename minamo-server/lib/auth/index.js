@@ -6,16 +6,19 @@ const express = require('express')
 function authRouter(provider){
   const authenticate = (req, res, next) => {
     const redir = req.session.redir || req.query._redir;
+    const mode = req.user && (req.session.mode || req.query._mode);
     req.session.redir = redir;
+    req.session.mode = mode;
     passport.authenticate(provider, (err, user, info) => {
       delete req.session.redir;
+      delete req.session.mode;
       if(err) { return next(err); }
       if(!user) {
         const queryParams = [];
         const message = info && info.message;
         if(redir) queryParams.push(`_redir=${encodeURIComponent(redir)}`);
         if(message) queryParams.push(`_message=${encodeURIComponent(message)}`);
-        return res.redirect(`/login${queryParams.length > 0?`?${queryParams.join('&')}`:''}`);
+        return res.redirect(`/login${(queryParams.length && `?${queryParams.join('&')}`) || ''}`);
       }
       req.login(user, err => {
         if(err) { return next(err); }

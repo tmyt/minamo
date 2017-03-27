@@ -2,21 +2,27 @@
 
 const appReq = require('app-require')
     , config = appReq('./config')
+    , userDb = new (require('./userdb'))(config.userdb)
     , LocalStrategy = require('passport-local').Strategy;
 
-const users = config.LOCAL_USERS;
-
 module.exports = new LocalStrategy({
-    usernameField: 'username', passwordField: 'password'
-  }, function(username, password, done){
-    process.nextTick(function(){
-      if(!users[username] || users[username] !== password){
+    passReqToCallback: true,
+    usernameField: 'username',
+    passwordField: 'password'
+  }, async function(req, username, password, done){
+    if(req.user && req.session.mode === 'connect'){
+      await userDb.addSocialId(req.user.username, profile.provider, profile.id);
+      return done(null, req.user);
+    }
+    process.nextTick(async function(){
+      const user = await userDb.authenticate(username, password);
+      if(!user){
         return done(null, false, {message: 'Incorrect username or password'});
       }
       return done(null, {
-        username: username,
-        provider: 'local',
-        avatar: '/img/default.gif'
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar
       });
     });
   }

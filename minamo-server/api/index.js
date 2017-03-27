@@ -16,6 +16,7 @@ const Docker = require('dockerode')
     , docker = promisifyAll(new Docker());
 
 const config = appReq('./config')
+    , userDb = new(appReq('./lib/auth/userdb'))(config.userdb)
     , tools = appReq('./lib/tools');
 
 const ContainerRegexpString = '[a-z][a-z0-9-]*[a-z0-9]';
@@ -70,8 +71,14 @@ class api {
     priv.get(`${svcBase}/logs`, this.logs);
     priv.get(`${svcBase}/env`, this.env);
     priv.post(`${svcBase}/env/update`, this.updateEnv);
+    priv.get('/credentials/connected', this.getConnectedCredentials);
+    priv.get('/credentials/:service/connect', this.connectSocialId);
+    priv.post('/credentials/:service/disconnect', this.disconnectSocialId);
     priv.post('/credentials/update', this.updateCredentials);
     priv.post('/credentials/fido/register', this.registerFidoCredentials);
+    /* admin api */
+    const admin = require('./admin')();
+    priv.use(requireAdminRights, admin);
     // io
     io.of('/status').on('connection', this.wsStatuses.bind(this));
     require('./logstream.js')(io);
@@ -279,13 +286,38 @@ class api {
     process.stderr.pipe(res);
   }
 
-  updateCredentials(req, res){
-    let usersPath = path.join(__dirname, '../data/gitusers.json');
+  async getConnectedCredentials(req, res){
+    const ids = await userDb.getConnectedSocialIds(req.user.username);
+    res.send({
+      twitter: !!ids.twitter,
+      github: !!ids.github
+    });
+  }
+
+  async connectSocialId(req, res){
+    const service = req.params.service;
+    if(service !== 'github' && service !== 'twitter'){
+      return res.send(400);
+    }
+    const uri = config.proto + '://' + config.domain
+              + '/auth/' + service
+              + '?_mode=connect&_redir=/console#tab-configure';
+    res.redirect(uri);
+  }
+
+  async disconnectSocialId(req, res){
+    const username = req.user.username;
+    const service = req.params.service;
+    const ids = await userDb.getConnectedSocialIds(username);
+    if(ids[service] === undefined) return res.send(400);
+    await userDb.removeSocialId(username, service, ids[service]);
+    res.send(200);
+  }
+
+  async updateCredentials(req, res){
     if(!req.user.username || !req.body.password ||
       req.user.username === '' || req.body.password === '') return res.send(400);
-    let data = fs.readJsonSync(usersPath);
-    data[req.user.username] = req.body.password;
-    fs.outputJsonSync(usersPath, data);
+    await userDb.updateCredential(req.user.username, null, req.body.password);
     res.send('OK');
   }
 
@@ -336,6 +368,11 @@ function pathExists(name){
 function rejectIfNotAuthenticated(req, res, next){
   if(req.isAuthenticated()) { return next(); }
   res.status(401).send();
+}
+
+function requireAdminRights(req, res, next){
+  if(req.user.role === 'admin') { return next(); }
+  res.status(404).send();
 }
 
 function ignoreCaches(req, res, next){
