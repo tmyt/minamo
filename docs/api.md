@@ -35,17 +35,20 @@ Some APIs requires authentication. Authentication information only available via
 ### GET /hooks/{repo}
 
 Trigger rebuild container (for git webhook)
-- GET /services/available
 
-- repo: repository name
-- key: authorization key
+| name | value |
+|----|----|
+|repo|repository name|
+|key|authorization key|
 
 ### POST /hooks/{repo}
 
 Trigger rebuild container (for git webhook)
 
-- repo: repository name
-- key: authorization key
+| name | value |
+|----|----|
+|repo|repository name|
+|key|authorization key|
 
 ### GET /services :lock:
 
@@ -59,59 +62,77 @@ Get statuses for all services.
 
 Check service name availability
 
-- name: service name
+| name | value |
+|----|----|
+|name|service name|
 
 ### PUT /services/{name} :lock:
 
 Create new container
 
-- name: service name
-- template: template name
-- external: external git uri
+| name | value |
+|----|----|
+|name|service name|
+|template|template name|
+|external|external git uri|
 
 ### DELETE /services/{name} :lock:
 
 Delete existing container
 
-- name: service name
+| name | value |
+|----|----|
+|name|service name|
 
 ### POST /services/{name}/start :lock:
 
 Build container and start.
 
-- name: service name
+| name | value |
+|----|----|
+|name|service name|
 
 ### POST /services/{name}/stop :lock:
 
 Stop container.
 
-- name: service name
+| name | value |
+|----|----|
+|name|service name|
 
 ### POST /services/{name}/restart :lock:
 
 Restart container.
 
-- name: service name
-- quick: if set value, restart container without rebuild.
+| name | value |
+|----|----|
+|name|service name|
+|quick|if set value, restart container without rebuild.|
 
 ### GET /services/{name}/logs :lock:
 
 Get logs from container.
 
-- name: service name
+| name | value |
+|----|----|
+|name|service name|
 
 ### GET /services/{name}/env :lock:
 
 Get env variables from container.
 
-- name: service name
+| name | value |
+|----|----|
+|name|service name|
 
 ### POST /services/{name}/env/update :lock:
 
 Update custom env variables to container.
 
-- name: service name
-- env: JSON object for env variables
+| name | value |
+|----|----|
+|name|service name|
+|env|JSON object for env variables|
 
 **NOTE**
 
@@ -127,14 +148,18 @@ These special env variables are available.
 
 Update git credential
 
-- password: new password
+| name | value |
+|----|----|
+|password|new password|
 
 ### POST /credentials/fido/register :lock:
 
 Register FIDO2.0 public key
 
-- id: key id
-- key: public key
+| name | value |
+|----|----|
+|id|key id|
+|key|public key|
 
 ## Socket.IO Endpoints
 
