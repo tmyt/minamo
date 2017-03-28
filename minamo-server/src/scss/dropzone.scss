@@ -1,0 +1,31 @@
+#app {
+  .dropzone {
+    min-height: initial;
+    border: initial;
+    background: initial;
+    padding: initial;
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+  
+    & .dz-preview {
+      margin: 0px;
+  
+      &.dz-image-preview {
+        background-color: initial;
+      }
+    }
+  
+    & .dz-default.dz-message {
+      width: 120px;
+      height: 120px;
+      margin: 0px;
+      border-radius: 20px;
+      border: 2px dashed #ccc;
+  
+      & span {
+        line-height: 114px;
+      }
+    }
+  }
+}
