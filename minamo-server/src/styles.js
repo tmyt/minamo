@@ -5,3 +5,4 @@ import './scss/logstream.scss';
 import './scss/minamo.scss';
 import './scss/terminal.scss';
 import './scss/opensans.scss';
+import './scss/dropzone.scss';
