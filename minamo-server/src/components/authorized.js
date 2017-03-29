@@ -4,7 +4,6 @@ export default class Authorized extends React.Component{
   render(){
     return this.props.children;
   }
-  static isFirstNavigation
   static verifyCore(isAdmin, nextState, replaceState, callback){
     if(typeof $ !== 'function'){
       // here is server side render
