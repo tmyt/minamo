@@ -4,16 +4,17 @@ export default class Authorized extends React.Component{
   render(){
     return this.props.children;
   }
+  static isFirstNavigation
   static verifyCore(isAdmin, nextState, replaceState, callback){
     if(typeof $ !== 'function'){
       // here is server side render
       return callback();
     }
     // here is client side render
-    if(!isAdmin && window.isVerified || isAdmin && window.isAdminVerified){
-      // request already verified
-      delete window.isVerified;
-      delete window.isAdminVerified;
+    if(Authorized.IsFirstTime){
+      // at the first time, all page content is rendered
+      // by server-side. request already verified by the server.
+      Authorized.IsFirstTime = false;
       return callback();
     }
     const redir = '/login?_redir=' + encodeURIComponent(nextState.location.pathname);
@@ -38,3 +39,4 @@ export default class Authorized extends React.Component{
 Authorized.contextTypes = {
   isAuthenticated: React.PropTypes.bool
 }
+Authorized.IsFirstTime = true;
