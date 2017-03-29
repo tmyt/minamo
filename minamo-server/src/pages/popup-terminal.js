@@ -22,8 +22,10 @@ export default class PopupTerminalComponent extends React.Component{
       const viewport = document.getElementsByClassName('xterm-viewport')[0];
       viewport.style.width = '100vw';
     }
+    window.addEventListener('beforeunload', this.onUnload);
   }
   componentWillUnmount(){
+    window.removeEventListener('beforeunload', this.onUnload);
     window.removeEventListener('resize', this.onResize);
   }
   isMobileChrome(){
@@ -34,6 +36,10 @@ export default class PopupTerminalComponent extends React.Component{
   }
   onResize(){
     this.xterm.divTerminal.style.height = window.innerHeight + 'px';
+  }
+  onUnload(e){
+    e.returnValue = 'Would you close it?';
+    return e.returnValue;
   }
   render(){
     return (
