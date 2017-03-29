@@ -349,13 +349,9 @@ class api {
 
   async registerFidoCredentials(req, res){
     const id = req.body.id;
-    const value = {
-      key: JSON.parse(req.body.key),
-      profile: req.user
-    };
-    const file = path.join(__dirname, `../data/fido2/${hash(id)}.json`);
+    const key = JSON.parse(req.body.key);
     try{
-      await fs.writeJsonAsync(file, value);
+      await userDb.addPublicKey(req.user.username, key, id);
       res.sendStatus(200);
     }catch(e){
       res.sendStatus(500);
