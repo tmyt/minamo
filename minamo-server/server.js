@@ -162,14 +162,17 @@ function handleReactRouter(req, res){
       res.redirect(302, redirectLocation.pathname + redirectLocation.search);
     }else if(props){
       const auth = {isAuthenticated: req.isAuthenticated(), profile: req.user};
-      const configJson = {proto: `${config.proto}:`, domain: config.domain};
       props.router.auth = auth;
       const markup = renderToString(<RouterContext {...props} />);
-      const appProps = `window.APP_PROPS = ${JSON.stringify(auth)};`
-        + ((req.requireAuthentication && auth.isAuthenticated && 'window.isVerified = true;') || '');
-      const configJs = `window.MinamoConfig = ${JSON.stringify(configJson)};`;
+      const metas = [
+        ['mo:scheme', config.proto],
+        ['mo:domain', config.domain],
+        ['mo:user', req.user.username],
+        ['mo:role', req.user.role],
+        ['mo:avatar', req.user.avatar],
+      ];
       const title = DocumentTitle.rewind();
-      res.render('index', {markup, appProps, configJs, title});
+      res.render('index', {markup, title, metas});
     }else{
       res.sendStatus(404);
     }
