@@ -91,3 +91,6 @@ i.fa {
   0% {transform: rotate(0deg);}
   100% {transform: rotate(360deg);}
 }
+
+// import sub-styles
+@import 'console', 'dropzone', 'login', 'logstream', 'opensans', 'terminal'
