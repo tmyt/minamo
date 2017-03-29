@@ -138,7 +138,6 @@ let watcher = fs.watch(gitusersPath, (name, e) => {
 });
 
 function requireAuthentication(req, res, next){
-  req.requireAuthentication = true;
   if(req.query._token){
     res.cookie('connect.sid', req.query._token);
     if(req.isAuthenticated()) return next();
@@ -149,7 +148,6 @@ function requireAuthentication(req, res, next){
 }
 
 function requireAdminAuthentication(req, res, next){
-  req.requireAuthentication = true;
   if(req.isAuthenticated() && req.user.role === 'admin') { return next(); }
   res.send(404);
 }
@@ -168,13 +166,13 @@ function handleReactRouter(req, res){
         ['mo:scheme', config.proto],
         ['mo:domain', config.domain],
       ];
-      const user = req.user ? [
-        ['mo:user', req.user.username],
-        ['mo:role', req.user.role],
-        ['mo:avatar', req.user.avatar],
-      ] : [];
+      if(req.user){
+        metas.push(['mo:user', req.user.username]);
+        metas.push(['mo:role', req.user.role]);
+        metas.push(['mo:avatar', req.user.avatar]);
+      }
       const title = DocumentTitle.rewind();
-      res.render('index', {markup, title, metas: metas.concat(user)});
+      res.render('index', {markup, title, metas});
     }else{
       res.sendStatus(404);
     }

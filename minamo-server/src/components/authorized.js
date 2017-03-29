@@ -1,21 +1,24 @@
 import React from 'react';
+import Meta from './meta';
 
 export default class Authorized extends React.Component{
   render(){
     return this.props.children;
   }
   static verifyCore(isAdmin, nextState, replaceState, callback){
+    const firstTime = Authorized.IsFirstTime;
+    Authorized.IsFirstTime = false;
     if(typeof $ !== 'function'){
       // here is server side render
       return callback();
     }
     // here is client side render
-    if(Authorized.IsFirstTime){
+    if(firstTime && Meta.user && (!isAdmin || (Meta.role === 'admin'))){
       // at the first time, all page content is rendered
       // by server-side. request already verified by the server.
-      Authorized.IsFirstTime = false;
       return callback();
     }
+    Authorized.IsFirstTime = false;
     const redir = '/login?_redir=' + encodeURIComponent(nextState.location.pathname);
     $.ajax({
       url: `/api/${isAdmin ? 'admin/' : ''}verify`
