@@ -5,7 +5,6 @@ import ExtensionTips from '../components/extension-tips';
 import Xterm from '../components/xterm';
 import FontAwesome from '../components/font-awesome';
 
-const BrowserExtensionElement = 'x-minamo-openterminal-extension';
 const BrowserExtensionEvent = 'x-minamo-openterminal';
 
 export default class TerminalComponent extends React.Component{
@@ -21,18 +20,21 @@ export default class TerminalComponent extends React.Component{
   }
   componentDidMount(){
     setTimeout(() => {
-      this.checkExtensionAvailability();
+      this.showExtensionTip();
     }, 1000);
   }
-  checkExtensionAvailability(){
-    if(typeof(chrome) === 'object' && !document.getElementById(BrowserExtensionElement)){
+  hasExtension(){
+    return !!document.getElementsByTagName('meta')['mo:extension-available'];
+  }
+  showExtensionTip(){
+    if(typeof(chrome) === 'object' && !this.hasExtension()){
       this.setState({tipsVisible: true});
     }
   }
   openPopup(){
     const theme = this.state.theme ? '?theme=' + this.state.theme : '';
     const path = '/console/terminal_popup' + theme;
-    if(document.getElementById(BrowserExtensionElement)){
+    if(this.hasExtension()){
       const url = location.protocol + '//' + location.host + path;
       const e = new CustomEvent(BrowserExtensionEvent, { detail: { url } });
       return window.dispatchEvent(e);

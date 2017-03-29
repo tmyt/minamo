@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "minamo.io Terminal Extension",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "minamo.io development team",
   "background": {
     "scripts": [ "main.js" ],

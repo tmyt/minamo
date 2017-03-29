@@ -10,10 +10,10 @@ function listen(){
 }
 
 function hook(){
-  var el = document.createElement('div');
-  el.id = 'x-minamo-openterminal-extension';
-  el.style.display = 'none';
-  document.body.appendChild(el);
+  var el = document.createElement('meta');
+  el.name = 'mo:extension-available';
+  el.content = '1';
+  document.head.appendChild(el);
 }
 
 listen();
