@@ -159,8 +159,7 @@ function handleReactRouter(req, res){
     }else if(redirectLocation){
       res.redirect(302, redirectLocation.pathname + redirectLocation.search);
     }else if(props){
-      const auth = {isAuthenticated: req.isAuthenticated(), profile: req.user};
-      props.router.auth = auth;
+      props.router.profile = req.user;
       const markup = renderToString(<RouterContext {...props} />);
       const metas = [
         ['mo:scheme', config.proto],

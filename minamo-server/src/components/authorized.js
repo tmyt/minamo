@@ -38,7 +38,4 @@ export default class Authorized extends React.Component{
     Authorized.verifyCore(true, nextState, replaceState, callback);
   }
 }
-Authorized.contextTypes = {
-  isAuthenticated: React.PropTypes.bool
-}
 Authorized.IsFirstTime = true;
