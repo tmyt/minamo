@@ -167,12 +167,14 @@ function handleReactRouter(req, res){
       const metas = [
         ['mo:scheme', config.proto],
         ['mo:domain', config.domain],
+      ];
+      const user = req.user ? [
         ['mo:user', req.user.username],
         ['mo:role', req.user.role],
         ['mo:avatar', req.user.avatar],
-      ];
+      ] : [];
       const title = DocumentTitle.rewind();
-      res.render('index', {markup, title, metas});
+      res.render('index', {markup, title, metas: metas.concat(user)});
     }else{
       res.sendStatus(404);
     }
