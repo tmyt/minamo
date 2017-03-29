@@ -73,7 +73,7 @@ class MinamoIdForm extends React.Component{
     return(
       <form onSubmit={this.handleSubmit}>
         <Row>
-          <Col md={6}>
+          <Col sm={8}>
             <FormGroup>
               <ControlLabel>Username</ControlLabel>
               <FormControl disabled={true} value={this.context.profile.username}/>
@@ -84,7 +84,7 @@ class MinamoIdForm extends React.Component{
               <FormControl.Feedback />
             </FormGroup>
           </Col>
-          <Col md={6}>
+          <Col sm={4}>
             <FormGroup>
               <ControlLabel>Image</ControlLabel>
               <div>
