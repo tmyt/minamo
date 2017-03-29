@@ -41,7 +41,7 @@ export default class Xterm extends React.Component{
         timer = setTimeout(() => term.fit(), 100);
       });
       term.on('title', d => document.title = d);
-      socket.on('exit', d => window.close());
+      socket.on('exit', d => {this.connected = false; window.close();});
     }else{
       socket.on('exit', d => {
         socket.disconnect();
@@ -50,6 +50,7 @@ export default class Xterm extends React.Component{
     }
     this.divTerminal.className += ` xterm-theme-${this.props.theme}`;
     this.socket = socket;
+    this.connected = true;
   }
   componentWillUnmount(){
     // remove handler

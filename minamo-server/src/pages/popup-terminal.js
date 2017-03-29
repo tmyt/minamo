@@ -8,6 +8,7 @@ export default class PopupTerminalComponent extends React.Component{
     super();
     this.state = { theme: undefined };
     this.onResize = this.onResize.bind(this);
+    this.onUnload = this.onUnload.bind(this);
   }
   componentWillMount(){
     const search = this.context.router.location.search;
@@ -38,6 +39,7 @@ export default class PopupTerminalComponent extends React.Component{
     this.xterm.divTerminal.style.height = window.innerHeight + 'px';
   }
   onUnload(e){
+    if(!this.xterm.connected) return;
     e.returnValue = 'Would you close it?';
     return e.returnValue;
   }
