@@ -9,6 +9,7 @@ module.exports = {
   http_port: 3000,
   git_port: 7000,
   redis_port: 16379,
+  data_dir: path.resolve('data'),
   userdb: path.join(path.resolve('data'), 'userdb.json'),
 
   // GitHub appid and trusted users

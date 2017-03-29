@@ -2,6 +2,7 @@
 
 const promisifyAll = require('bluebird').promisifyAll
     , express = require('express')
+    , multer = require('multer')
     , path = require('path')
     , crypto = require('crypto')
     , crc = require('crc').crc32
@@ -74,8 +75,10 @@ class api {
     priv.get('/credentials/connected', this.getConnectedCredentials);
     priv.get('/credentials/:service/connect', this.connectSocialId);
     priv.post('/credentials/:service/disconnect', this.disconnectSocialId);
-    priv.post('/credentials/update', this.updateCredentials);
     priv.post('/credentials/fido/register', this.registerFidoCredentials);
+    priv.post('/users/profile/update', this.updateProfile);
+    priv.post('/users/avatar/upload', multer({dest: '/tmp/upload/'}).single('file'),
+              this.uploadAvatar);
     /* admin api */
     const admin = require('./admin')();
     priv.use(requireAdminRights, admin);
@@ -322,10 +325,25 @@ class api {
     res.send(200);
   }
 
-  async updateCredentials(req, res){
-    if(!req.user.username || !req.body.password ||
-      req.user.username === '' || req.body.password === '') return res.send(400);
-    await userDb.updateCredential(req.user.username, null, req.body.password);
+  async updateProfile(req, res){
+    if(!req.user.username) return res.send(400);
+    if(!req.body.password && !req.body.avatar) return res.send(400);
+    if(req.body.password){
+      await userDb.updateCredential(req.user.username, null, req.body.password);
+    }
+    if(req.body.avatar){
+      const fileName = String(Date.now()) + req.user.username;
+      const avatarDir = path.join(config.data_dir, 'avatar');
+      const avatarPath = path.join(avatarDir, fileName);
+      const uploadPath = path.join('/tmp/upload', path.basename(req.body.avatar));
+      if(await fs.statAsync(uploadPath).catch(()=>{})){
+        await fs.mkdirAsync(avatarDir).catch(()=>{});
+        const read = fs.createReadStream(uploadPath);
+        const write = fs.createWriteStream(avatarPath);
+        read.pipe(write);
+        await userDb.updateAvatar(req.user.username, path.join('/avatar', fileName));
+      }
+    }
     res.send('OK');
   }
 
@@ -342,6 +360,10 @@ class api {
     }catch(e){
       res.sendStatus(500);
     }
+  }
+
+  async uploadAvatar(req, res){
+    res.send(req.file.filename);
   }
 
   wsStatuses(socket){

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, ControlLabel, Row, Col } from 'react-bootstrap';
+import Dropzone from 'react-dropzone-component';
 import SocialConnect from '../../components/console/social-connect';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
@@ -10,7 +11,7 @@ export default class ConsoleConfigureComponent extends React.Component{
   render(){
     return(
       <div>
-        <h2>Configure credentials</h2>
+        <h2>Configure profile</h2>
         <h3>minamo id</h3>
         <MinamoIdForm />
         <h3>Connect social account</h3>
@@ -29,7 +30,7 @@ ConsoleConfigureComponent.contextTypes = {
 class MinamoIdForm extends React.Component{
   constructor(){
     super();
-    this.state = { password: '' };
+    this.state = { password: '', avatar: '' };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -37,9 +38,12 @@ class MinamoIdForm extends React.Component{
     this.setState({password: e.target.value});
   }
   handleSubmit(e){
-    Http.post('/api/credentials/update', {password: this.state.password},
-      () => Toast.show('Credential update successful', 'success'),
-      () => Toast.show('Credential update failed', 'warning')
+    Http.post('/api/users/profile/update', {password: this.state.password, avatar: this.state.avatar},
+      () => {
+        Toast.show('Profile update successful', 'success');
+        this.setState({password: '', avatar: ''});
+      },
+      () => Toast.show('Profile update failed', 'warning')
     );
     e.preventDefault();
     return false;
@@ -51,19 +55,45 @@ class MinamoIdForm extends React.Component{
   isValidPassword(){
     return this.state.password.length >= 8;
   }
+  isValidFormData(){
+    if(!this.state.password && this.state.avatar) return true;
+    return this.isValidPassword();
+  }
   render(){
+    const componentConfig = {postUrl: '/api/users/avatar/upload'}
+    const djsConfig = {maxFiles: 1, dictDefaultMessage: '<span class="fa fa-upload fa-3x"></i>'};
+    const eventHandlers = {
+      addedfile: function(){
+        if(this.files[1]) { this.removeFile(this.files[0]); }
+      },
+      success: (e, res) => {
+        this.setState({avatar: res});
+      }
+    }
     return(
       <form onSubmit={this.handleSubmit}>
-        <FormGroup>
-          <ControlLabel>Username</ControlLabel>
-          <FormControl disabled={true} value={this.context.profile.username}/>
-        </FormGroup>
-        <FormGroup validationState={this.getValidationState()}>
-          <ControlLabel>Password</ControlLabel>
-          <FormControl type='password' onChange={this.handleChange}/>
-          <FormControl.Feedback />
-        </FormGroup>
-        <Button bsStyle='primary' type='submit' disabled={!this.isValidPassword()}>update</Button>
+        <Row>
+          <Col sm={8}>
+            <FormGroup>
+              <ControlLabel>Username</ControlLabel>
+              <FormControl disabled={true} value={this.context.profile.username}/>
+            </FormGroup>
+            <FormGroup validationState={this.getValidationState()}>
+              <ControlLabel>Password</ControlLabel>
+              <FormControl type='password' onChange={this.handleChange} value={this.state.password}/>
+              <FormControl.Feedback />
+            </FormGroup>
+          </Col>
+          <Col sm={4}>
+            <FormGroup>
+              <ControlLabel>Image</ControlLabel>
+              <div>
+                <Dropzone config={componentConfig} eventHandlers={eventHandlers} djsConfig={djsConfig}/>
+              </div>
+            </FormGroup>
+          </Col>
+        </Row>
+        <Button bsStyle='primary' type='submit' disabled={!this.isValidFormData()}>update</Button>
       </form>
     );
   }
