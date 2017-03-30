@@ -13,7 +13,7 @@ export default class PopupComponent extends React.Component {
     const profile = typeof window === 'object'
       ? this.getProfileInfo() : this.context.router.profile;
     return {
-      isAuthenticated: profile && profile.username,
+      isAuthenticated: !!(profile && profile.username),
       profile: profile || {avater:'', username: '', role: ''}
     };
   }
