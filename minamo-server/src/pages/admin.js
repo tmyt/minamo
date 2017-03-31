@@ -1,11 +1,13 @@
 import React from 'react';
-import { Table, DropdownButton, Button, MenuItem, FormGroup, FormControl, Glyphicon, InputGroup } from 'react-bootstrap';
+import { Modal, Panel, Table, DropdownButton, Button, MenuItem, Form, FormGroup, FormControl, ControlLabel, Glyphicon, InputGroup } from 'react-bootstrap';
 
 import PageRoot from '../components/page-root';
 import Http from '../components/console/http-verb';
 import Toast from '../components/toast';
 
-class UserListRow extends React.Component{
+const PasswordMask = '●●●●●●●●';
+
+class UserListRowBase extends React.Component{
   constructor(){
     super();
     this.handleSelect = this.handleSelect.bind(this);
@@ -53,33 +55,63 @@ class UserListRow extends React.Component{
       );
     }
   }
+  getPassword(){
+    return this.state.password || PasswordMask;
+  }
+  getRoleView(){
+    return(
+      <InputGroup>
+        <FormControl type='text' value={this.state.role} readOnly className='readonly-dropdown-input'/>
+        <DropdownButton componentClass={InputGroup.Button} pullRight id='user-role' onSelect={this.handleSelect} title=''>
+          <MenuItem eventKey={this.handleChangeRoleFor('admin')}>admin</MenuItem>
+          <MenuItem eventKey={this.handleChangeRoleFor('user')}>user</MenuItem>
+        </DropdownButton>
+      </InputGroup>
+    );
+  }
+  getActionView(){
+    return(
+      <DropdownButton bsStyle='primary' title='action' onSelect={this.handleSelect} id='user-action'>
+        <MenuItem eventKey={this.handleResetPassword}>reset password</MenuItem>
+        <MenuItem divider />
+        <MenuItem eventKey={this.handleDeleteUser}>delete user</MenuItem>
+      </DropdownButton>
+    );
+  }
+}
+
+class UserListRow extends UserListRowBase{
   render(){
     return(
       <tr>
         <td>{this.props.username}</td>
-        <td>{this.state.password || '●●●●●●●●'}</td>
-        <td>
-          <InputGroup>
-            <FormControl type='text' value={this.state.role} readOnly className='readonly-dropdown-input'/>
-            <DropdownButton componentClass={InputGroup.Button} pullRight id='user-role' onSelect={this.handleSelect} title=''>
-              <MenuItem eventKey={this.handleChangeRoleFor('admin')}>admin</MenuItem>
-              <MenuItem eventKey={this.handleChangeRoleFor('user')}>user</MenuItem>
-            </DropdownButton>
-          </InputGroup>
-        </td>
-        <td>
-          <DropdownButton bsStyle='primary' title='action' onSelect={this.handleSelect} id='user-action'>
-            <MenuItem eventKey={this.handleResetPassword}>reset password</MenuItem>
-            <MenuItem divider />
-            <MenuItem eventKey={this.handleDeleteUser}>delete user</MenuItem>
-          </DropdownButton>
-        </td>
+        <td>{this.getPassword()}</td>
+        <td>{this.getRoleView()}</td>
+        <td>{this.getActionView()}</td>
       </tr>
     );
   }
 }
 
-class UserListNewUserRow extends React.Component{
+class UserListPanel extends UserListRowBase{
+  render(){
+    return(
+      <Panel>
+        <dl className='dl-horizontal'>
+          <dt>username</dt>
+          <dd><span>{this.props.username}</span></dd>
+          <dt>password</dt>
+          <dd><span>{this.getPassword()}</span></dd>
+          <dt>role</dt>
+          <dd><span>{this.getRoleView()}</span></dd>
+        </dl>
+        {this.getActionView()}
+      </Panel>
+    );
+  }
+}
+
+class UserListNewUserRowBase extends React.Component{
   constructor(){
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -120,20 +152,67 @@ class UserListNewUserRow extends React.Component{
     if(this.state.pending) return 'warning';
     return this.state.username.length >= 3 && this.state.available ? 'success' : 'error';
   }
-  render(){
+  getUserNameView(){
     const loading = this.state.pending ? (<Glyphicon className='loading' glyph='refresh' />) : null;
     return(
+      <FormGroup validationState={this.validate()}>
+        <FormControl type='text' placeholder='new username' value={this.state.username} onChange={this.handleChange}/>
+        <FormControl.Feedback>{loading}</FormControl.Feedback>
+      </FormGroup>
+    );
+  }
+}
+
+class UserListNewUserRow extends UserListNewUserRowBase{
+  render(){
+    return(
       <tr>
-        <td>
-          <FormGroup validationState={this.validate()}>
-            <FormControl type='text' placeholder='new username' value={this.state.username} onChange={this.handleChange}/>
-            <FormControl.Feedback>{loading}</FormControl.Feedback>
-          </FormGroup>
-        </td>
-        <td><FormControl value='●●●●●●●●' disabled/></td>
+        <td>{this.getUserNameView()}</td>
+        <td><FormControl value={PasswordMask} disabled/></td>
         <td><FormControl value='user' disabled/></td>
         <td><Button bsStyle='success' disabled={this.validate() !== 'success'} onClick={this.handleClick}>create</Button></td>
       </tr>
+    );
+  }
+}
+
+class UserListNewUserModal extends UserListNewUserRowBase{
+  constructor(){
+    super();
+    this.state.show = false;
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({show: newProps.show});
+  }
+  close(){
+    this.setState({show: false, username: ''});
+  }
+  render(){
+    return(
+      <div>
+        <Button bsStyle='info' onClick={()=>this.setState({show:true})} className='button-mobile-primary-action'>
+          <Glyphicon glyph='plus' />
+        </Button>
+        <Modal show={this.state.show} onHide={this.close.bind(this)}>
+          <Modal.Header>
+            <Modal.Title>Add New user</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <dl>
+              <dt>username</dt>
+              <dd>{this.getUserNameView()}</dd>
+              <dt>password</dt>
+              <dd><FormGroup><FormControl value={PasswordMask} disabled/></FormGroup></dd>
+              <dt>role</dt>
+              <dd><FormGroup><FormControl value='user' disabled/></FormGroup>
+              </dd>
+            </dl>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button bsStyle='success' disabled={this.validate() !== 'success'} onClick={this.handleClick}>create</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
     );
   }
 }
@@ -147,8 +226,7 @@ class UserList extends React.Component{
   }
   componentDidMount(){
     Http.get('/api/users', {},
-      (ret) =>  this.setState({users: ret}),
-      () => {}
+      (ret) =>  this.setState({users: ret}), () => {}
     );
   }
   handleCreate(newUser){
@@ -158,23 +236,32 @@ class UserList extends React.Component{
     this.setState({users: this.state.users.filter(x => x.username !== username)});
   }
   render(){
-    const users = this.state.users.map(u => (
-      <UserListRow username={u.username} password={u.password} role={u.role} key={u.username} onDelete={this.handleDelete}/>
-    ));
-    return(
-      <Table hover>
-        <thead>
-          <tr>
-            <th>username</th>
-            <th>password</th>
-            <th>role</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users}
-          <UserListNewUserRow onCreate={this.handleCreate}/>
-        </tbody>
-      </Table>
+    return (
+      <div>
+        <div className='hidden-xs'>
+          <Table hover>
+            <thead>
+              <tr>
+                <th>username</th>
+                <th>password</th>
+                <th>role</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.users.map(u => (
+                <UserListRow username={u.username} password={u.password} role={u.role} key={u.username} onDelete={this.handleDelete}/>
+              ))}
+              <UserListNewUserRow onCreate={this.handleCreate}/>
+            </tbody>
+          </Table>
+        </div>
+        <div className='visible-xs'>
+          {this.state.users.map(u => (
+            <UserListPanel username={u.username} password={u.password} role={u.role} key={u.username} onDelete={this.handleDelete}/>
+          ))}
+          <UserListNewUserModal onCreate={this.handleCreate}/>
+        </div>
+      </div>
     );
   }
 }
