@@ -4,13 +4,14 @@ import PageRoot from '../components/page-root';
 import ExtensionTips from '../components/extension-tips';
 import Xterm from '../components/xterm';
 import FontAwesome from '../components/font-awesome';
+import TerminalOpener from '../components/terminal-opener';
 
 const BrowserExtensionEvent = 'x-minamo-openterminal';
 
 export default class TerminalComponent extends React.Component{
   constructor(){
     super();
-    this.state = {tipsVisible: false, theme: undefined};
+    this.state = {tipsVisible: false, theme: undefined, hasExtension: false};
   }
   componentWillMount(){
     const search = this.context.router.location.search;
@@ -19,28 +20,15 @@ export default class TerminalComponent extends React.Component{
     this.setState({theme: args.theme});
   }
   componentDidMount(){
-    setTimeout(() => {
-      this.showExtensionTip();
-    }, 1000);
+    this.detectExtension();
   }
   hasExtension(){
     return !!document.getElementsByTagName('meta')['mo:extension-available'];
   }
-  showExtensionTip(){
-    if(typeof(chrome) === 'object' && !this.hasExtension()){
-      this.setState({tipsVisible: true});
-    }
-  }
-  openPopup(){
-    const theme = this.state.theme ? '?theme=' + this.state.theme : '';
-    const path = '/console/terminal_popup' + theme;
-    if(this.hasExtension()){
-      const url = location.protocol + '//' + location.host + path;
-      const e = new CustomEvent(BrowserExtensionEvent, { detail: { url } });
-      return window.dispatchEvent(e);
-    }
-    const popupWindowFeatures = 'width=800,height=480,resizable=yes';
-    window.open(path, `terminal-${Date.now()}`, popupWindowFeatures);
+  detectExtension(){
+    if(typeof(chrome) !== 'object'){ return; }
+    const available = this.hasExtension();
+    this.setState({tipsVisible: !available, hasExtension: available});
   }
   render(){
     return (
@@ -48,9 +36,7 @@ export default class TerminalComponent extends React.Component{
         <ExtensionTips visible={this.state.tipsVisible}/>
         <h2>Terminal</h2>
         <Xterm theme={this.state.theme}>
-          <button onClick={this.openPopup.bind(this)} className='external-button'>
-            <FontAwesome icon='external-link' />
-          </button>
+          <TerminalOpener theme={this.state.theme} hasExtension={this.state.hasExtension}/>
         </Xterm>
       </PageRoot>
     );
