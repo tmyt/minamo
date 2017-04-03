@@ -1,10 +1,9 @@
 import React from 'react';
-import qs from 'qs';
 import PageRoot from '../components/page-root';
 import ExtensionTips from '../components/extension-tips';
 import Xterm from '../components/xterm';
-import FontAwesome from '../components/font-awesome';
 import TerminalOpener from '../components/terminal-opener';
+import qs from '../lib/querystring';
 
 const BrowserExtensionEvent = 'x-minamo-openterminal';
 
@@ -14,10 +13,8 @@ export default class TerminalComponent extends React.Component{
     this.state = {tipsVisible: false, theme: undefined, hasExtension: false};
   }
   componentWillMount(){
-    const search = this.context.router.location.search;
-    if(search[0] !== '?'){ return; }
-    const args = qs.parse(search.substring(1));
-    this.setState({theme: args.theme});
+    const args = qs(this.context.router.location, ['theme']);
+    this.setState(args);
   }
   componentDidMount(){
     this.detectExtension();

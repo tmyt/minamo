@@ -1,15 +1,15 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import qs from 'qs';
 import EdgeButton from './edge-button';
 import FontAwesome from './font-awesome';
 import Http from './console/http-verb';
 import Toast from './toast';
+import qs from '../lib/querystring'
 import '../lib/webauthn.js';
 
 export default class Fido2LoginComponent extends React.Component{
   sign(challenge){
-    const q = qs.parse(this.context.router.location.search.substring(1));
+    const q = qs(this.context.router.location.search, ['_redir']);
     navigator.authentication.getAssertion(challenge.c)
     .then(result => {
       const uri = '/auth/fido2?'
