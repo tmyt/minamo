@@ -3,7 +3,7 @@ import Terminal from 'xterm/dist/xterm';
 import Socket from 'socket.io-client';
 
 import PageRoot from '../components/page-root';
-import '../lib/xterm.fit';
+import 'xterm/dist/addons/fit/fit';
 
 export default class LogStreamComponent extends React.Component{
   componentDidMount(){

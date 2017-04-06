@@ -78,7 +78,7 @@
     "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
     "webpack": "^2.2.1",
     "webpack-bundle-size-analyzer": "^2.5.0",
-    "xterm": "^2.2.3"
+    "xterm": "^2.5.0"
   },
   "babel": {
     "presets": [
