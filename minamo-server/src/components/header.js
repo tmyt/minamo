@@ -8,11 +8,15 @@ import Hamburger from './hamburger';
 import ConsoleTabs from './console/tabs';
 
 export default class HeaderComponent extends React.Component {
+  constructor(){
+    super();
+    this.onSelect = this.onSelect.bind(this);
+  }
   onSelect(){
-    const display = $('#expand-button').css('display');
+    const display = window.getComputedStyle(this.expandButton).display;
     if(display === 'none') return;
-    if(!$('#navbar-main').hasClass('in')) return;
-    $('#expand-button').click();
+    if(this.navMain.className.indexOf('in') >= 0) return;
+    this.expandButton.click();
   }
   render(){
     let extraTabMenu = null;
@@ -31,12 +35,12 @@ export default class HeaderComponent extends React.Component {
               <Navbar.Brand>
                 <Link to='/'>minamo.io</Link>
               </Navbar.Brand>
-              <button id='expand-button' className='navbar-toggle collapsed' type='button' data-toggle='collapse' data-target='#navbar-main'>
+              <button className='navbar-toggle collapsed' type='button' data-toggle='collapse' data-target='#navbar-main' ref={e=>this.expandButton = e}>
                 <Hamburger />
               </button>
             </Navbar.Header>
             <Navbar.Collapse id='navbar-main'>
-              <div className='nav navbar-right'>
+              <div className='nav navbar-right' ref={e=>this.navMain=e}>
                 <Avatar visible={this.context.isAuthenticated}/>
               </div>
               <Nav navbar={true} onSelect={this.onSelect}>

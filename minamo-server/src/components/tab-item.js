@@ -4,7 +4,7 @@ export default class TabItem extends React.Component{
   componentDidMount(){
     const hash = (typeof location === 'object' && location.hash) || '';
     if(hash === this.props.to){
-      $(this.link).click();
+      this.link.click();
     }
   }
   render(){
