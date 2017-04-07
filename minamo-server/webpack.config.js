@@ -39,7 +39,7 @@ module.exports = {
     loader: './src/loader.js',
   },
   output: {
-    path: './public',
+    path: path.resolve('./public'),
     filename: '[name].js',
     chunkFilename: '[id].[hash].bundle.js',
     publicPath: '/'
