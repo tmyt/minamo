@@ -85,7 +85,6 @@ app.get('/admin(/*)?', requireAdminAuthentication, handleReactRouter);
 app.get('*', handleReactRouter);
 
 // git
-let gitusers = {};
 let expressGit = require('express-git');
 let githttp = express();
 let git = expressGit.serve(config.repo_path, {
@@ -114,28 +113,10 @@ git.on('post-receive', (repo, changes) => {
   tools.build(name);
 });
 
-// create empty users file if not found
-let gitusersPath = path.join(__dirname, '/data/gitusers.json');
-try{
-  fs.statSync(gitusersPath);
-}catch(e){
-  fs.writeJsonSync(gitusersPath, {});
-}
-
-// load credentials & listen
-fs.readJson(gitusersPath, (err, data) => {
-  if(!err) gitusers = data;
-  server.listen(config.http_port || 3000, '127.0.0.1');
-  githttp.listen(config.git_port || 7000, '127.0.0.1');
-  kvs.listen(config.redis_port || 16379);
-});
-
-// watch auth file update
-let watcher = fs.watch(gitusersPath, (name, e) => {
-  fs.readJson(gitusersPath, (err, data) => {
-    if(!err) gitusers = data;
-  });
-});
+// listen servers
+server.listen(config.http_port || 3000, '127.0.0.1');
+githttp.listen(config.git_port || 7000, '127.0.0.1');
+kvs.listen(config.redis_port || 16379, '127.0.0.1');
 
 function requireAuthentication(req, res, next){
   if(req.query._token){
