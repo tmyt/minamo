@@ -104,8 +104,7 @@ let gitComplexAuth = function(req, res, next){
   }
   return gitBasicAuth(req, res, next);
 };
-githttp.use(gitComplexAuth);
-githttp.use('/', git);
+githttp.use('/', gitComplexAuth, git);
 git.on('post-receive', (repo, changes) => {
   let name = repo.name.split('/').reverse()[0];
   let tools = appReq('./lib/tools');
