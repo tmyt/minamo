@@ -22,16 +22,25 @@ export default class PopupTerminalComponent extends React.Component{
       viewport.style.width = '100vw';
     }
     window.addEventListener('beforeunload', this.onUnload);
+    this.appendLinkHeader();
   }
   componentWillUnmount(){
     window.removeEventListener('beforeunload', this.onUnload);
     window.removeEventListener('resize', this.onResize);
+    document.head.removeChild(this.manifestLink);
   }
   isMobileChrome(){
     const userAgent = navigator.userAgent.toLowerCase();
     const isAndroidChrome = /chrome/.test(userAgent) && /android/.test(userAgent);
     const isIOSChrome = /crios/.test(userAgent);
     return isAndroidChrome || isIOSChrome;
+  }
+  appendLinkHeader(){
+    const link = document.createElement('link');
+    link.href = '/manifest.json';
+    link.rel = 'manifest';
+    document.head.appendChild(link);
+    this.manfiestLink = link;
   }
   onResize(){
     this.xterm.divTerminal.style.height = window.innerHeight + 'px';
