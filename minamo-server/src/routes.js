@@ -41,6 +41,12 @@ const routes = {
         getComponent: (location, callback) => {
           System.import('./pages/terminal').then(component => callback(null, component.default));
         }
+      },
+      {
+        path: 'sysinfo',
+        getComponent: (location, callback) => {
+          System.import('./pages/sysinfo').then(component => callback(null, component.default));
+        }
       }]
     },
     {
