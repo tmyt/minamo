@@ -6,6 +6,7 @@ const express = require('express')
     , SocketIo = require('socket.io')
     , path = require('path')
     , fs = require('fs-extra')
+    , os = require('os')
 // app modules
 const appReq = require('app-require')
     , config = appReq('./config')

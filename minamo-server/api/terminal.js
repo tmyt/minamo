@@ -27,7 +27,8 @@ module.exports = function(io){
       OpenStdin: true,
       Tty: true,
       Cmd: [ '/bin/bash', '-c', `${isFirstTime} chown user.user /home/user; exec login -f user` ],
-      HostConfig: { AutoRemove: true, VolumesFrom: [ userData ] }
+      HostConfig: { AutoRemove: true, VolumesFrom: [ userData ] },
+      NetworkingConfig: { EndpointsConfig: { "shell": {} } }
     };
     const container = await docker.createContainerAsync(args);
     let term = pty.spawn('docker', ['start', '-ai', name], {
