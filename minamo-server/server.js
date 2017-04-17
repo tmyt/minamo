@@ -10,7 +10,8 @@ const express = require('express')
 const appReq = require('app-require')
     , config = appReq('./config')
     , RedisServer = require('./lib/kvs')
-    , userDb = new(require('./lib/auth/userdb'))(config.userdb);
+    , userDb = new(require('./lib/auth/userdb'))(config.userdb)
+    , netmask = require('./lib/netmask');
 // app instance
 const app = express()
     , server = http.createServer(app)
@@ -97,8 +98,9 @@ let gitBasicAuth = basicAuth((user, pass, next) => {
 });
 let gitComplexAuth = function(req, res, next){
   // accept access from container
-  const xForwardedFor = req.headers['x-forwarded-for'];
-  if(xForwardedFor && xForwardedFor.match(/^172\.17\./)){
+  const xRealIp = req.headers['x-real-ip'];
+  const iface = os.networkInterfaces().docker0.filter(x => x.family === 'IPv4')[0];
+  if(iface && xRealIp && netmask(xRealIp, iface.address, iface.netmask)){
     next();
     return true;
   }
