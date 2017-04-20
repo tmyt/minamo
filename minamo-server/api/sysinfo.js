@@ -1,8 +1,6 @@
 'use strict';
 
-const os = require('os')
-    , ResMon = require('../lib/resmon')
-
+const ResMon = require('../lib/resmon')
 
 module.exports = function(io){
   const sockets = io.of('/sysinfo');
