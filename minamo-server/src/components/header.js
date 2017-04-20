@@ -47,6 +47,7 @@ export default class HeaderComponent extends React.Component {
                 <LinkContainer to='/console' onlyActiveOnIndex={true}><NavItem>console</NavItem></LinkContainer>
                 <LinkContainer to='/console/logstream'><NavItem>log stream</NavItem></LinkContainer>
                 <LinkContainer to='/console/terminal'><NavItem>terminal</NavItem></LinkContainer>
+                <LinkContainer to='/console/sysinfo'><NavItem>sysinfo</NavItem></LinkContainer>
                 {adminTabItem}
               </Nav>
             </Navbar.Collapse>

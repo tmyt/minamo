@@ -86,6 +86,7 @@ class api {
     io.of('/status').on('connection', this.wsStatuses.bind(this));
     require('./logstream.js')(io);
     require('./terminal.js')(io);
+    require('./sysinfo')(io);
     // install
     app.use(ignoreCaches, pub);
     app.use(ignoreCaches, rejectIfNotAuthenticated, priv);
