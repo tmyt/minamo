@@ -31,7 +31,7 @@ module.exports = function(io){
       NetworkingConfig: { EndpointsConfig: { "shell": {} } }
     };
     const container = await docker.createContainerAsync(args);
-    let term = pty.spawn('docker', ['start', '-ai', name], {
+    const term = pty.spawn('docker', ['start', '-ai', name], {
       name: 'xterm-color',
       cols: 80,
       rows: 24,

@@ -7,6 +7,7 @@ const express = require('express')
     , path = require('path')
     , fs = require('fs-extra')
     , os = require('os')
+    , expressGit = require('express-git')
 // app modules
 const appReq = require('app-require')
     , config = appReq('./config')
@@ -48,7 +49,7 @@ app.enable('trust proxy');
 app.use(morgan('combined'));
 
 // setup auth
-let sessionStore = new FileStore({path: __dirname + '/data/sessions', retries: 2, ttl: 604800});
+const sessionStore = new FileStore({path: __dirname + '/data/sessions', retries: 2, ttl: 604800});
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSession({
@@ -77,7 +78,7 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 // routers
-let api = appReq('./api');
+const api = appReq('./api');
 app.use('/api', new api(express.Router(), kvs, io));
 
 // handle authorized uris
@@ -87,17 +88,16 @@ app.get('/admin(/*)?', requireAdminAuthentication, handleReactRouter);
 app.get('*', handleReactRouter);
 
 // git
-let expressGit = require('express-git');
-let githttp = express();
-let git = expressGit.serve(config.repo_path, {
+const githttp = express();
+const git = expressGit.serve(config.repo_path, {
   auto_init: false
 });
-let gitBasicAuth = basicAuth((user, pass, next) => {
+const gitBasicAuth = basicAuth((user, pass, next) => {
   userDb.authenticate(user, pass)
     .then(u => next(null, u))
     .catch(e => next(e, null));
 });
-let gitComplexAuth = function(req, res, next){
+const gitComplexAuth = function(req, res, next){
   // accept access from container
   const xRealIp = req.headers['x-real-ip'];
   const iface = os.networkInterfaces().docker0.filter(x => x.family === 'IPv4')[0];
@@ -109,8 +109,8 @@ let gitComplexAuth = function(req, res, next){
 };
 githttp.use('/', gitComplexAuth, git);
 git.on('post-receive', (repo, changes) => {
-  let name = repo.name.split('/').reverse()[0];
-  let tools = appReq('./lib/tools');
+  const name = repo.name.split('/').reverse()[0];
+  const tools = appReq('./lib/tools');
   kvs.resetHost(`${name}.${config.domain}`);
   tools.build(name);
 });

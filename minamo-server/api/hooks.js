@@ -12,7 +12,7 @@ const hmac = (key, data) => {
 
 module.exports = function(kvs){
   return function(req, res){
-    let repo = req.params.repo;
+    const repo = req.params.repo;
     if(!repo.match(/^[a-z][a-z0-9-]*[a-z0-9]$/)){
      return res.sendStatus(400);
     }
@@ -21,7 +21,7 @@ module.exports = function(kvs){
       if(req.query.key !== hmac(config.secret || 'minamo.io', repo)){
         return res.sendStatus(400);
       }
-      let tools = appReq('./lib/tools');
+      const tools = appReq('./lib/tools');
       tools.build(repo);
       kvs.resetHost(`${repo}.${config.domain}`);
       return res.sendStatus(200);

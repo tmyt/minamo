@@ -106,7 +106,7 @@ class Kvs
   }
   keys(res, pattern){
     const re = new RegExp('^' + escapeRegExp(pattern).replace('\\*', '.*'));
-    let k = Object.keys(this.hosts).filter(s => re.test(s));
+    const k = Object.keys(this.hosts).filter(s => re.test(s));
     res.write(`*${k.length}\r\n`);
     for(let i = 0; i < k.length; ++i){
       res.write('$' + k[i].length + '\r\n');

@@ -4,8 +4,8 @@ const readline = require('readline')
     , spawn = require('child_process').spawn;
 
 function tailf(path){
-  let tail = spawn('tail', ['-f', '-n 300', path]);
-  let rl = readline.createInterface({
+  const tail = spawn('tail', ['-f', '-n 300', path]);
+  const rl = readline.createInterface({
     input: tail.stdout,
     output: tail.stdin
   });
@@ -15,7 +15,7 @@ function tailf(path){
 
 module.exports = function(io){
   io.of('/log').on('connection', socket => {
-    let tail = tailf('/tmp/minamo/build.log');
+    const tail = tailf('/tmp/minamo/build.log');
     tail.on('line', line => {
       socket.emit('data', `${line}\r\n`);
     });

@@ -31,20 +31,21 @@ const hash = (data) => {
 };
 
 function checkParams(req, res){
-  let name = req.params.service || req.query.service || req.body.service;
+  const name = req.params.service || req.query.service || req.body.service;
   if(!name){
     res.status(400).send('error: no service');
-    return;
+    return {};
   }
   if(!ContainerRegexp.test(name)){
     res.status(400).send(`error: service should be ${ContainerRegexpString}`);
-    return;
+    return {};
   }
-  return name;
+  const repo = path.join(config.repo_path, name);
+  return {name, repo};
 }
 
 function isEnvFile(filename){
-  let stat = fs.statSync(path.join(config.repo_path, filename));
+  const stat = fs.statSync(path.join(config.repo_path, filename));
   return stat.isFile() && filename.endsWith('.env');
 }
 
@@ -96,8 +97,8 @@ class api {
   async initializeKvs(){
     const containers = await docker.listContainersAsync({all: true});
     const files = await fs.readdirAsync(config.repo_path);
-    let names = containers.map(x => x.Names[0]);
-    let repos = files.filter(x => x[0] !== '.' && !isEnvFile(x))
+    const names = containers.map(x => x.Names[0]);
+    const repos = files.filter(x => x[0] !== '.' && !isEnvFile(x))
       .filter(x => names.indexOf('/' + x) >= 0);
     for(let i = 0; i < repos.length; ++i){
       this.kvs.addHost(`${repos[i]}.${config.domain}`);
@@ -114,7 +115,7 @@ class api {
   async getContainerStatusesAsync(){
     const containers = await docker.listContainersAsync({all: true});
     const files = await fs.readdirAsync(config.repo_path);
-    let statuses = {};
+    const statuses = {};
     for(let i = 0; i < files.length; ++i){
       if(files[i][0] === '.') continue;
       const stat = await fs.statAsync(path.join(config.repo_path, files[i]));
@@ -156,25 +157,23 @@ class api {
   }
 
   checkAvailability(req, res){
-    const name = checkParams(req, res);
+    const { name, repo } = checkParams(req, res);
     if(!name) return;
-    res.send({available: !pathExists(path.join(config.repo_path, name))});
+    res.send({available: !pathExists(repo)});
   }
 
   async create(req, res){
-    let name = checkParams(req, res);
-    let template = req.body.template || '';
-    let external = req.body.external || '';
+    const { name, repo } = checkParams(req, res);
+    const template = req.body.template || '';
+    const external = req.body.external || '';
     if(!name) return;
-    // .git is no required. its seems library bug.
-    let repo = path.join(config.repo_path, name);
     if(pathExists(repo)){
       res.status(400).send('error: service already exists');
       return;
     }
-    let root = path.dirname(require.main.filename);
-    let templatePath = path.join(root, '/lib/templates/' + template + '.tar.gz');
-    let initFunc = function(templ, cb){
+    const root = path.dirname(require.main.filename);
+    const templatePath = path.join(root, '/lib/templates/' + template + '.tar.gz');
+    const initFunc = function(templ, cb){
       init(repo, true, templ, err => {
         if(cb) cb();
         res.send('create OK: ' + err);
@@ -186,18 +185,16 @@ class api {
     }else if(template === ''){
       initFunc('');
     }else{
-      let rand = Math.floor(Math.random() * 65535);
-      let tmpl = '/tmp/minamo-' + rand + '/';
+      const rand = Math.floor(Math.random() * 65535);
+      const tmpl = '/tmp/minamo-' + rand + '/';
       await tarball.extractTarballAsync(templatePath, tmpl);
       initFunc(tmpl, () => fs.remove(tmpl));
     }
   }
 
   async destroy(req, res){
-    let name = checkParams(req, res);
+    const { name, repo } = checkParams(req, res);
     if(!name) return;
-    // .git is no required. its seems library bug.
-    let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
       res.status(404).send('error: service not found');
     }else{
@@ -210,10 +207,8 @@ class api {
   }
 
   start(req, res){
-    let name = checkParams(req, res);
+    const { name, repo } = checkParams(req, res);
     if(!name) return;
-    // .git is no required. its seems library bug.
-    let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
       res.status(404).send('error: service not found');
     }else{
@@ -224,10 +219,8 @@ class api {
   }
 
   stop(req, res){
-    let name = checkParams(req, res);
+    const { name, repo } = checkParams(req, res);
     if(!name) return;
-    // .git is no required. its seems library bug.
-    let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
       res.status(404).send('error: service not found');
     }else{
@@ -238,10 +231,8 @@ class api {
   }
 
   restart(req, res){
-    let name = checkParams(req, res);
+    const { name, repo } = checkParams(req, res);
     if(!name) return;
-    // .git is no required. its seems library bug.
-    let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
       res.status(404).send('error: service not found');
     }else{
@@ -265,10 +256,8 @@ class api {
   }
 
   env(req, res){
-    let name = checkParams(req, res);
+    const { name, repo } = checkParams(req, res);
     if(!name) return;
-    // .git is no required. its seems library bug.
-    let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
       res.status(404).send('error: service not found');
     }else{
@@ -277,23 +266,20 @@ class api {
   }
 
   updateEnv(req, res){
-    let name = checkParams(req, res);
+    const { name, repo } = checkParams(req, res);
     if(!name) return;
-    // .git is no required. its seems library bug.
-    let repo = path.join(config.repo_path, name);
     if(!pathExists(repo)){
       res.status(404).send('error: service not found');
     }else{
-      let env = JSON.parse(req.body.env);
+      const env = JSON.parse(req.body.env);
       fs.outputJson(repo + '.env', env, () => res.send('OK'));
     }
   }
 
   logs(req, res){
-    let name = checkParams(req, res);
+    const { name } = checkParams(req, res);
     if(!name) return;
-    // read docker logs
-    let process = require('child_process').spawn('docker', ['logs', name]);
+    const process = require('child_process').spawn('docker', ['logs', name]);
     process.stdout.pipe(res);
     process.stderr.pipe(res);
   }

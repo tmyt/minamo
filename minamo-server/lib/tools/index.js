@@ -31,7 +31,7 @@ async function containerExistsAsync(container){
 
 class Tools{
   getRequiredPackages(extraEnv){
-    let extraPackages = {};
+    const extraPackages = {};
     const packages = (extraEnv['MINAMO_REQUIRED_PACKAGES'] || '').split(',');
     for(let i = 0; i < packages.length; ++i){
       if(!packages[i].trim()) continue;
@@ -56,7 +56,7 @@ class Tools{
     }
     // stopping flag
     await fs.mkdirpAsync('/tmp/minamo').catch(()=>{});
-    let cont = docker.getContainer(repo);
+    const cont = docker.getContainer(repo);
     if(await containerExistsAsync(cont)){
       logger.emit('stopping...');
       // remove current container & image
