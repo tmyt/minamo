@@ -1,6 +1,5 @@
 import React from 'react';
 import {Row, Col} from 'react-bootstrap';
-import {Line} from 'react-chartjs-2';
 import Socket from 'socket.io-client';
 
 import PageRoot from '../components/page-root';
@@ -19,7 +18,7 @@ class BaseGraph extends React.Component{
     for(let i = 0; i < props.labels.length; ++i){
       this.data[i] = Array.apply(null, Array(this.config.logs)).map(() => 0);
     }
-    this.state = { chartData: this.genData(this.props.labels) };
+    this.state = { chartData: this.genData(this.props.labels), Line: null };
   }
   genData(labels){
     const ret = {
@@ -49,6 +48,11 @@ class BaseGraph extends React.Component{
       });
     }
     return ret;
+  }
+  componentDidMount(){
+    System.import('react-chartjs-2').then(component => {
+      this.setState({Line: component.Line});
+    });
   }
   componentWillReceiveProps(newProps){
     if(newProps.history !== this.props.history && newProps.history){
@@ -92,8 +96,9 @@ class BaseGraph extends React.Component{
     if(this.props.beginAtZero){
       options.scales.yAxes[0].ticks = { beginAtZero: true };
     }
+    if(!this.state.Line) return null;
     return(
-      <Line data={this.state.chartData} options={options} />
+      <this.state.Line data={this.state.chartData} options={options} />
     );
   }
 }
