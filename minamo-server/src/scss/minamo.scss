@@ -103,5 +103,9 @@ i.fa {
   z-index: 9999;
 }
 
+div.container > div.row:last-child {
+  margin-bottom: 24px;
+}
+
 // import sub-styles
 @import 'console', 'dropzone', 'login', 'logstream', 'opensans', 'terminal'
