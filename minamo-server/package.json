@@ -29,6 +29,7 @@
     "crc": "^3.4.4",
     "dockerode": "^2.3.1",
     "express": "^4.14.0",
+    "express-csp-header": "^2.0.1",
     "express-git": "^0.7.0",
     "express-session": "^1.12.1",
     "fs-extra": "^2.0.0",

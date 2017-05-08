@@ -35,6 +35,7 @@ const expressSession = require('express-session')
     , bodyParser = require('body-parser')
     , cookieParser = require('cookie-parser')
     , passportSocketIo = require('passport.socketio')
+    , csp = require('express-csp-header')
 
 // setup passport
 passport.serializeUser((user, done) => done(null, user));
@@ -58,6 +59,16 @@ app.use(expressSession({
   secret: 'kuroshio',
   resave: false,
   saveUninitialized: false
+}));
+app.use(csp({
+  policies: {
+    'default-src': [ csp.SELF ],
+    'script-src': [ csp.SELF, csp.NONCE ],
+    'style-src': [ csp.SELF, csp.INLINE, 'cdnjs.cloudflare.com' ],
+    'img-src': [ csp.SELF, 'data:' ],
+    'font-src': [ csp.SELF, 'fonts.gstatic.com', 'cdnjs.cloudflare.com' ],
+    'connect-src': [ csp.SELF, `wss://${config.domain}` ],
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -160,7 +171,7 @@ function handleReactRouter(req, res){
         await getFileProps('./public/styles.js'),
         await getFileProps('./public/loader.js'),
       ];
-      res.render('index', {markup, title, metas, scripts});
+      res.render('index', {markup, title, metas, scripts, nonce: req.nonce});
     }else{
       res.sendStatus(404);
     }
