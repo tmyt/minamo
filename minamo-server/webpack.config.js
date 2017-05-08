@@ -3,6 +3,7 @@
 const webpack = require('webpack')
     , path = require('path')
     , HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+    , SriPlugin = require('webpack-subresource-integrity')
 
 let plugins = [
   new HardSourceWebpackPlugin({
@@ -23,6 +24,10 @@ let plugins = [
     jQuery: 'jquery',
     toastr: 'toastr',
   }),
+  new SriPlugin({
+    hashFuncNames: ['sha256'],
+    enabled: process.env.NODE_ENV === 'production'
+  }),
 ];
 
 if(process.env.NODE_ENV === 'production'){
@@ -42,7 +47,8 @@ module.exports = {
     path: path.resolve('./public'),
     filename: '[name].js',
     chunkFilename: '[id].[hash].bundle.js',
-    publicPath: '/'
+    publicPath: '/',
+    crossOriginLoading: 'anonymous',
   },
   module: {
     rules: [
