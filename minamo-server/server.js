@@ -13,7 +13,8 @@ const appReq = require('app-require')
     , config = appReq('./config')
     , RedisServer = require('./lib/kvs')
     , userDb = new(require('./lib/auth/userdb'))(config.userdb)
-    , netmask = require('./lib/netmask');
+    , netmask = require('./lib/netmask')
+    , getFileProps = require('./lib/fileprops')
 // app instance
 const app = express()
     , server = http.createServer(app)
@@ -154,23 +155,14 @@ function handleReactRouter(req, res){
         metas.push(['mo:avatar', req.user.avatar]);
       }
       const title = DocumentTitle.rewind();
-      const integrities = {
-        bundle: await integrity('./public/bundle.js'),
-        styles: await integrity('./public/styles.js'),
-        loader: await integrity('./public/loader.js'),
-      };
-      res.render('index', {markup, title, metas, integrities});
+      const scripts = [
+        await getFileProps('./public/bundle.js'),
+        await getFileProps('./public/styles.js'),
+        await getFileProps('./public/loader.js'),
+      ];
+      res.render('index', {markup, title, metas, scripts});
     }else{
       res.sendStatus(404);
     }
-  });
-}
-
-function integrity(file){
-  return new Promise(resolve => {
-    const crypto = require('crypto');
-    fs.readFile(file, (err, content) => {
-      resolve('sha256-' + crypto.createHash('sha256').update(content).digest('base64'));
-    });
   });
 }

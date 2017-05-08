@@ -13,6 +13,5 @@ html
   #app !{markup}
   script.
     window.setTimeout(function(){document.body.style.display='block'},1500);
-  script(src=`/styles.js?${integrities.styles.substring(7, 15)}`, integrity=`${integrities.styles}`, async)
-  script(src=`/loader.js?${integrities.loader.substring(7, 15)}`, integrity=`${integrities.loader}`, async)
-  script(src=`/bundle.js?${integrities.bundle.substring(7, 15)}`, integrity=`${integrities.bundle}`, async)
+  each s in scripts
+    script(src=`/${s.filename}?${s.mtime}`, integrity=`${s.integrity}`, async)
