@@ -8,6 +8,7 @@ const express = require('express')
     , fs = require('fs-extra')
     , os = require('os')
     , expressGit = require('express-git')
+    , crypto = require('crypto')
 // app modules
 const appReq = require('app-require')
     , config = appReq('./config')
@@ -154,7 +155,9 @@ function handleReactRouter(req, res){
         metas.push(['mo:avatar', req.user.avatar]);
       }
       const title = DocumentTitle.rewind();
-      res.render('index', {markup, title, metas});
+      const nonce = crypto.createHash('sha256').update(`${Date.now()}${req.port}`).digest('base64').substring(0, 20);
+	  res.header('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' wss://${config.domain}`);
+      res.render('index', {markup, title, metas, nonce});
     }else{
       res.sendStatus(404);
     }

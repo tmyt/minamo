@@ -11,7 +11,7 @@ html
     body{display:none;background-color:#f9f9f9;}
  body
   #app !{markup}
-  script.
+  script(nonce=`${nonce}`).
     window.setTimeout(function(){document.body.style.display='block'},1500);
   script(src='/styles.js', async)
   script(src='/loader.js', async)
