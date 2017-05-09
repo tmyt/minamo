@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import PageRoot from '../components/page-root';
 import ExtensionTips from '../components/extension-tips';
 import Xterm from '../components/xterm';
@@ -38,5 +39,5 @@ export default class TerminalComponent extends React.Component{
   }
 }
 TerminalComponent.contextTypes = {
-  router: React.PropTypes.object
+  router: PropTypes.object
 };

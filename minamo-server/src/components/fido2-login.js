@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import EdgeButton from './edge-button';
 import FontAwesome from './font-awesome';
 import Http from './console/http-verb';
@@ -37,6 +38,6 @@ export default class Fido2LoginComponent extends React.Component{
   }
 }
 Fido2LoginComponent.contextTypes = {
-  router: React.PropTypes.object,
-  profile: React.PropTypes.object
+  router: PropTypes.object,
+  profile: PropTypes.object
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import ContainerListLargeComponent from './container-list-large';
 import ContainerListSmallComponent from './container-list-small';
@@ -34,5 +35,5 @@ export default class ContainerGroupComponent extends React.Component {
   }
 }
 ContainerGroupComponent.contextTypes = {
-  viewSize: React.PropTypes.string,
+  viewSize: PropTypes.string,
 };

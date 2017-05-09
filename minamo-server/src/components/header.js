@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
@@ -59,7 +60,7 @@ export default class HeaderComponent extends React.Component {
   }
 }
 HeaderComponent.contextTypes = {
-  router: React.PropTypes.object,
-  isAuthenticated: React.PropTypes.bool,
-  profile: React.PropTypes.object,
+  router: PropTypes.object,
+  isAuthenticated: PropTypes.bool,
+  profile: PropTypes.object,
 };

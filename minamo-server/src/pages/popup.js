@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Meta from '../components/meta';
 
 export default class PopupComponent extends React.Component {
@@ -22,9 +23,9 @@ export default class PopupComponent extends React.Component {
   }
 }
 PopupComponent.contextTypes = {
-  router: React.PropTypes.object
+  router: PropTypes.object
 };
 PopupComponent.childContextTypes = {
-  isAuthenticated: React.PropTypes.bool,
-  profile: React.PropTypes.object,
+  isAuthenticated: PropTypes.bool,
+  profile: PropTypes.object,
 };

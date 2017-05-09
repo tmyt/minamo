@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, FormGroup, FormControl, ControlLabel, Row, Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone-component';
 import SocialConnect from '../../components/console/social-connect';
@@ -23,7 +24,7 @@ export default class ConsoleConfigureComponent extends React.Component{
   }
 }
 ConsoleConfigureComponent.contextTypes = {
-  profile: React.PropTypes.object
+  profile: PropTypes.object
 };
 
 // Form Component for minamo id
@@ -99,7 +100,7 @@ class MinamoIdForm extends React.Component{
   }
 }
 MinamoIdForm.contextTypes = {
-  profile: React.PropTypes.object
+  profile: PropTypes.object
 };
 
 // Form Component for FIDO2 Credential
@@ -131,5 +132,5 @@ class Fido2Form extends React.Component{
   }
 }
 Fido2Form.contextTypes = {
-  profile: React.PropTypes.object
+  profile: PropTypes.object
 };
