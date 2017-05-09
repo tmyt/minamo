@@ -24,6 +24,9 @@ let plugins = [
     jQuery: 'jquery',
     toastr: 'toastr',
   }),
+  new webpack.NormalModuleReplacementPlugin(/debug/, process.cwd() + '/src/noop.js'),
+  new webpack.NormalModuleReplacementPlugin(/warning/, process.cwd() + '/src/noop.js'),
+  new webpack.NormalModuleReplacementPlugin(/qs|parseqs|query-string|querystring-es3/, process.cwd() + '/node_modules/querystring'),
   new SriPlugin({
     hashFuncNames: ['sha256'],
     enabled: process.env.NODE_ENV === 'production'
@@ -50,6 +53,9 @@ module.exports = {
     publicPath: '/',
     crossOriginLoading: 'anonymous',
   },
+  externals: {
+    'json3': 'JSON'
+  },
   module: {
     rules: [
       {
@@ -58,15 +64,16 @@ module.exports = {
         use: [{
           loader: 'babel-loader',
           options: {
-            presets: [['modern-browsers', {fullSupport: true, modules: false}], 'react'],
-            plugins: ['transform-runtime'],
+            presets: ['react'],
             babelrc: false,
           }
         }]
       },
-      { test: /\.scss$/, use: ['style-loader', 'css-loader?minimize', 'sass-loader'] },
-      { test: /\.css$/, use: ['style-loader', 'css-loader?minimize&-url', 'remove-urlimport-loader'] },
+      { test: /json3\.js/, use: 'imports-loader?define=>false' },
+      { test: /\.scss$/, use: ['style-loader', 'css-loader?minimize', 'postcss-loader', 'sass-loader'] },
+      { test: /\.css$/, use: ['style-loader', 'css-loader?minimize&-url', 'postcss-loader', 'remove-urlimport-loader'] },
     ]
   },
+  devtool: '#inline-source-map',
   plugins
 };
