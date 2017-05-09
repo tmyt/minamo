@@ -7,14 +7,14 @@ const express = require('express')
     , path = require('path')
     , os = require('os')
     , fs = require('fs')
-    , expressGit = require('express-git')
+    , expressGit = require('express-git');
 // app modules
 const appReq = require('app-require')
     , config = appReq('./config')
     , RedisServer = require('./lib/kvs')
     , userDb = new(require('./lib/auth/userdb'))(config.userdb)
     , netmask = require('./lib/netmask')
-    , getFileProps = require('./lib/fileprops')
+    , getFileProps = require('./lib/fileprops');
 // app instance
 const app = express()
     , server = http.createServer(app)
@@ -36,7 +36,7 @@ const expressSession = require('express-session')
     , cookieParser = require('cookie-parser')
     , passportSocketIo = require('passport.socketio')
     , csp = require('express-csp-header')
-    , responseTime = require('response-time')
+    , responseTime = require('response-time');
 
 // setup passport
 passport.serializeUser((user, done) => done(null, user));

@@ -4,7 +4,6 @@ function QueryString(search, names){
   if(search[0] !== '?'){ return {}; }
   const args = qs.parse(search.substring(1));
   if(!Array.isArray(names)) return args;
-  const ret = {};
   return names.reduce((prv, cur) => {
     prv[cur] = args[cur];
     return prv;

@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import Http from './http-verb';
 
 export default class ServiceRemoveButtonComponent extends React.Component{
-  onClick(e) {
+  onClick() {
     if(!window.confirm('This container permanently removed. Are you sure?')) return;
     Http.del(`/api/services/${this.props.name}`);
   }

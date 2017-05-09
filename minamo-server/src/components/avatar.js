@@ -29,7 +29,6 @@ UserAvatarXs.contextTypes = {
 
 export default class UserAvatarComponent extends React.Component{
   render(){
-    const profile = this.context.profile;
     if(!this.props.visible) return null;
     if(this.context.viewSize === ''){
       return (
@@ -46,4 +45,4 @@ export default class UserAvatarComponent extends React.Component{
 }
 UserAvatarComponent.contextTypes = {
   viewSize: React.PropTypes.string,
-}
+};

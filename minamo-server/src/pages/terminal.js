@@ -5,8 +5,6 @@ import Xterm from '../components/xterm';
 import TerminalOpener from '../components/terminal-opener';
 import qs from '../lib/querystring';
 
-const BrowserExtensionEvent = 'x-minamo-openterminal';
-
 export default class TerminalComponent extends React.Component{
   constructor(){
     super();

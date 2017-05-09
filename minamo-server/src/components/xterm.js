@@ -41,9 +41,9 @@ export default class Xterm extends React.Component{
         timer = setTimeout(() => term.fit(), 100);
       });
       term.on('title', d => document.title = d);
-      socket.on('exit', d => {this.connected = false; window.close();});
+      socket.on('exit', () => {this.connected = false; window.close();});
     }else{
-      socket.on('exit', d => {
+      socket.on('exit', () => {
         socket.disconnect();
         socket.connect();
       });

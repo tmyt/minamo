@@ -4,13 +4,13 @@ const pty = require('node-pty')
     , crypto = require('crypto')
     , bluebird = require('bluebird')
     , Docker = require('../lib/tools/docker')
-    , docker = bluebird.promisifyAll(new Docker())
+    , docker = bluebird.promisifyAll(new Docker());
 
 module.exports = function(io){
   io.of('/term').on('connection', async (socket) => {
     const user = socket.request.user;
     const userData = 'shelldata.' + crypto.createHash('sha1')
-      .update(`${user.name}`).digest('hex')
+      .update(`${user.name}`).digest('hex');
     const name = 'tmp' + crypto.createHash('sha1').update(`${Date.now()}`).digest('hex');
     const dataCont = docker.getContainer(userData);
     let isFirstTime = '';
@@ -28,7 +28,7 @@ module.exports = function(io){
       Tty: true,
       Cmd: [ '/bin/bash', '-c', `${isFirstTime} chown user.user /home/user; exec login -f user` ],
       HostConfig: { AutoRemove: true, VolumesFrom: [ userData ] },
-      NetworkingConfig: { EndpointsConfig: { "shell": {} } }
+      NetworkingConfig: { EndpointsConfig: { 'shell': {} } }
     };
     const container = await docker.createContainerAsync(args);
     const term = pty.spawn('docker', ['start', '-ai', name], {
@@ -53,4 +53,4 @@ module.exports = function(io){
       await container.stopAsync().catch(()=>{});
     });
   });
-}
+};

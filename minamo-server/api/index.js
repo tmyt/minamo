@@ -10,8 +10,7 @@ const promisifyAll = require('bluebird').promisifyAll
     , tarball = promisifyAll(require('tarball-extract'))
     , init = require('git-init')
     , head = require('githead')
-    , appReq = require('app-require')
-    , shellescape = require('shell-escape')
+    , appReq = require('app-require');
 
 const Docker = require('dockerode')
     , docker = promisifyAll(new Docker());
@@ -25,9 +24,6 @@ const ContainerRegexp = new RegExp(`^${ContainerRegexpString}\$`);
 
 const hmac = (key, data) => {
   return crypto.createHmac('sha1', key).update(data).digest('hex');
-};
-const hash = (data) => {
-  return crypto.createHash('sha1').update(data).digest('hex');
 };
 
 function checkParams(req, res){
@@ -143,11 +139,11 @@ class api {
       try{
         await fs.statAsync('/tmp/minamo/' + files[i] + '.prep');
         statuses[files[i]].status = 'prepareing';
-      }catch(e){ }
+      }catch(e){ /* ignore */ }
       try{
         await fs.statAsync('/tmp/minamo/' + files[i] + '.term');
         statuses[files[i]].status = 'stopping';
-      }catch(e){ }
+      }catch(e){ /* ignore */ }
     }
     return statuses;
   }
@@ -367,7 +363,7 @@ class api {
     socket.on('disconnect', () => clearInterval(iid));
     sendStatuses();
   }
-};
+}
 
 function pathExists(name){
   try{

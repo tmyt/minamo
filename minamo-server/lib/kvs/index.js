@@ -31,7 +31,6 @@ class Kvs
       output: undefined
     });
     let rest = -1;
-    let command = '';
     let args = [];
     let argBytes = -1;
     rl.on('line', input => {
@@ -82,7 +81,7 @@ class Kvs
     const container = $(docker.getContainer(name));
     try{
       const data = await container.inspectAsync();
-      if(!data.NetworkSettings.Ports) return ''
+      if(!data.NetworkSettings.Ports) return '';
       const bind = Object.keys(data.NetworkSettings.Ports)[0];
       const port = bind.split('/')[0];
       return `http://${data.NetworkSettings.IPAddress}:${port}`;
@@ -92,7 +91,7 @@ class Kvs
   }
   //
   async get(res, key){
-    if(!!this.hosts[key]){
+    if(this.hosts[key]){
       res.write('$' + this.hosts[key].length + '\r\n');
       res.write(this.hosts[key] + '\r\n');
     }else if(this.hosts[key] === ''){

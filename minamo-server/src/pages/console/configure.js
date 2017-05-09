@@ -24,7 +24,7 @@ export default class ConsoleConfigureComponent extends React.Component{
 }
 ConsoleConfigureComponent.contextTypes = {
   profile: React.PropTypes.object
-}
+};
 
 // Form Component for minamo id
 class MinamoIdForm extends React.Component{
@@ -50,7 +50,7 @@ class MinamoIdForm extends React.Component{
   }
   getValidationState(){
     if(!this.state.password) return null;
-    return this.isValidPassword() ? 'success' : 'error'
+    return this.isValidPassword() ? 'success' : 'error';
   }
   isValidPassword(){
     return this.state.password.length >= 8;
@@ -60,7 +60,7 @@ class MinamoIdForm extends React.Component{
     return this.isValidPassword();
   }
   render(){
-    const componentConfig = {postUrl: '/api/users/avatar/upload'}
+    const componentConfig = {postUrl: '/api/users/avatar/upload'};
     const djsConfig = {maxFiles: 1, dictDefaultMessage: '<span class="fa fa-upload fa-3x"></i>'};
     const eventHandlers = {
       addedfile: function(){
@@ -69,7 +69,7 @@ class MinamoIdForm extends React.Component{
       success: (e, res) => {
         this.setState({avatar: res});
       }
-    }
+    };
     return(
       <form onSubmit={this.handleSubmit}>
         <Row>
@@ -100,7 +100,7 @@ class MinamoIdForm extends React.Component{
 }
 MinamoIdForm.contextTypes = {
   profile: React.PropTypes.object
-}
+};
 
 // Form Component for FIDO2 Credential
 class Fido2Form extends React.Component{
@@ -116,7 +116,6 @@ class Fido2Form extends React.Component{
         () => Toast.show('FIDO key registered', 'success'),
         () => Toast.show('Key registration failed', 'warning')
       );
-      console.log(result);
     });
   }
   resetCredential(){
@@ -133,4 +132,4 @@ class Fido2Form extends React.Component{
 }
 Fido2Form.contextTypes = {
   profile: React.PropTypes.object
-}
+};

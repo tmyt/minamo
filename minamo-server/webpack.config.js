@@ -3,7 +3,7 @@
 const webpack = require('webpack')
     , path = require('path')
     , HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
-    , SriPlugin = require('webpack-subresource-integrity')
+    , SriPlugin = require('webpack-subresource-integrity');
 
 let plugins = [
   new HardSourceWebpackPlugin({
@@ -69,4 +69,4 @@ module.exports = {
     ]
   },
   plugins
-}
+};

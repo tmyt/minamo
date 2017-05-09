@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Label, FormGroup, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, ControlLabel } from 'react-bootstrap';
 import Http from './http-verb';
 
 class SocialConnectButton extends React.Component{

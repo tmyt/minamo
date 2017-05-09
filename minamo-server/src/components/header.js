@@ -62,4 +62,4 @@ HeaderComponent.contextTypes = {
   router: React.PropTypes.object,
   isAuthenticated: React.PropTypes.bool,
   profile: React.PropTypes.object,
-}
+};

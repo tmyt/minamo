@@ -1,6 +1,6 @@
 'use strict';
 
-const ResMon = require('../lib/resmon')
+const ResMon = require('../lib/resmon');
 
 module.exports = function(io){
   const sockets = io.of('/sysinfo');
@@ -15,4 +15,4 @@ module.exports = function(io){
     s.emit('history', mon.history());
   });
   mon.start();
-}
+};

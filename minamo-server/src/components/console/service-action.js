@@ -29,7 +29,7 @@ export default class ServiceActionComponent extends React.Component{
   restartquick(){
     this.restart(true);
   }
-  onSelect(key, e){
+  onSelect(key){
     this[key.replace(/[()\s]/g,'')]();
   }
   render(){
@@ -52,4 +52,4 @@ export default class ServiceActionComponent extends React.Component{
 ServiceActionComponent.contextTypes = {
   modalLogs: React.PropTypes.object,
   modalEnv: React.PropTypes.object,
-}
+};

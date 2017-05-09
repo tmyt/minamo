@@ -19,9 +19,9 @@ class EnvItem extends React.Component{
           index: this.props.index,
         });
       }
-    }
+    };
   }
-  handleRemove(e){
+  handleRemove(){
     if(typeof this.props.onRemove === 'function'){
       this.props.onRemove({
         index: this.props.index

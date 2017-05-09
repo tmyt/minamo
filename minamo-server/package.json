@@ -11,7 +11,7 @@
     "build": "webpack",
     "build-release": "NODE_ENV=production webpack",
     "analyze": "webpack --json | webpack-bundle-size-analyzer",
-    "eslint": "eslint *.js api/*.js lib/**/*.js src/**/*.js",
+    "eslint": "eslint *.js api lib src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

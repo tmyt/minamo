@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Panel, Table, DropdownButton, Button, MenuItem, Form, FormGroup, FormControl, ControlLabel, Glyphicon, InputGroup } from 'react-bootstrap';
+import { Modal, Panel, Table, DropdownButton, Button, MenuItem, FormGroup, FormControl, Glyphicon, InputGroup } from 'react-bootstrap';
 
 import PageRoot from '../components/page-root';
 import Http from '../components/console/http-verb';
@@ -18,7 +18,7 @@ class UserListRowBase extends React.Component{
   componentWillMount(){
     this.setState({password: this.props.password, role: this.props.role});
   }
-  handleSelect(key, e){
+  handleSelect(key){
     key();
   } 
   handleResetPassword(){
@@ -28,7 +28,7 @@ class UserListRowBase extends React.Component{
         this.setState({password: ret});
       },
       () => Toast.show('Password reset failed', 'error')
-    )
+    );
   }
   handleDeleteUser(){
     if(!confirm(`Delete user '${this.props.username}' ?`)){
@@ -49,11 +49,11 @@ class UserListRowBase extends React.Component{
       Http.post('/api/users/role', {username: this.props.username, role},
         () => {
           this.setState({role});
-          Toast.show('User role updated', 'success')
+          Toast.show('User role updated', 'success');
         },
         () => Toast.show('Faild to change role', 'error')
       );
-    }
+    };
   }
   getPassword(){
     return this.state.password || PasswordMask;

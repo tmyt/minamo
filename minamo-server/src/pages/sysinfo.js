@@ -199,4 +199,4 @@ export default class SysinfoComponent extends React.Component{
       </PageRoot>
     );
   }
-};
+}
