@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import HeaderComponent from '../components/header';
 import FooterComponent from '../components/footer';
@@ -59,6 +60,6 @@ export default class AppComponent extends React.Component {
   }
 }
 AppComponent.childContextTypes = {
-  setTabbar: React.PropTypes.func,
-  viewSize: React.PropTypes.string,
+  setTabbar: PropTypes.func,
+  viewSize: PropTypes.string,
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Socket from 'socket.io-client';
 
 import ModalLogs from '../../components/console/modal-logs';
@@ -41,6 +42,6 @@ export default class ConsoleStatusesComponent extends React.Component{
   }
 }
 ConsoleStatusesComponent.childContextTypes = {
-  modalEnv: React.PropTypes.object,
-  modalLogs: React.PropTypes.object,
+  modalEnv: PropTypes.object,
+  modalLogs: PropTypes.object,
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Xterm from '../components/xterm';
 import DocumentTitle from 'react-document-title';
 import qs from '../lib/querystring';
@@ -59,6 +60,6 @@ export default class PopupTerminalComponent extends React.Component{
   }
 }
 PopupTerminalComponent.contextTypes = {
-  router: React.PropTypes.object
+  router: PropTypes.object
 };
 

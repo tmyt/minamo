@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -15,5 +16,5 @@ export default class ConsoleButtonComponent extends React.Component{
   }
 }
 ConsoleButtonComponent.contextTypes = {
-  isAuthenticated: React.PropTypes.bool
+  isAuthenticated: PropTypes.bool
 };

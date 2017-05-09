@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class UserAvatar extends React.Component{
   render(){
@@ -10,7 +11,7 @@ class UserAvatar extends React.Component{
   }
 }
 UserAvatar.contextTypes = {
-  profile: React.PropTypes.object
+  profile: PropTypes.object
 };
 
 class UserAvatarXs extends React.Component{
@@ -24,7 +25,7 @@ class UserAvatarXs extends React.Component{
   }
 }
 UserAvatarXs.contextTypes = {
-  profile: React.PropTypes.object
+  profile: PropTypes.object
 };
 
 export default class UserAvatarComponent extends React.Component{
@@ -44,5 +45,5 @@ export default class UserAvatarComponent extends React.Component{
   }
 }
 UserAvatarComponent.contextTypes = {
-  viewSize: React.PropTypes.string,
+  viewSize: PropTypes.string,
 };

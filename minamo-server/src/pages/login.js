@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Alert, Panel, Row, Col, Button, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
 import qs from '../lib/querystring';
 
@@ -26,7 +27,7 @@ class SocialLoginPane extends React.Component{
   }
 }
 SocialLoginPane.contextTypes = {
-  router: React.PropTypes.object
+  router: PropTypes.object
 };
 
 class LocalLoginPane extends React.Component{
@@ -59,7 +60,7 @@ class LocalLoginPane extends React.Component{
   }
 }
 LocalLoginPane.contextTypes = {
-  router: React.PropTypes.object
+  router: PropTypes.object
 };
 
 export default class LoginComponent extends React.Component{
@@ -85,5 +86,5 @@ export default class LoginComponent extends React.Component{
   }
 }
 LoginComponent.contextTypes = {
-  router: React.PropTypes.object
+  router: PropTypes.object
 };

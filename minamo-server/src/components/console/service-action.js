@@ -1,5 +1,6 @@
 import React from 'react';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 import Http from './http-verb';
 
@@ -50,6 +51,6 @@ export default class ServiceActionComponent extends React.Component{
   }
 }
 ServiceActionComponent.contextTypes = {
-  modalLogs: React.PropTypes.object,
-  modalEnv: React.PropTypes.object,
+  modalLogs: PropTypes.object,
+  modalEnv: PropTypes.object,
 };
