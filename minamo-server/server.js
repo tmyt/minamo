@@ -36,6 +36,7 @@ const expressSession = require('express-session')
     , cookieParser = require('cookie-parser')
     , passportSocketIo = require('passport.socketio')
     , csp = require('express-csp-header')
+    , responseTime = require('response-time')
 
 // setup passport
 passport.serializeUser((user, done) => done(null, user));
@@ -48,6 +49,7 @@ passport.use(appReq('./lib/auth/fido2'));
 
 // enable log
 app.enable('trust proxy');
+app.use(responseTime());
 app.use(morgan('combined'));
 
 // setup auth
