@@ -3,7 +3,6 @@
 const bluebird = require('bluebird')
     , os = require('os')
     , path = require('path')
-    , exec = require('child_process').exec
     , fs = bluebird.promisifyAll(require('fs-extra'))
     , tar = bluebird.promisifyAll(require('tar-stream'))
     , shellescape = require('shell-escape')
@@ -70,7 +69,7 @@ class Tools{
     await fs.writeFileAsync(`/tmp/minamo/${repo}.prep`, '');
     try{
       await this.buildAndRun(repo, repoUri);
-    }catch(e){ console.log(e)}
+    }catch(e){ console.log(e); }
     // cleanup prep file
     await fs.unlinkAsync(`/tmp/minamo/${repo}.prep`);
     // clear lock file
@@ -128,7 +127,7 @@ class Tools{
                      + `RUN echo ${docker0} git.${config.domain} >> /etc/hosts; su minamo -c "git clone ${repoUri} . --recursive && git checkout \$MINAMO_BRANCH_NAME"; \\\n`
                      + `    su minamo -c "${pmInstall} ${pm} run minamo-preinstall ; ${pm} install ; ${pm} run minamo-postinstall || true"; \\\n`
                      + `    ls -l; node --version\n`
-                     + `CMD ["/service/run.sh"]`
+                     + `CMD ["/service/run.sh"]`;
     // generate startup script
     const runSh = `#!/bin/sh\n`
                 + `# ${(new Date()).toLocaleString()}\n`

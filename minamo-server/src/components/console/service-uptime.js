@@ -8,6 +8,6 @@ export default class ServiceUptimeComponent extends React.Component{
       <OverlayTrigger overlay={tooltip} placement='top'>
         <span>{this.props.uptime}</span>
       </OverlayTrigger>
-   );
+    );
   }
 }

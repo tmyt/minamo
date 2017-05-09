@@ -135,7 +135,7 @@ class UserDB{
     const socialId = (await this._db.select({
       type: 'social', provider, id
     }))[0];
-    if(!!socialId) return false;
+    if(socialId) return false;
     await this._db.insert({
       type: 'social',
       relative: userid,
@@ -153,7 +153,7 @@ class UserDB{
     const socialId = (await this._db.select({
       type: 'fido2', id
     }))[0];
-    if(!!socialId) return false;
+    if(socialId) return false;
     await this._db.insert({
       type: 'fido2',
       key: publicKey,
@@ -168,6 +168,6 @@ class UserDB{
     });
     return true;
   }
-};
+}
 
 module.exports = UserDB;

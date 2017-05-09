@@ -1,6 +1,5 @@
 import React from 'react';
 import Socket from 'socket.io-client';
-import { Button } from 'react-bootstrap';
 
 import ModalLogs from '../../components/console/modal-logs';
 import ModalEnv from '../../components/console/modal-env';
@@ -44,4 +43,4 @@ export default class ConsoleStatusesComponent extends React.Component{
 ConsoleStatusesComponent.childContextTypes = {
   modalEnv: React.PropTypes.object,
   modalLogs: React.PropTypes.object,
-}
+};

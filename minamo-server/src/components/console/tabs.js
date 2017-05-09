@@ -16,4 +16,4 @@ export default class ConsoleTabsComponent extends React.Component{
       </div>
     );
   }
-};
+}

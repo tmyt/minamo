@@ -35,4 +35,4 @@ export default class ContainerGroupComponent extends React.Component {
 }
 ContainerGroupComponent.contextTypes = {
   viewSize: React.PropTypes.string,
-}
+};

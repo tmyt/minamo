@@ -14,9 +14,9 @@ module.exports = function(kvs){
   return function(req, res){
     const repo = req.params.repo;
     if(!repo.match(/^[a-z][a-z0-9-]*[a-z0-9]$/)){
-     return res.sendStatus(400);
+      return res.sendStatus(400);
     }
-    fs.readFile(path.join(config.repo_path, repo), (err, json) => {
+    fs.readFile(path.join(config.repo_path, repo), (err) => {
       if(err) return res.sendStatus(400);
       if(req.query.key !== hmac(config.secret || 'minamo.io', repo)){
         return res.sendStatus(400);

@@ -3,7 +3,7 @@
 const express = require('express')
     , appReq = require('app-require')
     , config = appReq('./config')
-    , userDb = new(appReq('./lib/auth/userdb'))(config.userdb)
+    , userDb = new(appReq('./lib/auth/userdb'))(config.userdb);
 
 class AdminApi {
   constructor(app){

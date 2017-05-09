@@ -1,6 +1,6 @@
 'use strict';
 
-const ifstat = require('ifstat')
+const ifstat = require('ifstat');
 
 class NetUsage{
   constructor(iface = 'eth0'){

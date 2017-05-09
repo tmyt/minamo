@@ -21,7 +21,7 @@ export default class ConsoleCreateComponent extends React.Component{
   getValidationState(){
     if(!this.state.name) return null;
     if(this.state.pending) return 'warning';
-    return this.state.available && this.validateName(this.state.name) ? 'success' : 'error'
+    return this.state.available && this.validateName(this.state.name) ? 'success' : 'error';
   }
 
   getValidationHelp(){
@@ -39,8 +39,8 @@ export default class ConsoleCreateComponent extends React.Component{
     }
     this.timerId = setTimeout(() => {
       Http.get('/api/services/available', {service: this.state.name},
-        ret => {this.updateNameAvailability(ret.available)},
-        () => {this.updateNameAvailability(true)}
+        ret => this.updateNameAvailability(ret.available),
+        () => this.updateNameAvailability(true)
       );
     }, 500);
   }

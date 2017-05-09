@@ -1,9 +1,6 @@
 'use strict';
 
-const path = require('path')
-    , fs = require('fs')
-    , crypto = require('crypto')
-    , appReq = require('app-require')
+const appReq = require('app-require')
     , config = appReq('./config')
     , userDb = new(require('./userdb'))(config.userdb)
     , Fido2Strategy = require('passport-fido2').Strategy;

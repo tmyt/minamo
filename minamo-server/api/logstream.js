@@ -9,7 +9,7 @@ function tailf(path){
     input: tail.stdout,
     output: tail.stdin
   });
-  rl.kill = function(){ tail.kill(); }
+  rl.kill = function(){ tail.kill(); };
   return rl;
 }
 
@@ -21,4 +21,4 @@ module.exports = function(io){
     });
     socket.on('disconnect', () => tail.kill());
   });
-}
+};

@@ -1,6 +1,6 @@
 'use strict';
 
-const EventEmitter = require('events').EventEmitter
+const EventEmitter = require('events').EventEmitter;
 
 const probes = ['cpu', 'ram', 'net'];
 
@@ -48,7 +48,7 @@ class ResMon extends EventEmitter{
     if(Date.now() - this.lastSummary >= this.summary){
       const points = (this.summary / this.interval + 0.5) | 0;
       const sum = { date: Date.now() };
-      const slices = this.log.short.slice(59 - i);
+      const slices = this.log.short.slice(59 - points);
       sum.cpu = this.cpu.summary(slices.map(x => x.cpu));
       sum.ram = this.ram.summary(slices.map(x => x.ram));
       sum.net = this.net.summary(slices.map(x => x.net));

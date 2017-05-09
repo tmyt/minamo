@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
 import EdgeButton from './edge-button';
 import FontAwesome from './font-awesome';
 import Http from './console/http-verb';
 import Toast from './toast';
-import qs from '../lib/querystring'
+import qs from '../lib/querystring';
 import '../lib/webauthn.js';
 
 export default class Fido2LoginComponent extends React.Component{
@@ -40,4 +39,4 @@ export default class Fido2LoginComponent extends React.Component{
 Fido2LoginComponent.contextTypes = {
   router: React.PropTypes.object,
   profile: React.PropTypes.object
-}
+};

@@ -10,4 +10,4 @@ module.exports = function(addr, nw, mask){
     }
   }
   return true;
-}
+};
