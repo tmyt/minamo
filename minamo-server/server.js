@@ -5,8 +5,8 @@ const express = require('express')
     , http = require('http')
     , SocketIo = require('socket.io')
     , path = require('path')
-    , fs = require('fs-extra')
     , os = require('os')
+    , fs = require('fs')
     , expressGit = require('express-git')
 // app modules
 const appReq = require('app-require')
@@ -122,11 +122,17 @@ const gitComplexAuth = function(req, res, next){
   return gitBasicAuth(req, res, next);
 };
 githttp.use('/', gitComplexAuth, git);
-git.on('post-receive', (repo, changes) => {
+git.on('post-receive', async (repo, changes) => {
   const name = repo.name.split('/').reverse()[0];
   const tools = appReq('./lib/tools');
-  kvs.resetHost(`${name}.${config.domain}`);
-  tools.build(name);
+  fs.readFile(path.join(config.repo_path, `$(name).env`), (err, json) => {
+    const env = JSON.parse(json);
+    if((env['MINAMO_BRANCH_NAME'] || 'master') !== changes[2]){
+      return; // ignore. push ref is not current branch
+    }
+    kvs.resetHost(`${name}.${config.domain}`);
+    tools.build(name);
+  });
 });
 
 // listen servers
