@@ -163,7 +163,8 @@ function handleReactRouter(req, res){
       res.redirect(302, redirectLocation.pathname + redirectLocation.search);
     }else if(props){
       props.router.profile = req.user;
-      const markup = renderToString(<RouterContext {...props} />);
+      const markup = renderToString(<RouterContext {...props} />)
+        .replace(/ class=""/g, '');
       const metas = [
         ['mo:scheme', config.proto],
         ['mo:domain', config.domain],
