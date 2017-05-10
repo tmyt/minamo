@@ -1,6 +1,8 @@
 node_modules
-minamo-server/data/gitusers.json
+minamo-server/data/userdb.json
 minamo-server/data/sessions/*
+minamo-server/data/avatar/*
+minamo-server/data/fido2/*
 minamo-server/repos/*
 minamo-server/repos/*/
 minamo-server/public/**
