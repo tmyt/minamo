@@ -56,7 +56,7 @@ html {
 }
 
 .footer {
-  position: absolute;
+/*  position: absolute; */
   bottom: 2px;
   width: 100%;
   height: 60px;
@@ -105,6 +105,34 @@ i.fa {
 
 div.container > div.row:last-child {
   margin-bottom: 24px;
+}
+
+#app > div.flexbox {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+#app > div.flexbox > div.flex-main {
+  overflow: auto;
+  height: 100%;
+  position: relative;
+}
+
+#app div.flexbox iframe {
+  border: 0;
+  width: 100%;
+  height: calc(100% - 5px);
+}
+
+#app div.flexbox .ish-resize {
+  cursor: ns-resize;
+  height: 5px;
+  background-color: #eee;
 }
 
 // import sub-styles

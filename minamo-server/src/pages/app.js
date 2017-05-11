@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 
 import HeaderComponent from '../components/header';
 import FooterComponent from '../components/footer';
+import IntegratedShell from '../components/ish';
 
 export default class AppComponent extends React.Component {
   constructor(){
     super();
-    this.state = {tabbar: null, viewSize: ''};
+    this.state = {tabbar: null, viewSize: '', isISHVisible: false};
     this.handleResize = this.handleResize.bind(this);
+    this.handleLaunchISH = this.handleLaunchISH.bind(this);
+    this.handleCloseISH = this.handleCloseISH.bind(this);
   }
   componentDidMount(){
     // initialize media query
@@ -47,14 +50,23 @@ export default class AppComponent extends React.Component {
       this.setState({viewSize: newSize});
     }
   }
+  handleLaunchISH(){
+    this.setState({isISHVisible: true});
+  }
+  handleCloseISH(){
+    this.setState({isISHVisible: false});
+  }
   render(){
     return (
-      <div>
-        <HeaderComponent tabs={this.state.tabbar} />
-        <div style={{marginBottom: '60px'}}>
-          {this.props.children}
+      <div className='flexbox'>
+        <div className='flex-main'>
+          <HeaderComponent tabs={this.state.tabbar} onLaunchISH={this.handleLaunchISH}/>
+          <div>
+            {this.props.children}
+          </div>
+          <FooterComponent />
         </div>
-        <FooterComponent />
+        <IntegratedShell visible={this.state.isISHVisible} onCloseISH={this.handleCloseISH}/>
       </div>
     );
   }

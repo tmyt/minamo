@@ -7,17 +7,24 @@ import Avatar from './avatar';
 import Container from './container';
 import Hamburger from './hamburger';
 import ConsoleTabs from './console/tabs';
+import IntegratedShellButton from './ish-button';
 
 export default class HeaderComponent extends React.Component {
   constructor(){
     super();
     this.onSelect = this.onSelect.bind(this);
+    this.onClickISH = this.onClickISH.bind(this);
   }
   onSelect(){
     const display = window.getComputedStyle(this.expandButton).display;
     if(display === 'none') return;
     if(this.navMain.className.indexOf('in') >= 0) return;
     this.expandButton.click();
+  }
+  onClickISH(){
+    if(typeof(this.props.onLaunchISH) === 'function'){
+      this.props.onLaunchISH();
+    }
   }
   render(){
     let extraTabMenu = null;
@@ -39,15 +46,16 @@ export default class HeaderComponent extends React.Component {
               <button className='navbar-toggle collapsed' type='button' data-toggle='collapse' data-target='#navbar-main' ref={e=>this.expandButton = e}>
                 <Hamburger />
               </button>
+              <IntegratedShellButton xs={true} onClick={this.onClickISH}/>
             </Navbar.Header>
             <Navbar.Collapse id='navbar-main'>
               <div className='nav navbar-right' ref={e=>this.navMain=e}>
+                <IntegratedShellButton onClick={this.onClickISH}/>
                 <Avatar visible={this.context.isAuthenticated}/>
               </div>
               <Nav navbar={true} onSelect={this.onSelect}>
                 <LinkContainer to='/console' onlyActiveOnIndex={true}><NavItem>console</NavItem></LinkContainer>
                 <LinkContainer to='/console/logstream'><NavItem>log stream</NavItem></LinkContainer>
-                <LinkContainer to='/console/terminal'><NavItem>terminal</NavItem></LinkContainer>
                 <LinkContainer to='/console/sysinfo'><NavItem>sysinfo</NavItem></LinkContainer>
                 {adminTabItem}
               </Nav>
