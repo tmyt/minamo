@@ -40,7 +40,7 @@ export default class Xterm extends React.Component{
         clearTimeout(timer);
         timer = setTimeout(() => term.fit(), 100);
       });
-      term.on('title', d => document.title = d);
+      term.on('title', d => this.changeTitle(d));
       socket.on('exit', () => {this.connected = false; window.close();});
     }else{
       socket.on('exit', () => {
@@ -70,6 +70,12 @@ export default class Xterm extends React.Component{
   }
   dragOver(e){
     e.preventDefault();
+  }
+  changeTitle(s){
+    document.title = s;
+    if(typeof(this.props.onChangeTitle) === 'function'){
+      this.props.onChangeTitle(s);
+    }
   }
   render(){
     let webkitClass = '';

@@ -1,0 +1,15 @@
+.ish-bar {
+  #ish-title {
+    float: left;
+    color: #fff;
+  }
+  #ish-buttons {
+    float: right;
+    button {
+      background: transparent;
+      border: 0;
+      color: #fff;
+      margin: 2px;
+    }
+  }
+}
