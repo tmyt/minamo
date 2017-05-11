@@ -87,7 +87,7 @@
     "socket.io-client": "^1.7.2",
     "style-loader": "^0.13.1",
     "toastr": "^2.1.2",
-    "uglify-js": "git+https://github.com/mishoo/UglifyJS2.git#harmony",
+    "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony-v2.8.22",
     "webpack": "^2.2.1",
     "webpack-bundle-size-analyzer": "^2.5.0",
     "webpack-subresource-integrity": "^0.9.0",
