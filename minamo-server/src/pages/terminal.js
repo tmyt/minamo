@@ -14,8 +14,11 @@ export default class PopupTerminalComponent extends React.Component{
     const args = qs(this.context.router.location.search, ['theme']);
     this.setState(args);
   }
+  componentDidMount(){
+    this.titleElement = window.parent.document.getElementById('ish-title');
+  }
   handleTitleChange(title){
-    window.parent.document.getElementById('ish-title').innerText = title;
+    if(this.titleElement) this.titleElement.innerText = title;
   }
   render(){
     return (
