@@ -115,24 +115,13 @@ div.container > div.row:last-child {
   right: 0;
   top: 0;
   bottom: 0;
-}
 
-#app > div.flexbox > div.flex-main {
-  overflow: auto;
-  height: 100%;
-  position: relative;
-}
-
-#app div.flexbox iframe {
-  border: 0;
-  width: 100%;
-  height: calc(100% - 5px);
-}
-
-#app div.flexbox .ish-resize {
-  cursor: ns-resize;
-  height: 5px;
-  background-color: #eee;
+  & > div.flex-main {
+    overflow: auto;
+    height: 100%;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 // import sub-styles
