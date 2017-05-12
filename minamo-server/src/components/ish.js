@@ -76,7 +76,7 @@ export default class IntegratedShell extends React.Component {
           <div id='ish-title'>
             Integrated Shell
           </div>
-          <div id='ish-buttons'>
+          <div id='ish-buttons' onTouchStart={e => e.stopPropagation()}>
             <TerminalOpener hasExtension={this.state.hasExtension}/>
             <button onClick={this.handleCloseISH}>
               <Glyphicon glyph='remove' />
