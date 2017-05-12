@@ -56,8 +56,6 @@ html {
 }
 
 .footer {
-/*  position: absolute; */
-  bottom: 2px;
   width: 100%;
   height: 60px;
   background-color: #ecf0f1;
@@ -121,6 +119,10 @@ div.container > div.row:last-child {
     height: 100%;
     position: relative;
     -webkit-overflow-scrolling: touch;
+
+    & > div {
+      min-height: calc(100% - 60px - 104px);
+    }
   }
 }
 
