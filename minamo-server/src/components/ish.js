@@ -6,17 +6,22 @@ export default class IntegratedShell extends React.Component {
   constructor(){
     super();
     this.state = {ishHeight: 400, tipsVisible: false, hasExtension: false};
-    this.handleDown = this.handleDown.bind(this);
-    this.handleUp = this.handleUp.bind(this);
-    this.handleMove = this.handleMove.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleTouchStart = this.handleTouchStart.bind(this);
+    this.handleTouchEnd = this.handleTouchEnd.bind(this);
+    this.handleTouchMove = this.handleTouchMove.bind(this);
     this.handleCloseISH = this.handleCloseISH.bind(this);
   }
   componentDidMount(){
-    document.addEventListener('mouseup', this.handleUp);
+    document.addEventListener('mouseup', this.handleMouseUp);
+    document.addEventListener('touchend', this.handleTouchEnd);
     this.detectExtension();
   }
   componentWillUnmount(){
-    document.removeEventListener('mouseup', this.handleUp);
+    document.removeEventListener('mouseup', this.handleMouseUp);
+    document.removeEventListener('touchend', this.handleTouchEnd);
   }
   hasExtension(){
     return !!document.getElementsByTagName('meta')['mo:extension-available'];
@@ -26,21 +31,35 @@ export default class IntegratedShell extends React.Component {
     const available = this.hasExtension();
     this.setState({tipsVisible: !available, hasExtension: available});
   }
-  handleDown(e){
+  handleMouseDown(e){
     this.lastDownY = e.clientY;
     this.iframe.style.pointerEvents = 'none';
-    document.addEventListener('mousemove', this.handleMove);
+    document.addEventListener('mousemove', this.handleMouseMove);
   }
-  handleUp(e){
-    document.removeEventListener('mousemove', this.handleMove);
-    if(this.iframe){
-      this.iframe.style.pointerEvents = '';
-    }
+  handleMouseUp(e){
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    if(this.iframe){ this.iframe.style.pointerEvents = ''; }
   }
-  handleMove(e){
+  handleMouseMove(e){
     e.preventDefault();
-    const delta = e.clientY - this.lastDownY;
-    this.lastDownY = e.clientY;
+    this.handleMove(e.clientY);
+  }
+  handleTouchStart(e){
+    e.preventDefault(); // nazo
+    this.lastDownY = e.touches[0].clientY;
+    this.iframe.style.pointerEvents = 'none';
+    document.addEventListener('touchmove', this.handleTouchMove);
+  }
+  handleTouchEnd(e){
+    document.removeEventListener('touchmove', this.handleTouchMove);
+    if(this.iframe){ this.iframe.style.pointerEvents = ''; }
+  }
+  handleTouchMove(e){
+    this.handleMove(e.touches[0].clientY);
+  }
+  handleMove(y){
+    const delta = y - this.lastDownY;
+    this.lastDownY = y;
     this.setState({ishHeight: this.state.ishHeight - delta});
   }
   handleCloseISH(){
@@ -52,8 +71,8 @@ export default class IntegratedShell extends React.Component {
     if(!this.props.visible) return null;
     return (
       <div style={{height: `${this.state.ishHeight}px`, background: '#000'}}>
-        <header className='ish-resize' onMouseDown={this.handleDown} />
-        <div className='ish-bar'>
+        <header className='ish-resize' onMouseDown={this.handleMouseDown} onTouchStart={this.handleTouchStart}/>
+        <div className='ish-bar' onTouchStart={this.handleTouchStart}>
           <div id='ish-title'>
             Integrated Shell
           </div>
