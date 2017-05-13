@@ -5,8 +5,7 @@
   "repository": "https://github.com/tmyt/minamo.git",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm run build",
-    "start": "babel-node --harmony server.js",
+    "start": "babel-node server.js",
     "watch": "webpack --watch",
     "build": "webpack",
     "build-release": "NODE_ENV=production webpack",
