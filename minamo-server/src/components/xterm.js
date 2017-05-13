@@ -37,8 +37,7 @@ export default class Xterm extends React.Component{
     if(this.props.isExported){
       let timer = null;
       window.addEventListener('resize', () => {
-        clearTimeout(timer);
-        timer = setTimeout(() => term.fit(), 100);
+        window.requestAnimationFrame(() => term.fit());
       });
       term.on('title', d => this.changeTitle(d));
       socket.on('exit', () => {this.connected = false; window.close();});
