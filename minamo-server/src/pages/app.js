@@ -8,7 +8,7 @@ import IntegratedShell from '../components/ish';
 export default class AppComponent extends React.Component {
   constructor(){
     super();
-    this.state = {tabbar: null, viewSize: '', isISHVisible: false};
+    this.state = {viewSize: '', isISHVisible: false};
     this.handleResize = this.handleResize.bind(this);
     this.handleLaunchISH = this.handleLaunchISH.bind(this);
     this.handleCloseISH = this.handleCloseISH.bind(this);
@@ -30,12 +30,8 @@ export default class AppComponent extends React.Component {
   }
   getChildContext(){
     return {
-      setTabbar: this.setTabbar.bind(this),
       viewSize: this.state.viewSize,
     };
-  }
-  setTabbar(tabbar){
-    this.setState({tabbar});
   }
   handleResize(){
     let newSize = 'xs';
@@ -60,8 +56,8 @@ export default class AppComponent extends React.Component {
     return (
       <div className='flexbox'>
         <div className='flex-main'>
-          <HeaderComponent tabs={this.state.tabbar} onLaunchISH={this.handleLaunchISH}/>
-          <div>
+          <HeaderComponent onLaunchISH={this.handleLaunchISH}/>
+          <div id='main'>
             {this.props.children}
           </div>
           <FooterComponent />
@@ -72,6 +68,5 @@ export default class AppComponent extends React.Component {
   }
 }
 AppComponent.childContextTypes = {
-  setTabbar: PropTypes.func,
   viewSize: PropTypes.string,
 };

@@ -36,7 +36,7 @@ export default class HeaderComponent extends React.Component {
       adminTabItem = (<LinkContainer to='/admin'><NavItem>admin</NavItem></LinkContainer>);
     }
     return (
-      <header>
+      <header className={extraTabMenu ? 'has-tabbar' : ''}>
         <div className='navbar navbar-default navbar-static-top' id='header_nav'>
           <Container>
             <Navbar.Header>
