@@ -1,43 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import PageRoot from '../components/page-root';
-import ExtensionTips from '../components/extension-tips';
 import Xterm from '../components/xterm';
-import TerminalOpener from '../components/terminal-opener';
+import DocumentTitle from 'react-document-title';
 import qs from '../lib/querystring';
 
-export default class TerminalComponent extends React.Component{
+export default class PopupTerminalComponent extends React.Component{
   constructor(){
     super();
-    this.state = {tipsVisible: false, theme: undefined, hasExtension: false};
+    this.state = { theme: undefined };
+    this.handleTitleChange = this.handleTitleChange.bind(this);
   }
   componentWillMount(){
-    const args = qs(this.context.router.location, ['theme']);
+    const args = qs(this.context.router.location.search, ['theme']);
     this.setState(args);
   }
   componentDidMount(){
-    this.detectExtension();
+    this.titleElement = window.parent.document.getElementById('ish-title');
   }
-  hasExtension(){
-    return !!document.getElementsByTagName('meta')['mo:extension-available'];
-  }
-  detectExtension(){
-    if(typeof(chrome) !== 'object'){ return; }
-    const available = this.hasExtension();
-    this.setState({tipsVisible: !available, hasExtension: available});
+  handleTitleChange(title){
+    if(this.titleElement) this.titleElement.innerText = title;
   }
   render(){
     return (
-      <PageRoot title='terminal'>
-        <ExtensionTips visible={this.state.tipsVisible}/>
-        <h2>Terminal</h2>
-        <Xterm theme={this.state.theme}>
-          <TerminalOpener theme={this.state.theme} hasExtension={this.state.hasExtension}/>
-        </Xterm>
-      </PageRoot>
+      <DocumentTitle title='terminal'>
+        <Xterm className='popup' isExported={true} theme={this.state.theme} onChangeTitle={this.handleTitleChange}/>
+      </DocumentTitle>
     );
   }
 }
-TerminalComponent.contextTypes = {
+PopupTerminalComponent.contextTypes = {
   router: PropTypes.object
 };
+

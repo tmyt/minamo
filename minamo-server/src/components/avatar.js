@@ -33,7 +33,7 @@ export default class UserAvatarComponent extends React.Component{
     if(!this.props.visible) return null;
     if(this.context.viewSize === ''){
       return (
-        <div>
+        <div style={{float: 'left'}}>
           <UserAvatar className='hidden-xs'/>
           <UserAvatarXs className='visible-xs'/>
         </div>

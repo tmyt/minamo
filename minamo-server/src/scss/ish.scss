@@ -1,0 +1,47 @@
+#ish {
+  background-color: #000;
+}
+
+.ish-resize {
+  cursor: ns-resize;
+  height: 5px;
+  background-color: #eee;
+  border-top: 1px solid #ccc;
+}
+
+.ish-bar {
+  &, div {
+    height: 23px;
+  }
+  #ish-title {
+    float: left;
+    color: #fff;
+    margin: 2px 4px;
+    font-size: 14px;
+  }
+  #ish-buttons {
+    float: right;
+    button {
+      font-size: 14px;
+      background: transparent;
+      border: 0;
+      color: #fff;
+      margin: 2px;
+    }
+  }
+}
+
+.flexbox iframe {
+  border: 0;
+  width: 100%;
+  height: calc(100% - 28px);
+}
+
+.ish-button {
+  margin: 22px 15px;
+  padding: 6px 13px !important;
+  position: relative;
+  border: solid 1px #1a252f !important;
+  color: #888;
+  font-size: 14px;
+}

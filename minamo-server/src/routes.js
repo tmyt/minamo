@@ -37,12 +37,6 @@ const routes = {
         }
       },
       {
-        path: 'terminal',
-        getComponent: (location, callback) => {
-          System.import('./pages/terminal').then(component => callback(null, component.default));
-        }
-      },
-      {
         path: 'sysinfo',
         getComponent: (location, callback) => {
           System.import('./pages/sysinfo').then(component => callback(null, component.default));
@@ -64,6 +58,12 @@ const routes = {
     component: Authorized,
     onEnter: Authorized.verifyCredentials,
     childRoutes: [
+    {
+      path: '/console/terminal',
+      getComponent: (location, callback) => {
+        System.import('./pages/terminal').then(component => callback(null, component.default));
+      }
+    },
     {
       path: '/console/terminal_popup',
       getComponent: (location, callback) => {

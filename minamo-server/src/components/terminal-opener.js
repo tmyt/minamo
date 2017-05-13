@@ -1,5 +1,5 @@
 import React from 'react';
-import FontAwesome from '../components/font-awesome';
+import { Glyphicon } from 'react-bootstrap';
 
 const BrowserExtensionEvent = 'x-minamo-openterminal';
 
@@ -17,8 +17,8 @@ export default class TerminalOpenerComponent extends React.Component{
   }
   render(){
     return (
-      <button onClick={this.openPopup.bind(this)} className='external-button'>
-        <FontAwesome icon='external-link' />
+      <button onClick={this.openPopup.bind(this)}>
+        <Glyphicon glyph='new-window' />
       </button>
     );
   }
