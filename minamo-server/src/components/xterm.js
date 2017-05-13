@@ -35,7 +35,6 @@ export default class Xterm extends React.Component{
     socket.on('init', () => socket.emit('resize', [term.cols, term.rows]));
     term.fit();
     if(this.props.isExported){
-      let timer = null;
       window.addEventListener('resize', () => {
         window.requestAnimationFrame(() => term.fit());
       });

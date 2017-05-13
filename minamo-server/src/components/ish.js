@@ -36,7 +36,7 @@ export default class IntegratedShell extends React.Component {
     this.iframe.style.pointerEvents = 'none';
     document.addEventListener('mousemove', this.handleMouseMove);
   }
-  handleMouseUp(e){
+  handleMouseUp(){
     document.removeEventListener('mousemove', this.handleMouseMove);
     if(this.iframe){ this.iframe.style.pointerEvents = ''; }
   }
@@ -50,7 +50,7 @@ export default class IntegratedShell extends React.Component {
     this.iframe.style.pointerEvents = 'none';
     document.addEventListener('touchmove', this.handleTouchMove);
   }
-  handleTouchEnd(e){
+  handleTouchEnd(){
     document.removeEventListener('touchmove', this.handleTouchMove);
     if(this.iframe){ this.iframe.style.pointerEvents = ''; }
   }
