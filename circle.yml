@@ -1,0 +1,11 @@
+machine:
+  timezone:
+    Asia/Tokyo
+  node:
+    version: 7.10.0
+dependencies:
+  override:
+    - cd minamo-server && npm install
+test:
+  override:
+    - cd minamo-server && npm run eslint
