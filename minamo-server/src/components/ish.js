@@ -70,7 +70,7 @@ export default class IntegratedShell extends React.Component {
   render(){
     if(!this.props.visible) return null;
     return (
-      <div style={{height: `${this.state.ishHeight}px`, background: '#000'}}>
+      <div id='ish' style={{height: `${this.state.ishHeight}px`}}>
         <header className='ish-resize' onMouseDown={this.handleMouseDown} onTouchStart={this.handleTouchStart}/>
         <div className='ish-bar' onTouchStart={this.handleTouchStart}>
           <div id='ish-title'>
