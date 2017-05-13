@@ -15,10 +15,20 @@ export default class PopupTerminalComponent extends React.Component{
     this.setState(args);
   }
   componentDidMount(){
+    if(this.isMobileChrome()){
+      const viewport = document.getElementsByClassName('xterm-viewport')[0];
+      viewport.style.width = '100vw';
+    }
     this.titleElement = window.parent.document.getElementById('ish-title');
   }
   handleTitleChange(title){
     if(this.titleElement) this.titleElement.innerText = title;
+  }
+  isMobileChrome(){
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isAndroidChrome = /chrome/.test(userAgent) && /android/.test(userAgent);
+    const isIOSChrome = /crios/.test(userAgent);
+    return isAndroidChrome || isIOSChrome;
   }
   render(){
     return (
