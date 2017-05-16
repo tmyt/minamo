@@ -1,6 +1,7 @@
 import React from 'react';
 import { Glyphicon } from 'react-bootstrap';
 import TerminalOpener from './terminal-opener';
+import ActiveEventHandler from './active-event';
 
 export default class IntegratedShell extends React.Component {
   constructor(){
@@ -71,12 +72,16 @@ export default class IntegratedShell extends React.Component {
     if(!this.props.visible) return null;
     return (
       <div id='ish' style={{height: `${this.state.ishHeight}px`}}>
-        <header className='ish-resize' onMouseDown={this.handleMouseDown} onTouchStart={this.handleTouchStart}/>
-        <div className='ish-bar' onTouchStart={this.handleTouchStart}>
+        <header className='ish-resize' onMouseDown={this.handleMouseDown}>
+          <ActiveEventHandler event='touchstart' handler={this.handleTouchStart}/>
+        </header>
+        <div className='ish-bar'>
+          <ActiveEventHandler event='touchstart' handler={this.handleTouchStart}/>
           <div id='ish-title'>
             Integrated Shell
           </div>
-          <div id='ish-buttons' onTouchStart={e => e.stopPropagation()}>
+          <div id='ish-buttons'>
+            <ActiveEventHandler event='touchstart' handler={e => e.stopPropagation()}/>
             <TerminalOpener hasExtension={this.state.hasExtension}/>
             <button onClick={this.handleCloseISH}>
               <Glyphicon glyph='remove' />
