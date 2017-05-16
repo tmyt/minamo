@@ -37,11 +37,19 @@
   height: calc(100% - 28px);
 }
 
-.ish-button {
-  margin: 22px 15px;
-  padding: 6px 13px !important;
+#ish-button {
+  height: 34px;
+  margin: 23px 15px;
+  padding: 5px 13px 7px;
   position: relative;
-  border: solid 1px #1a252f !important;
+  border: solid 1px #1a252f;
   color: #888;
   font-size: 14px;
+  &.visible-xs {
+    float: right;
+  }
+  &.hidden-xs {
+    float: left;
+    margin-right: 0px;
+  }
 }

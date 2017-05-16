@@ -13,13 +13,10 @@ export default class IntegratedShellButton extends React.Component {
     }
   }
   render(){
-    const styles = {
-      float: this.props.xs ? 'right' : 'left',
-    };
-    const clazz = `ish-button ${this.props.xs ? 'visible-xs' : 'hidden-xs'}`;
+    const clazz = this.props.xs ? 'visible-xs' : 'hidden-xs';
     if(!this.context.isAuthenticated) return null;
     return(
-      <Button bsStyle='primary' style={styles} className={clazz} onClick={this.handleClick}>
+      <Button bsStyle='primary' className={clazz} id='ish-button' onClick={this.handleClick}>
         <Glyphicon glyph='console' />
       </Button>
     );
