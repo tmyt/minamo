@@ -4,6 +4,8 @@ machine:
   node:
     version: 7.10.0
 dependencies:
+  cache_directories:
+    - minamo-server/node_modules
   override:
     - cd minamo-server && npm install
 test:
