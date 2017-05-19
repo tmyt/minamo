@@ -65,7 +65,7 @@ app.use(expressSession({
 app.use(csp({
   policies: {
     'default-src': [ csp.SELF ],
-    'script-src': [ csp.SELF, csp.NONCE ],
+    'script-src': [ csp.SELF ],
     'style-src': [ csp.SELF, csp.INLINE, 'cdnjs.cloudflare.com' ],
     'img-src': [ csp.SELF, 'data:' ],
     'font-src': [ csp.SELF, 'fonts.gstatic.com', 'cdnjs.cloudflare.com' ],
@@ -180,7 +180,7 @@ function handleReactRouter(req, res){
         await getFileProps('./public/styles.js'),
         await getFileProps('./public/loader.js'),
       ];
-      res.render('index', {markup, title, metas, scripts, nonce: req.nonce});
+      res.render('index', {markup, title, metas, scripts});
     }else{
       res.sendStatus(404);
     }
