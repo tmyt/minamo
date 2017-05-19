@@ -27,12 +27,13 @@
 
   .xterm-viewport {
     background-color: transparent;
-  }
-
-  .xterm-viewport {
     width: 18px;
     overflow-x: hidden;
     margin-left: auto;
+  }
+
+  textarea.xterm-helper-textarea {
+    font-size: 16px;
   }
 
   .xterm {
