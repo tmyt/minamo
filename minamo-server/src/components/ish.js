@@ -40,6 +40,7 @@ export default class IntegratedShell extends React.Component {
   handleMouseUp(){
     document.removeEventListener('mousemove', this.handleMouseMove);
     if(this.iframe){ this.iframe.style.pointerEvents = ''; }
+    this.setState({ishHeight: Math.max(this.state.ishHeight, 29)});
   }
   handleMouseMove(e){
     e.preventDefault();
@@ -54,6 +55,7 @@ export default class IntegratedShell extends React.Component {
   handleTouchEnd(){
     document.removeEventListener('touchmove', this.handleTouchMove);
     if(this.iframe){ this.iframe.style.pointerEvents = ''; }
+    this.setState({ishHeight: Math.max(this.state.ishHeight, 29)});
   }
   handleTouchMove(e){
     this.handleMove(e.touches[0].clientY);
@@ -71,7 +73,7 @@ export default class IntegratedShell extends React.Component {
   render(){
     if(!this.props.visible) return null;
     return (
-      <div id='ish' style={{height: `${this.state.ishHeight}px`}}>
+      <div id='ish' style={{height: `${Math.max(this.state.ishHeight, 29)}px`}}>
         <header className='ish-resize' onMouseDown={this.handleMouseDown}>
           <ActiveEventHandler event='touchstart' handler={this.handleTouchStart}/>
         </header>
