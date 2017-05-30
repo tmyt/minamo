@@ -7,10 +7,16 @@ body {
   box-shadow: 0 0 5px 1px rgba(32, 45, 59, 0.5);
   border: 0;
   .profile-image{
-    margin: -12px 0px;
+    width: 32px;
+    height: 32px;
+    border-radius: 10%;
+    margin: -11px 0px -10px 0px;
   }
   .profile-image-xs{
     margin: 0px 8px 0px 0px;
+    width: 28px;
+    height: 28px;
+    border-radius: 15%;
   }
   .navbar-text.visible-xs{
     margin-bottom: 0px;
