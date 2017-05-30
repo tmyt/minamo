@@ -65,13 +65,17 @@ app.use(expressSession({
 app.use(csp({
   policies: {
     'default-src': [ csp.SELF ],
-    'script-src': [ csp.SELF ],
-    'style-src': [ csp.SELF, csp.INLINE, 'cdnjs.cloudflare.com' ],
+    'script-src': [ csp.SELF, config.cdn ],
+    'style-src': [ csp.INLINE, 'cdnjs.cloudflare.com' ],
     'img-src': [ csp.SELF, 'data:' ],
     'font-src': [ csp.SELF, 'fonts.gstatic.com', 'cdnjs.cloudflare.com' ],
     'connect-src': [ csp.SELF, `wss://${config.domain}` ],
   }
 }));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', `${config.proto}://${config.domain}`);
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/auth', appReq('./lib/auth'));
@@ -84,6 +88,12 @@ io.use(passportSocketIo.authorize({
 app.use(express.static('public', {maxage: '14d'}));
 app.use('/avatar', express.static(path.join(config.data_dir, 'avatar'), {maxage: '14d'}));
 app.use('/fonts', express.static('node_modules/Umi/dist/fonts', {maxage: '14d'}));
+if(config.cdn !== ''){
+  app.use('*', (req, res, next) => {
+    if(req.headers['x-host']){ return res.sendStatus(400); }
+    next();
+  });
+}
 app.set('view engine', 'pug');
 
 // handlers
@@ -174,13 +184,22 @@ function handleReactRouter(req, res){
         metas.push(['mo:role', req.user.role]);
         metas.push(['mo:avatar', req.user.avatar]);
       }
+      const preconnect = [
+        '<https://fonts.gstatic.com>; rel=preconnect',
+        '<https://cdnjs.cloudflare.com>; rel=preconnect',
+      ];
+      if(config.cdn){
+        preconnect.push(`<${config.proto}://${config.cdn}>; rel=preconnect`);
+      }
+      res.header('Link', preconnect.join(', '));
       const title = DocumentTitle.rewind();
       const scripts = [
-        await getFileProps('./public/bundle.js'),
-        await getFileProps('./public/styles.js'),
         await getFileProps('./public/loader.js'),
+        await getFileProps('./public/styles.js'),
+        await getFileProps('./public/bundle.js'),
       ];
-      res.render('index', {markup, title, metas, scripts});
+      const cdn = config.cdn ? `//${config.cdn}` : '';
+      res.render('index', {markup, title, metas, scripts, cdn});
     }else{
       res.sendStatus(404);
     }

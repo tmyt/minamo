@@ -5,11 +5,11 @@ html
   meta(http-equiv='X-UA-Compatible', content='IE=edge')
   meta(name='viewport', content='width=device-width, initial-scale=1')
   each tag in metas
-    meta(name=`${tag[0]}` content=`${tag[1]}`)
+    meta(name=`${tag[0]}`, content=`${tag[1]}`)
   title !{title}
   style(type='text/css').
     @keyframes disp{0%{opacity:0;}to{opacity:1;}}body{background-color:#f9f9f9;animation-name:disp;animation-duration:1.5s;animation-timing-function:step-end;}
  body
   #app !{markup}
   each s in scripts
-    script(src=`/${s.filename}?${s.mtime}`, integrity=`${s.integrity}`, async)
+    script(src=`${cdn}/${s.filename}?${s.mtime}`, integrity=`${s.integrity}`, crossorigin='anonymous', async)

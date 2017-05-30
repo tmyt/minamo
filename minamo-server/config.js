@@ -5,6 +5,7 @@ const path = require('path');
 module.exports = {
   proto: 'https',
   domain: 'minamo.io',
+  cdn: 'cdn.minamo.io',
   repo_path: process.env.MINAMO_REPOS_PATH || path.resolve('repos'),
   http_port: 3000,
   git_port: 7000,
