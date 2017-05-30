@@ -40,9 +40,10 @@
 #ish-button {
   height: 34px;
   margin: 23px 15px;
-  padding: 5px 13px 7px;
+  padding: 6px 13px;
   position: relative;
   border: solid 1px #1a252f;
+  box-shadow: 0 0;
   color: #888;
   font-size: 14px;
   &.visible-xs {
