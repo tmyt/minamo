@@ -10,6 +10,7 @@ RUN adduser user && usermod -a -G sudo user
 # Add Tini
 ENV TINI_VERSION v0.14.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
+ADD init.sh /init.sh
+RUN chmod +x /tini /init.sh
 ENTRYPOINT ["/tini", "--"]
-CMD ["/bin/bash"]
+CMD ["/init.sh"]

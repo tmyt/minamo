@@ -16,7 +16,7 @@ module.exports = function(io){
     let isFirstTime = '';
     if(!await dataCont.statsAsync().catch(() => null)){
       await docker.createContainerAsync({Image: 'busybox', name: userData, Volumes: {'/home/user':{}}});
-      isFirstTime = 'cp -a /etc/skel/. /home/user; chown user.user /home/user/.?*;';
+      isFirstTime = 'init';
     }
     const args = {
       name,
@@ -26,7 +26,7 @@ module.exports = function(io){
       AttachStderr: true,
       OpenStdin: true,
       Tty: true,
-      Cmd: [ '/bin/bash', '-c', `${isFirstTime} chown user.user /home/user; exec login -f user` ],
+      Cmd: [ '/init.sh', isFirstTime ],
       HostConfig: { AutoRemove: true, VolumesFrom: [ userData ] },
       NetworkingConfig: { EndpointsConfig: { 'shell': {} } }
     };
