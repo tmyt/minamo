@@ -1,13 +1,18 @@
+general:
+  build_dir: minamo-server
 machine:
   timezone:
     Asia/Tokyo
   node:
-    version: 7.10.0
+    version: 8.1.0
 dependencies:
   cache_directories:
-    - minamo-server/node_modules
+    - node_modules
   override:
-    - cd minamo-server && npm install
+    - npm install
+compile:
+  override:
+    - npm run build
 test:
   override:
-    - cd minamo-server && npm run eslint
+    - npm run eslint
