@@ -46,7 +46,7 @@ function isEnvFile(filename){
 }
 
 class api {
-  constructor(app, kvs, io){
+  constructor(kvs, io){
     this.kvs = kvs;
     this.initializeKvs();
     /* public api */
@@ -85,6 +85,7 @@ class api {
     require('./terminal.js')(io);
     require('./sysinfo')(io);
     // install
+    const app = express.Router();
     app.use(ignoreCaches, pub);
     app.use(ignoreCaches, rejectIfNotAuthenticated, priv);
     return app;

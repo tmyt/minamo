@@ -102,8 +102,7 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 // routers
-const api = appReq('./api');
-app.use('/api', new api(express.Router(), kvs, io));
+app.use('/api', new(require('./api'))(kvs, io));
 
 // handle authorized uris
 app.get('/console(/*)?', requireAuthentication, handleReactRouter);
