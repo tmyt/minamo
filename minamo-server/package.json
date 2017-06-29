@@ -57,6 +57,7 @@
     "session-file-store": "^1.0.0",
     "shell-escape": "^0.2.0",
     "socket.io": "^1.7.4",
+    "tar": "^2.2.1",
     "tar-stream": "^1.5.4",
     "tarball-extract": "0.0.3"
   },
