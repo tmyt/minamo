@@ -1,6 +1,7 @@
 import React from 'react';
 import Terminal from 'xterm/dist/xterm';
 import Socket from 'socket.io-client';
+import TerminalOpener from './terminal-opener';
 import 'xterm/dist/addons/fit/fit';
 
 export default class Xterm extends React.Component{
@@ -8,6 +9,12 @@ export default class Xterm extends React.Component{
     if(!e.altKey && e.ctrlKey && e.shiftKey && e.key === 'C'){
       e.preventDefault();
       document.execCommand('copy');
+    }
+    if(!e.altKey && e.ctrlKey && e.shiftKey && e.key === 'N' && this.props.isExported){
+      e.preventDefault();
+      const hasExtension = typeof(chrome) !== 'object'
+        && !!document.getElementsByTagName('meta')['mo:extension-available'];
+      TerminalOpener.openPopup(this.props.theme, hasExtension);
     }
   }
   loadTheme(){
@@ -21,6 +28,8 @@ export default class Xterm extends React.Component{
     }
   }
   componentDidMount(){
+    // bind
+    this.documentKeyDown = this.documentKeyDown.bind(this);
     // load theme
     if(this.props.theme !== 'default'){ this.loadTheme(); }
     // handle copy hotkey

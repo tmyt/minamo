@@ -4,10 +4,10 @@ import { Glyphicon } from 'react-bootstrap';
 const BrowserExtensionEvent = 'x-minamo-openterminal';
 
 export default class TerminalOpenerComponent extends React.Component{
-  openPopup(){
-    const theme = this.props.theme ? '?theme=' + this.props.theme : '';
+  static openPopup(themeName, hasExtension){
+    const theme = themeName ? `?theme=${themeName}` : '';
     const path = '/console/terminal_popup' + theme;
-    if(this.props.hasExtension){
+    if(hasExtension){
       const url = location.protocol + '//' + location.host + path;
       const e = new CustomEvent(BrowserExtensionEvent, { detail: { url } });
       return window.dispatchEvent(e);
@@ -15,9 +15,12 @@ export default class TerminalOpenerComponent extends React.Component{
     const popupWindowFeatures = 'width=800,height=480,resizable=yes';
     window.open(path, `terminal-${Date.now()}`, popupWindowFeatures);
   }
+  handleClick(){
+    TerminalOpenerComponent.openPopup(this.props.theme, this.props.hasExtension);
+  }
   render(){
     return (
-      <button onClick={this.openPopup.bind(this)}>
+      <button onClick={this.handleClick.bind(this)}>
         <Glyphicon glyph='new-window' />
       </button>
     );
