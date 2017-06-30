@@ -134,9 +134,12 @@ githttp.use('/', gitComplexAuth, git);
 git.on('post-receive', async (repo, changes) => {
   const name = repo.name.split('/').reverse()[0];
   const tools = appReq('./lib/tools');
-  fs.readFile(path.join(config.repo_path, `$(name).env`), (err, json) => {
+  fs.readFile(path.join(config.repo_path, `${name}.env`), (err, json) => {
     const env = JSON.parse(json);
-    if((env['MINAMO_BRANCH_NAME'] || 'master') !== changes[2]){
+    const changedRefs = changes.filter(x => x.ref.startsWith('refs/heads/'))
+      .map(x => x.ref.substring('refs/heads/'.length));
+    const targetBranch = env['MINAMO_BRANCH_NAME'] || 'master';
+    if(!changedRefs.includes(targetBranch)){
       return; // ignore. push ref is not current branch
     }
     kvs.resetHost(`${name}.${config.domain}`);
