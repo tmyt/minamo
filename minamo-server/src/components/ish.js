@@ -40,7 +40,7 @@ export default class IntegratedShell extends React.Component {
   handleMouseUp(){
     document.removeEventListener('mousemove', this.handleMouseMove);
     if(this.iframe){ this.iframe.style.pointerEvents = ''; }
-    this.setState({ishHeight: Math.max(this.state.ishHeight, 29)});
+    this.setState({ishHeight: this.roundHeight(this.state.ishHeight)});
   }
   handleMouseMove(e){
     e.preventDefault();
@@ -55,7 +55,7 @@ export default class IntegratedShell extends React.Component {
   handleTouchEnd(){
     document.removeEventListener('touchmove', this.handleTouchMove);
     if(this.iframe){ this.iframe.style.pointerEvents = ''; }
-    this.setState({ishHeight: Math.max(this.state.ishHeight, 29)});
+    this.setState({ishHeight: this.roundHeight(this.state.ishHeight)});
   }
   handleTouchMove(e){
     this.handleMove(e.touches[0].clientY);
@@ -69,6 +69,9 @@ export default class IntegratedShell extends React.Component {
     if(typeof(this.props.onCloseISH) === 'function'){
       this.props.onCloseISH();
     }
+  }
+  roundHeight(h){
+    return Math.min(Math.max(h, 29), window.innerHeight);
   }
   render(){
     if(!this.props.visible) return null;
