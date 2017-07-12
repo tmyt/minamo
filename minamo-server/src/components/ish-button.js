@@ -16,7 +16,7 @@ export default class IntegratedShellButton extends React.Component {
     const clazz = this.props.xs ? 'visible-xs' : 'hidden-xs';
     if(!this.context.isAuthenticated) return null;
     return(
-      <Button bsStyle='primary' className={clazz} id='ish-button' onClick={this.handleClick}>
+      <Button bsStyle='primary' className={`${clazz} ish-button`} onClick={this.handleClick}>
         <Glyphicon glyph='console' />
       </Button>
     );
