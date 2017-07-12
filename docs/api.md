@@ -11,7 +11,7 @@
 
 - GET /services :lock:
 - GET /services/status :lock:
-- GET /services/available
+- GET /services/available :lock:
 - PUT /services/{name} :lock:
 - DELETE /services/{name} :lock:
 - POST /services/{name}/start :lock:
@@ -58,13 +58,13 @@ List services
 
 Get statuses for all services.
 
-### GET /services/available
+### GET /services/available :lock:
 
 Check service name availability
 
 | name | value |
 |----|----|
-|name|service name|
+|service|service name|
 
 ### PUT /services/{name} :lock:
 

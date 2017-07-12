@@ -55,12 +55,12 @@ class api {
     pub.get('/hooks/:repo', hooks);
     pub.post('/hooks/:repo', hooks);
     pub.get('/verify', this.verifyCredentials);
-    pub.get('/services/available', this.checkAvailability);
     /* v2 api */
     const priv = express.Router();
     const svcBase = '/services/:service';
     priv.get(`/services`, this.list);
     priv.get(`/services/status`, this.status.bind(this));
+    priv.get('/services/available', this.checkAvailability);
     priv.put(`${svcBase}`, this.create);
     priv.delete(`${svcBase}`, this.destroy.bind(this));
     priv.post(`${svcBase}/start`, this.start.bind(this));
