@@ -5,6 +5,7 @@
 const util = require('util')
     , request = util.promisify(require('request'))
     , Table = require('easy-table')
+    , SocketIo = require('socket.io-client')
 
 const scheme = 'https:'
     , host = 'minamo.io';
@@ -207,10 +208,37 @@ async function env(...args){
     console.log('error');
   }
 }
+function attach(name){
+  if(!name){
+    console.log('usage: mm attach <name>');
+    return;
+  }
+  // check tty
+  if(!process.stdout.isTTY || !process.stdin.isTTY){
+    console.log('Error: STDIN and STDOUT must be TTY');
+    return;
+  }
+  process.stdin.setRawMode(true);
+  // connect
+  const socket = SocketIo(`${scheme}//${host}/attach`, {
+    extraHeaders: {
+      Cookie: `connect.sid=${process.env.MM_AUTH_TOKEN}`,
+      'X-MINAMO-SERVICE': name,
+    }
+  });
+  socket.on('data', d => process.stdout.write(d));
+  socket.on('exit', () => process.exit());
+  socket.on('close', () => process.exit());
+  process.stdin.on('data', d => socket.emit('data', d));
+  process.stdin.on('resize', () =>
+    socket.emit('resize', [process.stdout.columns, process.stdout.rows]));
+  // initial resize
+  socket.emit('resize', [process.stdout.columns, process.stdout.rows]);
+}
 function help(){
   console.log('usage: mm <command>');
   console.log('<command> = login | list | status | create | destroy |');
-  console.log('            start | stop | restart | logs | env');
+  console.log('            start | stop | restart | logs | env | attach');
 }
 
 // ---
@@ -227,6 +255,7 @@ switch(cmd){
   case 'restart':
   case 'logs':
   case 'env':
+  case 'attach':
     eval(cmd).apply(this, args);
     break;
   default:

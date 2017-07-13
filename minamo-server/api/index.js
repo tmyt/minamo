@@ -83,6 +83,13 @@ class api {
     io.of('/status').on('connection', this.wsStatuses.bind(this));
     require('./logstream.js')(io);
     require('./terminal.js')(io);
+    require('./attach.js')(io, (req) => {
+      const name = req.headers['x-minamo-service'];
+      if(!name || !ContainerRegexp.test(name)) return false;
+      const repo = path.join(config.repo_path, name);
+      if(!pathExists(repo)) return false;
+      return true;
+    });
     require('./sysinfo')(io);
     // install
     const app = express.Router();
