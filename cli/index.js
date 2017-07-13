@@ -46,7 +46,7 @@ async function list(){
   const services = JSON.parse(resp.body);
   const chars = services.map(x => x.length).reduce((a,b)=>Math.max(a,b),0);
   const width = process.stdout.columns;
-  const sp = Array(chars+1).join(' ');
+  const sp = ' '.repeat(chars);
   if(process.stdout.isTTY){
     for(let i = 0, k = 0; i < services.length; ++i){
       k += chars;
