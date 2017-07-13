@@ -233,7 +233,7 @@ class api {
     if(!pathExists(repo)){
       res.status(404).send('error: service not found');
     }else{
-      if(req.query.quick !== undefined){
+      if(req.query.quick !== undefined || req.body.quick !== undefined){
         tools.restart(name);
       }else{
         this.kvs.resetHost(`${name}.${config.domain}`);
