@@ -39,11 +39,29 @@ function login(){
 }
 async function list(){
   const resp = await get('/api/services');
-  if(resp.statusCode === 200){
-    const services = JSON.parse(resp.body);
-    services.forEach(x => console.log(x));
-  }else{
+  if(resp.statusCode !== 200){
     console.log('error');
+    return;
+  }
+  const services = JSON.parse(resp.body);
+  const chars = services.map(x => x.length).reduce((a,b)=>Math.max(a,b),0);
+  const width = process.stdout.columns;
+  const sp = Array(chars+1).join(' ');
+  if(process.stdout.isTTY){
+    for(let i = 0, k = 0; i < services.length; ++i){
+      k += chars;
+      if(k + 2 > width){
+        process.stdout.write('\n');
+        k = chars;
+      }
+      process.stdout.write(services[i]);
+      process.stdout.write(sp.substr(0, chars - services[i].length));
+      process.stdout.write('  ');
+      k += 2;
+    }
+    process.stdout.write('\n');
+  }else{
+    services.forEach(x => console.log(x));
   }
 }
 async function status(name){
