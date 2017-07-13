@@ -199,6 +199,13 @@ class Tools{
     await docker.getContainer(`${repo}-data`).removeAsync().catch(()=>{});
     await docker.getImage(`minamo/${repo}-data`).removeAsync().catch(()=>{});
   }
+
+  async isRunning(repo){
+    const cont = docker.getContainer(repo);
+    const inspect = await cont.inspectAsync().catch(()=>null);
+    if(!inspect) return false;
+    return inspect.State.Status === 'running';
+  }
 }
 
 module.exports = new Tools();

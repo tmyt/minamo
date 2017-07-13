@@ -221,6 +221,7 @@ function attach(name){
   process.stdin.setRawMode(true);
   // connect
   const socket = SocketIo(`${scheme}//${host}/attach`, {
+    reconnection: false,
     extraHeaders: {
       Cookie: `connect.sid=${process.env.MM_AUTH_TOKEN}`,
       'X-MINAMO-SERVICE': name,
@@ -228,7 +229,18 @@ function attach(name){
   });
   socket.on('data', d => process.stdout.write(d));
   socket.on('exit', () => process.exit());
-  socket.on('close', () => process.exit());
+  socket.on('disconnect', () => {
+    console.log('disconnect');
+    process.exit();
+  });
+  socket.on('connect_error', () => {
+    console.log('connect_error');
+    process.exit();
+  });
+  socket.on('error', () => {
+    console.log('socket error');
+    process.exit();
+  });
   process.stdin.on('data', d => socket.emit('data', d));
   process.stdin.on('resize', () =>
     socket.emit('resize', [process.stdout.columns, process.stdout.rows]));

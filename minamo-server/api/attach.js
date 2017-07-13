@@ -7,7 +7,7 @@ module.exports = function(io, f){
     const user = socket.request.user;
     const service = socket.request.headers['x-minamo-service'];
     // check params
-    if(!f(socket.request)){
+    if(!await f(socket.request)){
       socket.emit('data', 'service not found\n');
       socket.emit('exit');
       return;
