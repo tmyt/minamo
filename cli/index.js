@@ -4,6 +4,7 @@
 
 const util = require('util')
     , request = util.promisify(require('request'))
+    , columns = require('cli-columns')
     , Table = require('easy-table')
     , SocketIo = require('socket.io-client')
 
@@ -44,26 +45,7 @@ async function list(){
     return;
   }
   const services = JSON.parse(resp.body);
-  const chars = services.map(x => x.length).reduce((a,b)=>Math.max(a,b),0);
-  const width = process.stdout.columns;
-  const sp = ' '.repeat(chars + 2);
-  if(process.stdout.isTTY){
-    for(let i = 0, k = 0; i < services.length; ++i){
-      process.stdout.write(services[i]);
-      k += chars;
-      if((k + 2 + chars) <= width){
-        process.stdout.write(sp.substring(services[i].length));
-        k += 2;
-      }else if(i + 1 < services.length){
-        process.stdout.write('\n');
-        k = 0;
-      }
-    }
-    // trailing \n
-    process.stdout.write('\n');
-  }else{
-    services.forEach(x => console.log(x));
-  }
+  console.log(columns(services));
 }
 async function status(name){
   const resp = await get('/api/services/status', {name});
