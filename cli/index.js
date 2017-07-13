@@ -222,6 +222,7 @@ function attach(name){
   process.stdin.setRawMode(true);
   // connect
   const socket = SocketIo(`${scheme}//${host}/attach`, {
+    autoConnect: false,
     reconnection: false,
     extraHeaders: {
       Cookie: `connect.sid=${process.env.MM_AUTH_TOKEN}`,
@@ -245,7 +246,8 @@ function attach(name){
   process.stdin.on('data', d => socket.emit('data', d));
   process.stdin.on('resize', () =>
     socket.emit('resize', [process.stdout.columns, process.stdout.rows]));
-  // initial resize
+  // initialize session
+  socket.open();
   socket.emit('resize', [process.stdout.columns, process.stdout.rows]);
 }
 function help(){
