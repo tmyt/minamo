@@ -170,10 +170,10 @@ async function logs(name){
   }
 }
 async function env(...args){
-  const name = args.shift();
   const cmd = args.shift();
+  const name = args.shift();
   if(!name || (cmd !== 'list' && cmd !== 'add' && cmd !== 'delete')){
-    console.log('usage: mm env <name> [list | add | del]');
+    console.log('usage: mm env [list | add | del] <name>');
     return;
   }
   const list = await get(`/api/services/${name}/env`);
@@ -190,13 +190,13 @@ async function env(...args){
   if(cmd === 'add'){
     const value = args.shift();
     if(!key || value === undefined){
-      console.log('usage: mm env <name> add <key> <value>');
+      console.log('usage: mm env add <name> <key> <value>');
       return;
     }
     current[key] = value;
   }else if(cmd === 'delete'){
     if(!key){
-      console.log('usage: mm env <name> delete <key>');
+      console.log('usage: mm env delete <name> <key>');
       return;
     }
     delete current[key];
