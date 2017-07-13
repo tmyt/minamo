@@ -184,7 +184,7 @@ class Tools{
     if(!repo) return;
     const cont = docker.getContainer(repo);
     // container has not built
-    if(!cont){ return await this.build(repo); }
+    if(!(await cont.inspectAsync().catch(()=>null))){ return await this.build(repo); }
     // preparing flag
     await fs.mkdirpAsync('/tmp/minamo/').catch(()=>{});
     await fs.writeFileAsync(`/tmp/minamo/${repo}.prep`, '');
