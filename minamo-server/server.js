@@ -84,7 +84,7 @@ io.use(passportSocketIo.authorize({
   secret: 'kuroshio',
   store: sessionStore,
   success: (_, accept) => accept(),
-  fail: () => throw new Error('unauthorized'),
+  fail: () => { throw new Error('unauthorized'); },
 }));
 
 app.use(express.static('public', {maxage: '14d'}));
