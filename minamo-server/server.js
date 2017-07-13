@@ -82,7 +82,9 @@ app.use('/auth', appReq('./lib/auth'));
 io.use(passportSocketIo.authorize({
   cookieParser: cookieParser,
   secret: 'kuroshio',
-  store: sessionStore
+  store: sessionStore,
+  success: (_, accept) => accept(),
+  fail: () => throw new Error('unauthorized'),
 }));
 
 app.use(express.static('public', {maxage: '14d'}));
