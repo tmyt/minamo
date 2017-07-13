@@ -14,15 +14,18 @@ export default class IntegratedShell extends React.Component {
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
     this.handleCloseISH = this.handleCloseISH.bind(this);
+    this.handleWindowResize = this.handleWindowResize.bind(this);
   }
   componentDidMount(){
     document.addEventListener('mouseup', this.handleMouseUp);
     document.addEventListener('touchend', this.handleTouchEnd);
+    window.addEventListener('resize', this.handleWindowResize);
     this.detectExtension();
   }
   componentWillUnmount(){
     document.removeEventListener('mouseup', this.handleMouseUp);
     document.removeEventListener('touchend', this.handleTouchEnd);
+    document.removeEventListener('resize', this.handleWindowResize);
   }
   hasExtension(){
     return !!document.getElementsByTagName('meta')['mo:extension-available'];
@@ -69,6 +72,14 @@ export default class IntegratedShell extends React.Component {
     if(typeof(this.props.onCloseISH) === 'function'){
       this.props.onCloseISH();
     }
+  }
+  handleWindowResize(){
+    window.requestAnimationFrame(() => {
+      const h = this.roundHeight(this.state.ishHeight);
+      if(h < this.state.ishHeight){
+        this.setState({ishHeight: h});
+      }
+    });
   }
   roundHeight(h){
     return Math.min(Math.max(h, 29), window.innerHeight);
