@@ -13,6 +13,8 @@ module.exports = function(io){
       .update(`${user.name}`).digest('hex');
     const name = 'tmp' + crypto.createHash('sha1').update(`${Date.now()}`).digest('hex');
     const dataCont = docker.getContainer(userData);
+    const sid = socket.request.headers.cookie.split(';').map(x => x.trim().split('='))
+      .reduce((pv,c) => ((pv[c[0]] = c[1]), pv), {})['connect.sid'];
     let isFirstTime = '';
     if(!await dataCont.statsAsync().catch(() => null)){
       await docker.createContainerAsync({Image: 'busybox', name: userData, Volumes: {'/home/user':{}}});
@@ -27,6 +29,7 @@ module.exports = function(io){
       OpenStdin: true,
       Tty: true,
       Cmd: [ '/init.sh', isFirstTime ],
+      Env: [ `MM_AUTH_TOKEN=${sid}` ],
       HostConfig: { AutoRemove: true, VolumesFrom: [ userData ] },
       NetworkingConfig: { EndpointsConfig: { 'shell': {} } }
     };
@@ -35,12 +38,6 @@ module.exports = function(io){
       name: 'xterm-color',
       cols: 80,
       rows: 24,
-      env: {
-        HOME: process.env.HOME,
-        SHELL: '/bin/bash',
-        USER: process.env.USER,
-        LANG: process.env.LANG
-      }
     });
     socket.emit('init');
     socket.emit('data', '\r\n');
