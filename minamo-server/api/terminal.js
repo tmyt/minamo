@@ -3,6 +3,7 @@
 const pty = require('node-pty')
     , crypto = require('crypto')
     , bluebird = require('bluebird')
+    , tar = require('tar-stream')
     , Docker = require('../lib/tools/docker')
     , docker = bluebird.promisifyAll(new Docker());
 
@@ -15,6 +16,9 @@ module.exports = function(io){
     const dataCont = docker.getContainer(userData);
     const sid = socket.request.headers.cookie.split(';').map(x => x.trim().split('='))
       .reduce((pv,c) => ((pv[c[0]] = c[1]), pv), {})['connect.sid'];
+    const pack = tar.pack();
+    pack.entry({name: '.mm/cookie'}, sid);
+    pack.finalize();
     let isFirstTime = '';
     if(!await dataCont.statsAsync().catch(() => null)){
       await docker.createContainerAsync({Image: 'busybox', name: userData, Volumes: {'/home/user':{}}});
@@ -29,11 +33,12 @@ module.exports = function(io){
       OpenStdin: true,
       Tty: true,
       Cmd: [ '/init.sh', isFirstTime ],
-      Env: [ `MM_AUTH_TOKEN=${sid}` ],
+      Env: [ 'MM_CACHE_PATH=/tmp' ],
       HostConfig: { AutoRemove: true, VolumesFrom: [ userData ] },
       NetworkingConfig: { EndpointsConfig: { 'shell': {} } }
     };
     const container = await docker.createContainerAsync(args);
+    await container.putArchiveAsync(pack, {path: '/tmp'});
     const term = pty.spawn('docker', ['start', '-ai', name], {
       name: 'xterm-color',
       cols: 80,

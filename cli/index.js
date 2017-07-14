@@ -15,12 +15,18 @@ const scheme = 'https:'
     , host = 'minamo.io';
 
 // --
+function cachePath(){
+  if(process.env.MM_CACHE_PATH){
+    return path.join(process.env.MM_CACHE_PATH, '.mm');
+  }
+  return path.join(process.env.HOME, '.mm');
+}
 function token(){
   return new Promise(done => {
     if(process.env.MM_AUTH_TOKEN){
       return done(process.env.MM_AUTH_TOKEN);
     }
-    const cached = path.join(process.env.HOME, '.mm', 'cookie');
+    const cached = path.join(cachePath(), 'cookie');
     fs.readFile(cached, 'utf-8', (err, content) => {
       if(err){
         console.log('User not logged in');
@@ -60,11 +66,15 @@ function del(path, args){
 async function login(){
   const username = await read({prompt: 'Username: '});
   const password = await read({prompt: 'Password: ', silent: true});
-  const resp = await post('/auth/local?_redir=%2Foob', {username, password});
+  const resp = await request({
+    method: 'POST',
+    uri: `${scheme}//${host}/auth/local?_redir=%2Foob`,
+    form: {username, password}
+  });
   if(resp.headers.location === '/oob'){
     const mkdir = util.promisify(fs.mkdir)
         , writeFile = util.promisify(fs.writeFile)
-        , confDir = path.join(process.env.HOME, '.mm');
+        , confDir = cachePath();
     const sid = resp.headers['set-cookie'][0].split(';').map(x => x.trim().split('='))
       .reduce((p,c)=>((p[c[0]]=c[1]),p),{})['connect.sid'];
     await mkdir(confDir).catch(()=>{});
