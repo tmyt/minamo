@@ -61,6 +61,31 @@ function put(path, args){
 function del(path, args){
   return req('DELETE', path, args);
 }
+async function ws(path, extraHeaders){
+  const cookie = await token();
+  const defaultHeaders = {
+    Cookie: cookie,
+  };
+  const socket = SocketIo(`${scheme}//${host}${path}`, {
+    autoConnect: false,
+    reconnection: false,
+    extraHeaders: Object.assign(defaultHeaders, extraHeaders || {})
+  });
+  socket.on('exit', () => process.exit());
+  socket.on('disconnect', () => {
+    console.log('disconnect');
+    process.exit();
+  });
+  socket.on('connect_error', () => {
+    console.log('connect_error');
+    process.exit();
+  });
+  socket.on('error', () => {
+    console.log('socket error');
+    process.exit();
+  });
+  return socket;
+}
 
 // --
 async function login(){
@@ -273,41 +298,34 @@ async function attach(name){
     return;
   }
   // connect
-  const cookie = await token();
-  const socket = SocketIo(`${scheme}//${host}/attach`, {
-    autoConnect: false,
-    reconnection: false,
-    extraHeaders: {
-      Cookie: cookie,
-      'X-MINAMO-SERVICE': name,
-    }
-  });
+  const socket = await ws('/attach', {'X-MINAMO-SERVICE': name});
   socket.on('connect', () => process.stdin.setRawMode(true));
   socket.on('data', d => process.stdout.write(d));
-  socket.on('exit', () => process.exit());
-  socket.on('disconnect', () => {
-    console.log('disconnect');
-    process.exit();
-  });
-  socket.on('connect_error', () => {
-    console.log('connect_error');
-    process.exit();
-  });
-  socket.on('error', () => {
-    console.log('socket error');
-    process.exit();
-  });
   process.stdin.on('data', d => socket.emit('data', d));
-  process.stdin.on('resize', () =>
-    socket.emit('resize', [process.stdout.columns, process.stdout.rows]));
+  process.stdin.on('resize', () => {
+    socket.emit('resize', [process.stdout.columns, process.stdout.rows]);
+  });
   // initialize session
   socket.open();
   socket.emit('resize', [process.stdout.columns, process.stdout.rows]);
 }
+async function logstream(){
+  // check tty
+  if(!process.stdout.isTTY){
+    console.log('Error: STDOUT must be TTY');
+    return;
+  }
+  // connect
+  const socket = await ws('/log');
+  socket.on('data', d => process.stdout.write(d));
+  // initialize session
+  socket.open();
+}
 function help(){
   console.log('usage: mm <command>');
   console.log('<command> = login | list | status | create | destroy |');
-  console.log('            start | stop | restart | logs | env | attach');
+  console.log('            start | stop | restart | logs | env | attach |');
+  console.log('            logstream');
 }
 
 // ---
@@ -325,6 +343,7 @@ switch(cmd){
   case 'logs':
   case 'env':
   case 'attach':
+  case 'logstream':
     eval(cmd).apply(this, args);
     break;
   default:
