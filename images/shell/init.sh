@@ -4,4 +4,4 @@ if [ "x$1" = "xinit" ]; then
   chown user.user /home/user/.?*
 fi
 chown user.user /home/user
-exec login -f user MM_AUTH_TOKEN=$MM_AUTH_TOKEN
+exec login -p -f user

@@ -8,10 +8,10 @@ RUN echo '%sudo ALL=NOPASSWD: ALL' >> /etc/sudoers
 RUN adduser user && usermod -a -G sudo user
 
 # Install mm
-ENV NODE_VERSION=v8.1.4
 COPY minamo-cli-1.0.0.tgz /tmp
 COPY mm.sh /usr/bin/mm
-RUN wget https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz -O /tmp/node-${NODE_VERSION}-linux-x64.tar.xz && \
+RUN export NODE_VERSION=v8.1.4 && \
+    wget https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz -O /tmp/node-${NODE_VERSION}-linux-x64.tar.xz && \
     tar xf /tmp/node-${NODE_VERSION}-linux-x64.tar.xz -C /tmp && \
     mkdir /opt/node && \
     cp -a /tmp/node-${NODE_VERSION}-linux-x64/bin /opt/node/ && \
@@ -20,11 +20,11 @@ RUN wget https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.
     rm -rf /tmp/node-${NODE_VERSION}-linux-x64 && \
     PATH=${PATH}:/opt/node/bin /opt/node/bin/npm i -g /tmp/minamo-cli-1.0.0.tgz && \
     rm /tmp/minamo-cli-1.0.0.tgz && \
-    chmod +x /usr/bin/mm
+    chmod +x /usr/bin/mm && \
+    unset NODE_VERSION
 
 # Add Tini
-ENV TINI_VERSION v0.14.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+ADD https://github.com/krallin/tini/releases/download/v0.14.0/tini /tini
 ADD init.sh /init.sh
 RUN chmod +x /tini /init.sh
 ENTRYPOINT ["/tini", "--"]
