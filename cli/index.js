@@ -262,7 +262,7 @@ async function env(...args){
     console.log(`error: ${resp.statusCode}`);
   }
 }
-function attach(name){
+async function attach(name){
   if(!name){
     console.log('usage: mm attach <name>');
     return;
@@ -274,11 +274,12 @@ function attach(name){
   }
   process.stdin.setRawMode(true);
   // connect
+  const cookie = await token();
   const socket = SocketIo(`${scheme}//${host}/attach`, {
     autoConnect: false,
     reconnection: false,
     extraHeaders: {
-      Cookie: `connect.sid=${process.env.MM_AUTH_TOKEN}`,
+      Cookie: cookie,
       'X-MINAMO-SERVICE': name,
     }
   });
