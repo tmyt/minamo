@@ -272,7 +272,6 @@ async function attach(name){
     console.log('Error: STDIN and STDOUT must be TTY');
     return;
   }
-  process.stdin.setRawMode(true);
   // connect
   const cookie = await token();
   const socket = SocketIo(`${scheme}//${host}/attach`, {
@@ -283,6 +282,7 @@ async function attach(name){
       'X-MINAMO-SERVICE': name,
     }
   });
+  socket.on('connect', () => process.stdin.setRawMode(true));
   socket.on('data', d => process.stdout.write(d));
   socket.on('exit', () => process.exit());
   socket.on('disconnect', () => {
