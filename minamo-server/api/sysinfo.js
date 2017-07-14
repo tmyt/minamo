@@ -3,7 +3,7 @@
 const ResMon = require('../lib/resmon');
 
 module.exports = function(io){
-  const sockets = io.of('/sysinfo');
+  const sockets = require('./io-auth')(io, '/sysinfo');
   const mon = new ResMon(5, 300);
   mon.on('next', d => {
     sockets.emit('next', d);

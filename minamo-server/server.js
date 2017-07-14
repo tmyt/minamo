@@ -83,8 +83,10 @@ io.use(passportSocketIo.authorize({
   cookieParser: cookieParser,
   secret: 'kuroshio',
   store: sessionStore,
-  success: (_, accept) => accept(),
-  fail: () => { throw new Error('unauthorized'); },
+  // accept all request at this time.
+  // but controled in delegated namespace.
+  success: (data, accept) => accept(),
+  fail: (data, _, __, accept) => accept(),
 }));
 
 app.use(express.static('public', {maxage: '14d'}));

@@ -80,7 +80,7 @@ class api {
     const admin = require('./admin')();
     priv.use(requireAdminRights, admin);
     // io
-    io.of('/status').on('connection', this.wsStatuses.bind(this));
+    require('./io-auth')(io, '/status').on('connection', this.wsStatuses.bind(this));
     require('./logstream.js')(io);
     require('./terminal.js')(io);
     require('./attach.js')(io, async (req) => {

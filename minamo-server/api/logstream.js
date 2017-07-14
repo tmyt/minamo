@@ -14,7 +14,7 @@ function tailf(path){
 }
 
 module.exports = function(io){
-  io.of('/log').on('connection', socket => {
+  require('./io-auth')(io, '/log').on('connection', async (socket) => {
     const tail = tailf('/tmp/minamo/build.log');
     tail.on('line', line => {
       socket.emit('data', `${line}\r\n`);

@@ -3,7 +3,7 @@
 const pty = require('node-pty');
 
 module.exports = function(io, f){
-  io.of('/attach').on('connection', async (socket) => {
+  require('./io-auth')(io, '/attach').on('connection', async (socket) => {
     const service = socket.request.headers['x-minamo-service'];
     // check params
     if(!await f(socket.request)){

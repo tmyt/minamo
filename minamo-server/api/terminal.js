@@ -8,7 +8,7 @@ const pty = require('node-pty')
     , docker = bluebird.promisifyAll(new Docker());
 
 module.exports = function(io){
-  io.of('/term').on('connection', async (socket) => {
+  require('./io-auth')(io, '/term').on('connection', async (socket) => {
     const user = socket.request.user;
     const userData = 'shelldata.' + crypto.createHash('sha1')
       .update(`${user.name}`).digest('hex');
