@@ -22,7 +22,7 @@ function authRouter(provider){
       }
       req.login(user, err => {
         if(err) { return next(err); }
-        return res.redirect(redir || '/');
+        return res.redirect((redir && redir.startsWith('/')) ? redir : '/');
       });
     })(req, res, next);
   };
