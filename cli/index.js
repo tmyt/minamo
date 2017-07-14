@@ -3,7 +3,10 @@
 'use strict';
 
 const util = require('util')
+    , fs = require('fs')
+    , path = require('path')
     , request = util.promisify(require('request'))
+    , read = util.promisify(require('read'))
     , columns = require('cli-columns')
     , Table = require('easy-table')
     , SocketIo = require('socket.io-client')
@@ -12,14 +15,32 @@ const scheme = 'https:'
     , host = 'minamo.io';
 
 // --
+function token(){
+  return new Promise(done => {
+    if(process.env.MM_AUTH_TOKEN){
+      return done(process.env.MM_AUTH_TOKEN);
+    }
+    const cached = path.join(process.env.HOME, '.mm', 'cookie');
+    fs.readFile(cached, 'utf-8', (err, content) => {
+      if(err){
+        console.log('User not logged in');
+        process.exit();
+      }
+      done(content);
+    });
+  }).then(cookie => {
+    return request.cookie(`connect.sid=${cookie}`);
+  });
+}
 function req(method, path, qs, form){
-  const j = request.jar();
-  const cookie = request.cookie(`connect.sid=${process.env.MM_AUTH_TOKEN}`);
-  j.setCookie(cookie, `${scheme}//${host}`);
-  return request({
-    method, form, qs,
-    uri: `${scheme}//${host}${path}`,
-    jar: j,
+  return token().then(cookie => {
+    const j = request.jar();
+    j.setCookie(cookie, `${scheme}//${host}`);
+    return request({
+      method, form, qs,
+      uri: `${scheme}//${host}${path}`,
+      jar: j,
+    });
   });
 }
 function get(path, args){
@@ -36,12 +57,27 @@ function del(path, args){
 }
 
 // --
-function login(){
+async function login(){
+  const username = await read({prompt: 'Username: '});
+  const password = await read({prompt: 'Password: ', silent: true});
+  const resp = await post('/auth/local?_redir=%2Foob', {username, password});
+  if(resp.headers.location === '/oob'){
+    const mkdir = util.promisify(fs.mkdir)
+        , writeFile = util.promisify(fs.writeFile)
+        , confDir = path.join(process.env.HOME, '.mm');
+    const sid = resp.headers['set-cookie'][0].split(';').map(x => x.trim().split('='))
+      .reduce((p,c)=>((p[c[0]]=c[1]),p),{})['connect.sid'];
+    await mkdir(confDir).catch(()=>{});
+    await writeFile(path.join(confDir, 'cookie'), sid);
+    console.log('Login success');
+  }else{
+    console.log('Login failed');
+  }
 }
 async function list(){
   const resp = await get('/api/services');
   if(resp.statusCode !== 200){
-    console.log('error');
+    console.log(`error: ${resp.statusCode}`);
     return;
   }
   const services = JSON.parse(resp.body);
@@ -63,7 +99,7 @@ async function status(name){
     })
     console.log(table.toString());
   }else{
-    console.log('error');
+    console.log(`error: ${resp.statusCode}`);
   }
 }
 async function create(...args){
@@ -123,7 +159,7 @@ async function start(...names){
     if(started.statusCode === 200){
       console.log(`service ${name} started`);
     }else{
-      console.log('error;');
+      console.log(`error: ${resp.statusCode}`);
     }
   }
 }
@@ -138,7 +174,7 @@ async function stop(...names){
     if(stopped.statusCode === 200){
       console.log(`service ${name} stopped`);
     }else{
-      console.log('error;');
+      console.log(`error: ${resp.statusCode}`);
     }
   }
 }
@@ -161,7 +197,7 @@ async function restart(...args){
     if(restarted.statusCode === 200){
       console.log(`service ${name} restarted`);
     }else{
-      console.log('error;');
+      console.log(`error: ${resp.statusCode}`);
     }
   }
 }
@@ -174,7 +210,7 @@ async function logs(name){
   if(resp.statusCode === 200){
     console.log(resp.body);
   }else{
-    console.log('error;');
+    console.log(`error: ${resp.statusCode}`);
   }
 }
 async function env(...args){
@@ -186,7 +222,7 @@ async function env(...args){
   }
   const list = await get(`/api/services/${name}/env`);
   if(list.statusCode !== 200){
-    console.log('error:');
+    console.log(`error: ${resp.statusCode}`);
     return;
   }
   if(cmd === 'list'){
@@ -213,7 +249,7 @@ async function env(...args){
   if(updated.statusCode === 200){
     console.log('updated');
   }else{
-    console.log('error');
+    console.log(`error: ${resp.statusCode}`);
   }
 }
 function attach(name){
