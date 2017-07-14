@@ -112,50 +112,57 @@ async function destroy(name){
     console.log(`error: ${destroyed.statusCode}`);
   }
 }
-async function start(name){
-  if(!name){
+async function start(...names){
+  if(!names || !names.length){
     console.log('usage: mm start <name>');
     return;
   }
-  const started = await post(`/api/services/${name}/start`);
-  if(started.statusCode === 200){
-    console.log(`service ${name} started`);
-  }else{
-    console.log('error;');
+  for(let i = 0; i < names.length; ++i){
+    const name = names[i];
+    const started = await post(`/api/services/${name}/start`);
+    if(started.statusCode === 200){
+      console.log(`service ${name} started`);
+    }else{
+      console.log('error;');
+    }
   }
 }
-async function stop(name){
-  if(!name){
+async function stop(...names){
+  if(!names || !names.length){
     console.log('usage: mm stop <name>');
     return;
   }
-  const stopped = await post(`/api/services/${name}/stop`);
-  if(stopped.statusCode === 200){
-    console.log(`service ${name} stopped`);
-  }else{
-    console.log('error;');
+  for(let i = 0; i < names.length; ++i){
+    const name = names[i];
+    const stopped = await post(`/api/services/${name}/stop`);
+    if(stopped.statusCode === 200){
+      console.log(`service ${name} stopped`);
+    }else{
+      console.log('error;');
+    }
   }
 }
 async function restart(...args){
-  let quick, name;
+  let quick, names = [];
   for(let i = 0; i < args.length; ++i){
     if(args[i] === '-q' || args[i] === '--quick'){
       quick = 1;
       continue;
     }
-    name = args[i];
-    break;
+    names.push(args[i]);
   }
-  if(!name){
+  if(!names.length){
     console.log('usage: mm restart [-q | --quick] <name>');
     return;
   }
-console.log(quick);
-  const restarted = await post(`/api/services/${name}/restart`, {quick});
-  if(restarted.statusCode === 200){
-    console.log(`service ${name} restarted`);
-  }else{
-    console.log('error;');
+  for(let i = 0; i < names.length; ++i){
+    const name = names[i];
+    const restarted = await post(`/api/services/${name}/restart`, {quick});
+    if(restarted.statusCode === 200){
+      console.log(`service ${name} restarted`);
+    }else{
+      console.log('error;');
+    }
   }
 }
 async function logs(name){
