@@ -211,3 +211,5 @@ function handleReactRouter(req, res){
     }
   });
 }
+
+process.on('unhandledRejection', console.dir);
