@@ -1,6 +1,7 @@
 import React from 'react';
 import { Glyphicon } from 'react-bootstrap';
 import TerminalOpener from './terminal-opener';
+import ExtensionTips from './extension-tips';
 import ActiveEventHandler from './active-event';
 
 export default class IntegratedShell extends React.Component {
@@ -98,6 +99,7 @@ export default class IntegratedShell extends React.Component {
           </div>
           <div id='ish-buttons'>
             <ActiveEventHandler event='touchstart' handler={e => e.stopPropagation()}/>
+            <ExtensionTips visible={this.state.tipsVisible} />
             <TerminalOpener hasExtension={this.state.hasExtension}/>
             <button onClick={this.handleCloseISH}>
               <Glyphicon glyph='remove' />
