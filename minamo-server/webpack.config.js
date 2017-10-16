@@ -5,7 +5,7 @@ const webpack = require('webpack')
     , HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
     , config = require('./config')
     , SriPlugin = require('webpack-subresource-integrity')
-    , UglifyEsPlugin = require('uglify-es-webpack-plugin');
+    , UglifyEsPlugin = require('uglifyjs-webpack-plugin')
 
 let plugins = [
   new HardSourceWebpackPlugin({
@@ -37,8 +37,7 @@ let plugins = [
 
 if(process.env.NODE_ENV === 'production'){
   plugins.push(new UglifyEsPlugin({
-    compress: { warnings: false, unsafe: true },
-    mangle: true
+    parallel: true,
   }));
 }
 
