@@ -66,6 +66,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['react'],
+            plugins: ['babel-plugin-transform-object-rest-spread'],
             babelrc: false,
           }
         }]

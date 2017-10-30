@@ -12,7 +12,7 @@ export default class PopupComponent extends React.Component {
   }
   getChildContext(){
     const profile = (typeof window === 'object'
-      ? this.getProfileInfo() : this.context.router.profile)
+      ? this.getProfileInfo() : this.context.router.staticContext.profile)
       || {username: '', avatar: '', role: ''};
     return {
       isAuthenticated: !!(profile && profile.username), profile

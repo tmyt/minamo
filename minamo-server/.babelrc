@@ -1,7 +1,8 @@
 {
   "plugins": [
     "system-import-transformer",
-    "babel-plugin-transform-es2015-modules-commonjs"
+    "babel-plugin-transform-es2015-modules-commonjs",
+    "babel-plugin-transform-object-rest-spread",
   ],
   "presets": ["react"]
 }

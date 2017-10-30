@@ -11,7 +11,7 @@ export default class PopupTerminalComponent extends React.Component{
     this.handleTitleChange = this.handleTitleChange.bind(this);
   }
   componentWillMount(){
-    const args = qs(this.context.router.location.search, ['theme']);
+    const args = qs(this.context.router.route.location.search, ['theme']);
     this.setState(args);
   }
   componentDidMount(){

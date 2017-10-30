@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import Avatar from './avatar';
@@ -8,6 +8,7 @@ import Container from './container';
 import Hamburger from './hamburger';
 import ConsoleTabs from './console/tabs';
 import IntegratedShellButton from './ish-button';
+import isActive from '../lib/isactive';
 
 export default class HeaderComponent extends React.Component {
   constructor(){
@@ -29,7 +30,7 @@ export default class HeaderComponent extends React.Component {
   render(){
     let extraTabMenu = null;
     let adminTabItem = null;
-    if(this.context.router && this.context.router.isActive('/console', true)){
+    if(this.context.router && isActive(this.context.router, '/console', true)){
       extraTabMenu = (<ConsoleTabs />);
     }
     if(this.context.profile && this.context.profile.role === 'admin'){
@@ -54,7 +55,7 @@ export default class HeaderComponent extends React.Component {
                 <Avatar visible={this.context.isAuthenticated}/>
               </div>
               <Nav navbar={true} onSelect={this.onSelect}>
-                <LinkContainer to='/console' onlyActiveOnIndex={true}><NavItem>console</NavItem></LinkContainer>
+                <LinkContainer to='/console' exact={true}><NavItem>console</NavItem></LinkContainer>
                 <LinkContainer to='/console/logstream'><NavItem>log stream</NavItem></LinkContainer>
                 <LinkContainer to='/console/sysinfo'><NavItem>sysinfo</NavItem></LinkContainer>
                 {adminTabItem}

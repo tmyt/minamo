@@ -1,15 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { match, Router } from 'react-router';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
+import { BrowserRouter } from 'react-router-dom';
 
-import { routes } from './routes';
+import Routes from './routes';
 
 System.import('Umi/dist/js/bootstrap.js');
 
-match({ routes, history: createBrowserHistory() }, (error, redirect, renderProps) => {
-  ReactDOM.render(
-    <Router {...renderProps} />,
-    document.getElementById('app')
-  );
-});
+ReactDOM.hydrate((
+  <BrowserRouter>
+    <Routes />
+  </BrowserRouter>
+  ), document.getElementById('app')
+);

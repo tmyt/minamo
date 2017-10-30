@@ -7,13 +7,13 @@ export default class ActiveEventHandler extends React.Component{
     this.installed = false;
   }
   componentDidMount(){
-    const e = this._reactInternalInstance._hostParent._hostNode;
+    const e = this._reactInternalFiber.return.stateNode;
     if(!e) return;
     this.installed = true;
     e.addEventListener(this.props.event, this.props.handler, {passive: false});
   }
   componentWillUnmount(){
-    const e = this._reactInternalInstance._hostParent._hostNode;
+    const e = this._reactInternalFiber.return.stateNode;
     if(!e || !this.installed) return;
     this.installed = false;
     e.removeEventListener(this.props.event, this.props.handler);

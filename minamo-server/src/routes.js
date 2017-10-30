@@ -1,76 +1,35 @@
+import React from 'react';
+import { Route, Switch } from 'react-router';
+
 import PopupComponent from './pages/popup';
 import AppComponent from './pages/app';
 import Authorized from './components/authorized';
 
-const routes = {
-  component: PopupComponent,
-  childRoutes: [
-  {
-    path: '/',
-    component: AppComponent,
-    indexRoute: {
-      getComponent: (location, callback) => {
-        System.import('./pages/index').then(component => callback(null, component.default));
-      }
-    },
-    childRoutes: [
-    {
-      path: 'login',
-      getComponent: (location, callback) => {
-        System.import('./pages/login').then(component => callback(null, component.default));
-      }
-    },
-    {
-      path: 'console',
-      component: Authorized,
-      onEnter: Authorized.verifyCredentials,
-      indexRoute: {
-        getComponent: (location, callback) => {
-          System.import('./pages/console').then(component => callback(null, component.default));
-        }
-      },
-      childRoutes: [
-      {
-        path: 'logstream',
-        getComponent: (location, callback) => {
-          System.import('./pages/logstream').then(component => callback(null, component.default));
-        }
-      },
-      {
-        path: 'sysinfo',
-        getComponent: (location, callback) => {
-          System.import('./pages/sysinfo').then(component => callback(null, component.default));
-        }
-      }]
-    },
-    {
-      path: 'admin',
-      component: Authorized,
-      onEnter: Authorized.verifyAdminCredentials,
-      indexRoute: {
-        getComponent: (location, callback) => {
-          System.import('./pages/admin').then(component => callback(null, component.default));
-        }
-      }
-    }]
-  },
-  {
-    component: Authorized,
-    onEnter: Authorized.verifyCredentials,
-    childRoutes: [
-    {
-      path: '/console/terminal',
-      getComponent: (location, callback) => {
-        System.import('./pages/terminal').then(component => callback(null, component.default));
-      }
-    },
-    {
-      path: '/console/terminal_popup',
-      getComponent: (location, callback) => {
-        System.import('./pages/popup-terminal').then(component => callback(null, component.default));
-      }
-    }]
-  }]
-};
+const AuthorizedRoute = ({component: Component, ...rest}) => (
+  <Route {...rest} render={props => (
+    <Authorized isAdmin={props.isAdmin}>
+      <Component {...props} />
+    </Authorized>
+  )}/>
+);
 
-export { routes };
+const AppIndex = () => (
+  <PopupComponent>
+    <Switch>
+      <AuthorizedRoute path='/console/terminal' component={require('./pages/terminal').default} />
+      <AuthorizedRoute path='/console/terminal_popup' component={require('./pages/popup-terminal').default} />
+      <Route path='/'>
+        <AppComponent>
+          <Route exact path='/' component={require('./pages/index').default} />
+          <Route path='/login' component={require('./pages/login').default} />
+          <AuthorizedRoute exact path='/console' component={require('./pages/console').default} auth={true} />
+          <AuthorizedRoute path='/console/logstream' component={require('./pages/logstream').default} auth={true} />
+          <AuthorizedRoute path='/console/sysinfo' component={require('./pages/sysinfo').default} auth={true} />
+          <AuthorizedRoute path='/admin' component={require('./pages/admin').default} auth={true} isAdmin={true} />
+        </AppComponent>
+      </Route>
+    </Switch>
+  </PopupComponent>
+);
+
+export default AppIndex;

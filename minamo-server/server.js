@@ -23,9 +23,9 @@ const app = express()
 // React
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { match, RouterContext } from 'react-router';
+import { StaticRouter } from 'react-router-dom';
 import DocumentTitle from 'react-document-title';
-import { routes } from './src/routes';
+import Routes from './src/routes';
 // WebUI
 const expressSession = require('express-session')
     , morgan = require('morgan')
@@ -171,45 +171,44 @@ function requireAdminAuthentication(req, res, next){
   res.send(404);
 }
 
-function handleReactRouter(req, res){
-  match({routes, location: req.url}, async (err, redirectLocation, props) => {
-    if(err){
-      res.status(500).send(err.message);
-    }else if(redirectLocation){
-      res.redirect(302, redirectLocation.pathname + redirectLocation.search);
-    }else if(props){
-      props.router.profile = req.user;
-      const markup = renderToString(<RouterContext {...props} />)
-        .replace(/ class=""/g, '');
-      const metas = [
-        ['mo:scheme', config.proto],
-        ['mo:domain', config.domain],
-      ];
-      if(req.user){
-        metas.push(['mo:user', req.user.username]);
-        metas.push(['mo:role', req.user.role]);
-        metas.push(['mo:avatar', req.user.avatar]);
-      }
-      const preconnect = [
-        '<https://fonts.gstatic.com>; rel=preconnect',
-        '<https://cdnjs.cloudflare.com>; rel=preconnect',
-      ];
-      if(config.cdn){
-        preconnect.push(`<${config.proto}://${config.cdn}>; rel=preconnect`);
-      }
-      res.header('Link', preconnect.join(', '));
-      const title = DocumentTitle.rewind();
-      const scripts = [
-        await getFileProps('./public/loader.js'),
-        await getFileProps('./public/styles.js'),
-        await getFileProps('./public/bundle.js'),
-      ];
-      const cdn = config.cdn ? `//${config.cdn}` : '';
-      res.render('index', {markup, title, metas, scripts, cdn});
-    }else{
-      res.sendStatus(404);
+async function handleReactRouter(req, res){
+  const context = { profile: req.user };
+  const markup = renderToString(
+    <StaticRouter location={req.url} context={context} profile={req.user}>
+      <Routes />
+    </StaticRouter>
+  ).replace(/ class=""/g, '');
+  if(context.url){
+    res.redirect(302, context.url);
+  }else if(!context.status || context.status === 200){
+    const metas = [
+      ['mo:scheme', config.proto],
+      ['mo:domain', config.domain],
+    ];
+    if(req.user){
+      metas.push(['mo:user', req.user.username]);
+      metas.push(['mo:role', req.user.role]);
+      metas.push(['mo:avatar', req.user.avatar]);
     }
-  });
+    const preconnect = [
+      '<https://fonts.gstatic.com>; rel=preconnect',
+      '<https://cdnjs.cloudflare.com>; rel=preconnect',
+    ];
+    if(config.cdn){
+      preconnect.push(`<${config.proto}://${config.cdn}>; rel=preconnect`);
+    }
+    res.header('Link', preconnect.join(', '));
+    const title = DocumentTitle.rewind();
+    const scripts = [
+      await getFileProps('./public/loader.js'),
+      await getFileProps('./public/styles.js'),
+      await getFileProps('./public/bundle.js'),
+    ];
+    const cdn = config.cdn ? `//${config.cdn}` : '';
+    res.render('index', {markup, title, metas, scripts, cdn});
+  }else{
+    res.sendStatus(404);
+  }
 }
 
 process.on('unhandledRejection', console.dir);
