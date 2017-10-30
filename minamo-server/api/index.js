@@ -137,7 +137,7 @@ class api {
         statuses[files[i]].key = hmac(config.secret || 'minamo.io', files[i]);
       }
       for(let j = 0; j < containers.length; ++j){
-        if(!containers[j]) continue;
+        if(!containers[j] || !containers[j].Names) continue;
         if(containers[j].Names[0] === ('/' + files[i])){
           statuses[files[i]].status = containers[j].State;
           statuses[files[i]].uptime = containers[j].Status;
