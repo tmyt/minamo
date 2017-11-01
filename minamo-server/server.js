@@ -24,6 +24,7 @@ const app = express()
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
+import { getLoadableState } from 'loadable-components/server';
 import DocumentTitle from 'react-document-title';
 import Routes from './src/routes';
 // WebUI
@@ -173,42 +174,45 @@ function requireAdminAuthentication(req, res, next){
 
 async function handleReactRouter(req, res){
   const context = { profile: req.user };
-  const markup = renderToString(
+  const app = (
     <StaticRouter location={req.url} context={context} profile={req.user}>
-      <Routes />
+      <Routes server/>
     </StaticRouter>
-  ).replace(/ class=""/g, '');
-  if(context.url){
-    res.redirect(302, context.url);
-  }else if(!context.status || context.status === 200){
-    const metas = [
-      ['mo:scheme', config.proto],
-      ['mo:domain', config.domain],
-    ];
-    if(req.user){
-      metas.push(['mo:user', req.user.username]);
-      metas.push(['mo:role', req.user.role]);
-      metas.push(['mo:avatar', req.user.avatar]);
+  );
+  getLoadableState(app).then(async () => {
+    const markup = renderToString(app).replace(/ class=""/g, '');
+    if(context.url){
+      res.redirect(302, context.url);
+    }else if(!context.status || context.status === 200){
+      const metas = [
+        ['mo:scheme', config.proto],
+        ['mo:domain', config.domain],
+      ];
+      if(req.user){
+        metas.push(['mo:user', req.user.username]);
+        metas.push(['mo:role', req.user.role]);
+        metas.push(['mo:avatar', req.user.avatar]);
+      }
+      const preconnect = [
+        '<https://fonts.gstatic.com>; rel=preconnect',
+        '<https://cdnjs.cloudflare.com>; rel=preconnect',
+      ];
+      if(config.cdn){
+        preconnect.push(`<${config.proto}://${config.cdn}>; rel=preconnect`);
+      }
+      res.header('Link', preconnect.join(', '));
+      const title = DocumentTitle.rewind();
+      const scripts = [
+        await getFileProps('./public/loader.js'),
+        await getFileProps('./public/styles.js'),
+        await getFileProps('./public/bundle.js'),
+      ];
+      const cdn = config.cdn ? `//${config.cdn}` : '';
+      res.render('index', {markup, title, metas, scripts, cdn});
+    }else{
+      res.sendStatus(404);
     }
-    const preconnect = [
-      '<https://fonts.gstatic.com>; rel=preconnect',
-      '<https://cdnjs.cloudflare.com>; rel=preconnect',
-    ];
-    if(config.cdn){
-      preconnect.push(`<${config.proto}://${config.cdn}>; rel=preconnect`);
-    }
-    res.header('Link', preconnect.join(', '));
-    const title = DocumentTitle.rewind();
-    const scripts = [
-      await getFileProps('./public/loader.js'),
-      await getFileProps('./public/styles.js'),
-      await getFileProps('./public/bundle.js'),
-    ];
-    const cdn = config.cdn ? `//${config.cdn}` : '';
-    res.render('index', {markup, title, metas, scripts, cdn});
-  }else{
-    res.sendStatus(404);
-  }
+  });
 }
 
 process.on('unhandledRejection', console.dir);
