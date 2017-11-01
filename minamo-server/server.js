@@ -23,9 +23,10 @@ const app = express()
 // React
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { match, RouterContext } from 'react-router';
+import { StaticRouter } from 'react-router-dom';
+import { getLoadableState } from 'loadable-components/server';
 import DocumentTitle from 'react-document-title';
-import { routes } from './src/routes';
+import Routes from './src/routes';
 // WebUI
 const expressSession = require('express-session')
     , morgan = require('morgan')
@@ -171,16 +172,18 @@ function requireAdminAuthentication(req, res, next){
   res.send(404);
 }
 
-function handleReactRouter(req, res){
-  match({routes, location: req.url}, async (err, redirectLocation, props) => {
-    if(err){
-      res.status(500).send(err.message);
-    }else if(redirectLocation){
-      res.redirect(302, redirectLocation.pathname + redirectLocation.search);
-    }else if(props){
-      props.router.profile = req.user;
-      const markup = renderToString(<RouterContext {...props} />)
-        .replace(/ class=""/g, '');
+async function handleReactRouter(req, res){
+  const context = { profile: req.user };
+  const app = (
+    <StaticRouter location={req.url} context={context} profile={req.user}>
+      <Routes server/>
+    </StaticRouter>
+  );
+  getLoadableState(app).then(async () => {
+    const markup = renderToString(app).replace(/ class=""/g, '');
+    if(context.url){
+      res.redirect(302, context.url);
+    }else if(!context.status || context.status === 200){
       const metas = [
         ['mo:scheme', config.proto],
         ['mo:domain', config.domain],

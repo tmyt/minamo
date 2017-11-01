@@ -58,7 +58,7 @@ class AdminApi {
     const role = req.body.role;
     if(!username || !role) return res.sendStatus(400);
     await userDb.updateRole(username, role);
-    res.send(200);
+    res.sendStatus(200);
   }
 
   verifyAdminCredentials(req, res){

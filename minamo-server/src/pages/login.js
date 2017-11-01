@@ -66,7 +66,7 @@ LocalLoginPane.contextTypes = {
 export default class LoginComponent extends React.Component{
   render(){
     const title = (<h3>Sign In</h3>);
-    const q = qs(this.context.router.location.search);
+    const q = qs(this.context.router.route.location.search);
     const message = q._message
       ? (<Alert bsStyle='danger'><strong>Error</strong> {q._message}</Alert>)
       : null;

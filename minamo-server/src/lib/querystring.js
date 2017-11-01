@@ -15,7 +15,7 @@ QueryString.stringify = function(args){
 };
 
 QueryString.export = function(router, args){
-  const a = QueryString(router.location.search, args);
+  const a = QueryString(router.route.location.search, args);
   return QueryString.stringify(a);
 };
 

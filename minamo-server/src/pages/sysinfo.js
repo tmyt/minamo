@@ -85,7 +85,7 @@ class BaseGraph extends React.Component{
         xAxes: [{
           type: 'time',
           time: { unit: this.config.unit, stepSize: this.config.stepSize },
-          ticks: { maxRotation: 0 }
+          ticks: { maxRotation: 0, major: { enabled: false } }
         }],
         yAxes: [{}]
       }
