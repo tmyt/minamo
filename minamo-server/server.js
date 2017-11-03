@@ -192,6 +192,9 @@ async function handleReactRouter(req, res){
         metas.push(['mo:user', req.user.username]);
         metas.push(['mo:role', req.user.role]);
         metas.push(['mo:avatar', req.user.avatar]);
+        if(context.authorizationRequired){
+          metas.push(['mo:authorized', true]);
+        }
       }
       const preconnect = [
         '<https://fonts.gstatic.com>; rel=preconnect',

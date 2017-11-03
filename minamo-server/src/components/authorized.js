@@ -6,18 +6,17 @@ import Meta from './meta';
 export default class Authorized extends React.Component{
   constructor(){
     super();
-    this.state = { initialized: false, authorized: false, redirect: undefined, verified: false };
+    this.state = { initialized: false, authorized: false, redirect: undefined };
   }
   componentWillMount(){
-    let verified = false;
-    if(typeof $ !== 'function'){
-      this.setState({ verified: true });
+    if(this.context.router.staticContext){
+      this.context.router.staticContext.authorizationRequired = true;
     }
-    this.setState({ verified });
   }
   componentDidMount(){
-    if(this.state.verified){
-      this.setState({ initialized: true, authorized: true, verified: false });
+    if(Meta.authorized){
+      delete Meta.authorized;
+      this.setState({ initialized: true, authorized: true });
       return;
     }
     const redir = '/login?_redir=' + encodeURIComponent(this.context.router.route.location.pathname);
@@ -34,7 +33,7 @@ export default class Authorized extends React.Component{
     });
   }
   render(){
-    if(typeof $ !== 'function'){
+    if(this.context.router.staticContext){
       // here is server side render
       return this.props.children;
     }

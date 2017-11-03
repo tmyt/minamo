@@ -7,6 +7,7 @@ class MetaMapObject{
       get: MetaMapObject.get,
       set: MetaMapObject.set,
       has: MetaMapObject.has,
+      deleteProperty: MetaMapObject.delete,
     });
   }
   getTags(){
@@ -22,6 +23,12 @@ class MetaMapObject{
   }
   static has(target, name){
     return !!target.getTags()[`${target.Namespace}${name}`];
+  }
+  static delete(target, name){
+    const meta = target.getTags()[`${target.Namespace}${name}`];
+    if(!meta) return false;
+    meta.parentNode.removeChild(meta);
+    return true;
   }
 }
 
