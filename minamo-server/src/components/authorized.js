@@ -44,7 +44,7 @@ export default class Authorized extends React.Component{
       // by server-side. request already verified by the server.
       return this.props.children;
     }
-	return <Redirect to={this.state.redirect} />
+    return <Redirect to={this.state.redirect} />;
   }
 }
 Authorized.contextTypes = {

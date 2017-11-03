@@ -1,4 +1,4 @@
-function isActive(router, path, isExact){
+function isActive(router, path){
   return router.route.location.pathname === path;
 }
 

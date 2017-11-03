@@ -4,7 +4,9 @@ module.exports = {
     "node": true,
     "browser": true,
   },
-  "extends": "eslint:recommended",
+  "extends": [
+      "eslint:recommended",
+  ],
   "parserOptions": {
     "ecmaVersion": 8,
     "ecmaFeatures": {

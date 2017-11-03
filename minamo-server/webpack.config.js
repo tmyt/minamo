@@ -5,7 +5,7 @@ const webpack = require('webpack')
     , HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
     , config = require('./config')
     , SriPlugin = require('webpack-subresource-integrity')
-    , UglifyEsPlugin = require('uglifyjs-webpack-plugin')
+    , UglifyEsPlugin = require('uglifyjs-webpack-plugin');
 
 let plugins = [
   new HardSourceWebpackPlugin({

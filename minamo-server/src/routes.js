@@ -14,16 +14,16 @@ const AuthorizedRoute = ({component: Component, ...rest}) => (
   )}/>
 );
 
-const Terminal = loadable(() => import('./pages/terminal'));
-const TerminalPopup = loadable(() => import('./pages/popup-terminal'));
-const Index = loadable(() => import('./pages/index'));
-const Login = loadable(() => import('./pages/login'));
-const Console = loadable(() => import('./pages/console'));
-const LogStream = loadable(() => import('./pages/logstream'));
-const SysInfo = loadable(() => import('./pages/sysinfo'));
-const Admin = loadable(() => import('./pages/admin'));
+const Terminal = loadable(() => System.import('./pages/terminal'));
+const TerminalPopup = loadable(() => System.import('./pages/popup-terminal'));
+const Index = loadable(() => System.import('./pages/index'));
+const Login = loadable(() => System.import('./pages/login'));
+const Console = loadable(() => System.import('./pages/console'));
+const LogStream = loadable(() => System.import('./pages/logstream'));
+const SysInfo = loadable(() => System.import('./pages/sysinfo'));
+const Admin = loadable(() => System.import('./pages/admin'));
 
-const Routes = (props) => {
+const Routes = () => {
   return(
     <PopupComponent>
       <Switch>
