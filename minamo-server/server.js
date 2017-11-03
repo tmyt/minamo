@@ -179,7 +179,7 @@ async function handleReactRouter(req, res){
       <Routes server/>
     </StaticRouter>
   );
-  getLoadableState(app).then(async () => {
+  getLoadableState(app).then(async loadableState => {
     const markup = renderToString(app).replace(/ class=""/g, '');
     if(context.url){
       res.redirect(302, context.url);
@@ -193,8 +193,11 @@ async function handleReactRouter(req, res){
         metas.push(['mo:role', req.user.role]);
         metas.push(['mo:avatar', req.user.avatar]);
         if(context.authorizationRequired){
-          metas.push(['mo:authorized', true]);
+          metas.push(['mo:authorized', 'true']);
         }
+      }
+      if(loadableState.componentIds){
+        metas.push(['mo:components', JSON.stringify(loadableState.componentIds)]);
       }
       const preconnect = [
         '<https://fonts.gstatic.com>; rel=preconnect',
