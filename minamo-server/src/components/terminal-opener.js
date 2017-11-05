@@ -6,7 +6,7 @@ const BrowserExtensionEvent = 'x-minamo-openterminal';
 export default class TerminalOpenerComponent extends React.Component{
   static openPopup(themeName, hasExtension){
     const theme = themeName ? `?theme=${themeName}` : '';
-    const path = '/console/terminal_popup' + theme;
+    const path = '/shell' + theme;
     if(hasExtension){
       const url = location.protocol + '//' + location.host + path;
       const e = new CustomEvent(BrowserExtensionEvent, { detail: { url } });

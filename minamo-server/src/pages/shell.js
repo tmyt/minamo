@@ -8,6 +8,7 @@ export default class PopupTerminalComponent extends React.Component{
   constructor(){
     super();
     this.state = { theme: undefined };
+    this.handleTitleChange = this.handleTitleChange.bind(this);
     this.onResize = this.onResize.bind(this);
     this.onUnload = this.onUnload.bind(this);
   }
@@ -24,11 +25,19 @@ export default class PopupTerminalComponent extends React.Component{
     }
     window.addEventListener('beforeunload', this.onUnload);
     this.appendLinkHeader();
+    if(window.parent !== window){
+      this.titleElement = window.parent.document.getElementById('ish-title');
+    }
   }
   componentWillUnmount(){
     window.removeEventListener('beforeunload', this.onUnload);
     window.removeEventListener('resize', this.onResize);
     document.head.removeChild(this.manifestLink);
+  }
+  handleTitleChange(title){
+    if(this.titleElement){
+      this.titleElement.innerText = title;
+    }
   }
   isMobileChrome(){
     const userAgent = navigator.userAgent.toLowerCase();
@@ -47,14 +56,16 @@ export default class PopupTerminalComponent extends React.Component{
     this.xterm.divTerminal.style.height = window.innerHeight + 'px';
   }
   onUnload(e){
-    if(!this.xterm.connected) return;
+    if(!this.xterm.connected || window.parent !== window){
+      return;
+    }
     e.returnValue = 'Would you close it?';
     return e.returnValue;
   }
   render(){
     return (
       <DocumentTitle title='terminal'>
-        <Xterm className='popup' isExported={true} theme={this.state.theme} ref={(xterm) => this.xterm = xterm}/>
+        <Xterm className='popup' isExported={true} theme={this.state.theme} ref={(xterm) => this.xterm = xterm} onChangeTitle={this.handleTitleChange}/>
       </DocumentTitle>
     );
   }

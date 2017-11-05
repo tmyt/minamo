@@ -14,8 +14,7 @@ const AuthorizedRoute = ({component: Component, ...rest}) => (
   )}/>
 );
 
-const Terminal = loadable(() => System.import('./pages/terminal'));
-const TerminalPopup = loadable(() => System.import('./pages/popup-terminal'));
+const Shell = loadable(() => System.import('./pages/shell'));
 const Index = loadable(() => System.import('./pages/index'));
 const Login = loadable(() => System.import('./pages/login'));
 const Console = loadable(() => System.import('./pages/console'));
@@ -27,8 +26,7 @@ const Routes = () => {
   return(
     <PopupComponent>
       <Switch>
-        <AuthorizedRoute path='/console/terminal' component={Terminal} />
-        <AuthorizedRoute path='/console/terminal_popup' component={TerminalPopup} />
+        <AuthorizedRoute path='/shell' exact component={Shell} />
         <Route path='/'>
           <AppComponent>
             <Route exact path='/' component={Index} />

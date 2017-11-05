@@ -106,7 +106,7 @@ export default class IntegratedShell extends React.Component {
             </button>
           </div>
         </div>
-        <iframe src='/console/terminal' role='document' sandbox='allow-scripts allow-same-origin allow-popups' ref={e => this.iframe = e}/>
+        <iframe src='/shell' role='document' sandbox='allow-scripts allow-same-origin allow-popups' ref={e => this.iframe = e}/>
       </div>
     );
   }
