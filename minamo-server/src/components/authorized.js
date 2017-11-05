@@ -19,23 +19,32 @@ export default class Authorized extends React.Component{
       this.setState({ initialized: true, authorized: true });
       return;
     }
-    const redir = '/login?_redir=' + encodeURIComponent(this.context.router.route.location.pathname);
     $.ajax({
       url: `/api/${this.props.isAdmin ? 'admin/' : ''}verify`
     }).done(data => {
       if(data.isAuthenticated){
         this.setState({ initialized: true, authorized: true });
       }else{
-        this.setState({ initialized: true, authorized: false, redirect: redir });
+        this.setState({ initialized: true, authorized: false });
       }
     }).fail(() => {
-      this.setState({ initialized: true, authorized: false, redirect: redir });
+      this.setState({ initialized: true, authorized: false });
     });
+  }
+  redirect(){
+    return `/login?_redir=${encodeURIComponent(this.context.router.route.location.pathname)}`;
   }
   render(){
     if(this.context.router.staticContext){
       // here is server side render
-      return this.props.children;
+      const profile = this.context.router.staticContext.profile;
+      if(profile && (!this.props.isAdmin || (profile.role === 'admin'))){
+        return this.props.children;
+      }else if(this.props.isAdmin){
+        this.context.router.staticContext.status = 404;
+        return null;
+      }
+      return <Redirect to={this.redirect()} />;
     }
     // here is client side render
     if(!this.state.initialized) return null;
@@ -44,7 +53,7 @@ export default class Authorized extends React.Component{
       // by server-side. request already verified by the server.
       return this.props.children;
     }
-    return <Redirect to={this.state.redirect} />;
+    return <Redirect to={this.redirect()} />;
   }
 }
 Authorized.contextTypes = {

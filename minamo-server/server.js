@@ -108,10 +108,6 @@ app.get('/logout', (req, res) => {
 });
 // routers
 app.use('/api', new(require('./api'))(kvs, io));
-
-// handle authorized uris
-app.get('/console(/*)?', requireAuthentication, handleReactRouter);
-app.get('/admin(/*)?', requireAdminAuthentication, handleReactRouter);
 // handle others
 app.get('*', handleReactRouter);
 
@@ -157,22 +153,16 @@ server.listen(config.http_port || 3000, '127.0.0.1');
 githttp.listen(config.git_port || 7000, '127.0.0.1');
 kvs.listen(config.redis_port || 16379, '127.0.0.1');
 
-function requireAuthentication(req, res, next){
+async function handleReactRouter(req, res){
+  /* for test purpose only */
+  /*
   if(req.query._token){
     res.cookie('connect.sid', req.query._token);
-    if(req.isAuthenticated()) return next();
-    return res.redirect(req.baseUrl);
+    if(!req.isAuthenticated()){
+      return res.redirect(req.baseUrl);
+    }
   }
-  if(req.isAuthenticated()) { return next(); }
-  res.redirect('/login?_redir=' + encodeURIComponent(req.originalUrl));
-}
-
-function requireAdminAuthentication(req, res, next){
-  if(req.isAuthenticated() && req.user.role === 'admin') { return next(); }
-  res.send(404);
-}
-
-async function handleReactRouter(req, res){
+  */
   const context = { profile: req.user };
   const app = (
     <StaticRouter location={req.url} context={context} profile={req.user}>

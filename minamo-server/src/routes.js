@@ -4,14 +4,28 @@ import loadable from 'loadable-components';
 
 import PopupComponent from './pages/popup';
 import AppComponent from './pages/app';
+import NotFound from './pages/not-found';
 import Authorized from './components/authorized';
 
 const AuthorizedRoute = ({component: Component, ...rest}) => (
-  <Route {...rest} render={props => (
-    <Authorized isAdmin={props.isAdmin}>
+  <Route {...rest} render={props =>(
+    <Authorized isAdmin={rest.isAdmin}>
       <Component {...props} />
     </Authorized>
   )}/>
+);
+const NotFoundRoute = () => (
+  <Route component={NotFound} />
+);
+const AppComponentRoute = (props) => (
+  <Route path={props.path}>
+    <AppComponent>
+      <Switch>
+        {props.children}
+        <NotFoundRoute />
+      </Switch>
+    </AppComponent>
+  </Route>
 );
 
 const Shell = loadable(() => System.import('./pages/shell'));
@@ -27,16 +41,14 @@ const Routes = () => {
     <PopupComponent>
       <Switch>
         <AuthorizedRoute path='/shell' exact component={Shell} />
-        <Route path='/'>
-          <AppComponent>
-            <Route exact path='/' component={Index} />
-            <Route path='/login' component={Login} />
-            <AuthorizedRoute exact path='/console' component={Console} />
-            <AuthorizedRoute path='/console/logstream' component={LogStream} />
-            <AuthorizedRoute path='/console/sysinfo' component={SysInfo} />
-            <AuthorizedRoute path='/admin' component={Admin} isAdmin/>
-          </AppComponent>
-        </Route>
+        <AppComponentRoute path='/'>
+          <Route exact path='/' component={Index} />
+          <Route path='/login' component={Login} />
+          <AuthorizedRoute exact path='/console' component={Console} />
+          <AuthorizedRoute path='/console/logstream' component={LogStream} />
+          <AuthorizedRoute path='/console/sysinfo' component={SysInfo} />
+          <AuthorizedRoute path='/admin' component={Admin} isAdmin />
+        </AppComponentRoute>
       </Switch>
     </PopupComponent>
   );
