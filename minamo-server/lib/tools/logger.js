@@ -20,7 +20,9 @@ class Logger {
           str.pipe(stream);
         }
         str.on('end', () => {
-          stream.close();
+          try{
+            stream.close();
+          }catch(e){}
           resolve();
         });
       }
