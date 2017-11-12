@@ -252,7 +252,9 @@ async function env(...args){
   const cmd = args.shift();
   const name = args.shift();
   if(!name || (cmd !== 'list' && cmd !== 'add' && cmd !== 'delete')){
-    console.log('usage: mm env [list | add | del] <name>');
+    console.log('usage: mm env list <name>\n'
+              + '              add <name> <key> <value>\n'
+              + '              del <name> <key>');
     return;
   }
   const list = await get(`/api/services/${name}/env`);
@@ -273,9 +275,9 @@ async function env(...args){
       return;
     }
     current[key] = value;
-  }else if(cmd === 'delete'){
+  }else if(cmd === 'del'){
     if(!key){
-      console.log('usage: mm env delete <name> <key>');
+      console.log('usage: mm env del <name> <key>');
       return;
     }
     delete current[key];
