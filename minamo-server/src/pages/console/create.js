@@ -74,7 +74,7 @@ export default class ConsoleCreateComponent extends React.Component{
   }
 
   clearForm(){
-    this.setState({ name: '', template: '', external: '' });
+    this.setState({ name: '', external: '' });
   }
 
   render(){
