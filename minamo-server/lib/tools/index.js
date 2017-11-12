@@ -82,8 +82,7 @@ class Tools{
     const extras = this.getRequiredPackages(extraEnv);
     let envString = '';
     for(let i = 0; i < envKeys.length; ++i){
-      if(envKeys[i] === 'MINAMO_REQUIRED_PACKAGES') continue;
-      if(envKeys[i] === 'MINAMO_NODE_VERSION') continue;
+      if(envKeys[i].startsWith('MINAMO_')) continue;
       envString += `${envKeys[i]}=${shellescape([extraEnv[envKeys[i]]])} `;
     }
     let engine = extraEnv['MINAMO_NODE_VERSION'] || '';
@@ -156,7 +155,8 @@ class Tools{
     // LOG('Docker build exited with ${?}')
     // run container
     logger.emit(`Starting container ${repo}`);
-    await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, VolumesFrom: [ `${repo}-data` ]});
+    const links = (extraEnv['MINAMO_LINKS'] || '').split(',').filter(s => !!s).map(s => `${s}:${s}`);
+    await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, VolumesFrom: [ `${repo}-data` ], Links: links });
     await docker.getContainer(repo).startAsync();
     logger.emit('started');
     // cleanup context
