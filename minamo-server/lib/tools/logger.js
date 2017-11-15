@@ -22,7 +22,9 @@ class Logger {
         str.on('end', () => {
           try{
             stream.close();
-          }catch(e){}
+          }catch(e){
+            // do nothing
+          }
           resolve();
         });
       }
