@@ -87,8 +87,9 @@ export default class IntegratedShell extends React.Component {
   }
   render(){
     if(!this.props.visible) return null;
+    const height = Math.max(this.state.ishHeight, 29);
     return (
-      <div id='ish' style={{minHeight: `${Math.max(this.state.ishHeight, 29)}px`}}>
+      <div id='ish' style={{minHeight: `${height}px`, height: `${height}px`}}>
         <header className='ish-resize' onMouseDown={this.handleMouseDown}>
           <ActiveEventHandler event='touchstart' handler={this.handleTouchStart}/>
         </header>
