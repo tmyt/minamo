@@ -1,0 +1,7 @@
+## SSL Configuration
+#listen 443 ssl http2;
+#listen [::]:443 ssl http2;
+#ssl_certificate /path/to/server.crt;
+#ssl_certificate_key /path/to/server.key;
+#ssl_prefer_server_ciphers on;
+#ssl_ciphers AESGCM:HIGH:!aNULL:!MD5;
