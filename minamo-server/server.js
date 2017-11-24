@@ -78,7 +78,7 @@ app.use(csp({
     'style-src': [ csp.INLINE, 'cdnjs.cloudflare.com' ],
     'img-src': [ csp.SELF, 'data:' ],
     'font-src': [ csp.SELF, 'fonts.gstatic.com', 'cdnjs.cloudflare.com' ],
-    'connect-src': [ csp.SELF, `wss://${config.domain}` ],
+    'connect-src': [ csp.SELF, `${config.proto === 'https' ? 'wss' : 'ws'}://${config.domain}` ],
   }
 }));
 app.use((req, res, next) => {
