@@ -7,6 +7,22 @@ const pty = require('node-pty')
     , Docker = require('../lib/tools/docker')
     , docker = bluebird.promisifyAll(new Docker());
 
+function waitStream(stream, json){
+  return new Promise(done => {
+    stream.on('data', x => {
+      const str = x.toString();
+      if(json){
+        console.log(JSON.parse(str).status);
+      }else{
+        console.log(str);
+      }
+    });
+    stream.on('end', () => {
+      done();
+    });
+  });
+}
+
 module.exports = function(io){
   require('./io-auth')(io, '/term').on('connection', async (socket) => {
     const user = socket.request.user;
@@ -21,6 +37,12 @@ module.exports = function(io){
     pack.finalize();
     let isFirstTime = '';
     if(!await dataCont.statsAsync().catch(() => null)){
+      const image = docker.getImage('budybox');
+      if(!await image.inspectAsync().catch(() => null)){
+        // pull busybox
+        const stream = await docker.pull('busybox');
+        await waitStream(stream, true);
+      }
       await docker.createContainerAsync({Image: 'busybox', name: userData, Volumes: {'/home/user':{}}});
       isFirstTime = 'init';
     }
