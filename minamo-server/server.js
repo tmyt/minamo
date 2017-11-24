@@ -48,7 +48,7 @@ if(config.TWITTER_CONSUMER_KEY && config.TWITTER_CONSUMER_SECRET){
 }else{
   console.log('W: Twitter auth is not configured.');
 }
-if(config.GITHUB_CONSUMER_KEY && config.GITHUB_CONSUMER_SECRET){
+if(config.GITHUB_CLIENT_ID && config.GITHUB_CLIENT_SECRET){
   passport.use(appReq('./lib/auth/github'));
 }else{
   console.log('W: GitHub auth is not configured.');
