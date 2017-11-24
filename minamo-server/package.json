@@ -9,6 +9,8 @@
     "watch": "webpack --watch",
     "build": "webpack",
     "build-release": "NODE_ENV=production webpack",
+    "gyp-interfaces": "cd lib/network/interfaces && npm install && npm run build",
+    "postinstall": "npm run gyp-interfaces",
     "add-user": "node lib/tools/users.js add",
     "analyze": "webpack --json | webpack-bundle-size-analyzer",
     "eslint": "eslint *.js api lib src",

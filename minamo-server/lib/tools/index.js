@@ -1,7 +1,6 @@
 'use strict';
 
 const bluebird = require('bluebird')
-    , os = require('os')
     , path = require('path')
     , fs = bluebird.promisifyAll(require('fs-extra'))
     , tar = bluebird.promisifyAll(require('tar-stream'))
@@ -11,7 +10,8 @@ const bluebird = require('bluebird')
 
 const Docker = require('./docker')
     , docker = bluebird.promisifyAll(new Docker())
-    , logger = new (require('./logger'))('/tmp/minamo/build.log');
+    , logger = new (require('./logger'))('/tmp/minamo/build.log')
+    , networkInterfaces = require('../network/interfaces');
 
 function waitForStreamEndAsync(stream){
   return new Promise(resolve => {
@@ -97,7 +97,7 @@ class Tools{
     const port = ~~(Math.random() * 32768) + 3000;
     const buildContext = `/tmp/minamo-${port}.tar`;
     // get docker0 ip addr
-    const docker0 = os.networkInterfaces()['docker0'].filter(i=>i.family==='IPv4')[0].address;
+    const docker0 = networkInterfaces()['docker0'].ipv4[0];
     // listup extra packages
     let pkgs = Object.keys(extras).filter(x => x[0] === '@')
       .map(x => shellescape([x.substring(1)])).join(' ');
