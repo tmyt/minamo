@@ -43,8 +43,16 @@ const expressSession = require('express-session')
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
-passport.use(appReq('./lib/auth/twitter'));
-passport.use(appReq('./lib/auth/github'));
+if(config.TWITTER_CONSUMER_KEY && config.TWITTER_CONSUMER_SECRET){
+  passport.use(appReq('./lib/auth/twitter'));
+}else{
+  console.log('W: Twitter auth is not configured.');
+}
+if(config.GITHUB_CONSUMER_KEY && config.GITHUB_CONSUMER_SECRET){
+  passport.use(appReq('./lib/auth/github'));
+}else{
+  console.log('W: GitHub auth is not configured.');
+}
 passport.use(appReq('./lib/auth/local'));
 passport.use(appReq('./lib/auth/fido2'));
 
@@ -152,6 +160,7 @@ git.on('post-receive', async (repo, changes) => {
 server.listen(config.http_port || 3000, '127.0.0.1');
 githttp.listen(config.git_port || 7000, '127.0.0.1');
 kvs.listen(config.redis_port || 16379, '127.0.0.1');
+console.log('I: minamo service started');
 
 async function handleReactRouter(req, res){
   /* for test purpose only */
