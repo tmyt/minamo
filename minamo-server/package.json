@@ -11,7 +11,10 @@
     "build-release": "NODE_ENV=production webpack",
     "gyp-interfaces": "cd lib/network/interfaces && npm install && npm run build",
     "postinstall": "npm run gyp-interfaces",
-    "add-user": "node lib/tools/users.js add",
+    "user-add": "node lib/tools/users.js add",
+    "user-del": "node lib/tools/users.js add",
+    "user-reset": "node lib/tools/users.js add",
+    "user-role": "node lib/tools/users.js role",
     "analyze": "webpack --json | webpack-bundle-size-analyzer",
     "eslint": "eslint *.js api lib src",
     "test": "echo \"Error: no test specified\" && exit 1"
