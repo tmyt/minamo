@@ -5,7 +5,9 @@ const config = require('../../config')
 
 process.on('unhandledRejection', console.dir);
 
-async function add(name){
+const cmds = {};
+
+cmds.add = async function(name){
   if(!name){
     console.log('error: arguments required.');
     return;
@@ -21,9 +23,8 @@ async function add(name){
   }catch(e){
     console.log('Failed to create user.');
   }
-}
-
-async function del(name){
+};
+cmds.del = async function(name){
   if(!name){
     console.log('error: arguments required.');
     return;
@@ -32,15 +33,14 @@ async function del(name){
     if(!await userDb.findUser(name)){
       console.log(`User ${name} is not exists`);
     }else{
-      const password = await userDb.removeUser(name);
+      await userDb.removeUser(name);
       console.log(`User '${name}' removed.`);
     }
   }catch(e){
     console.log('Failed to remove user.');
   }
-}
-
-async function reset(name){
+};
+cmds.reset = async function(name){
   if(!name){
     console.log('error: arguments required.');
     return;
@@ -55,9 +55,8 @@ async function reset(name){
   }catch(e){
     console.log('Failed to reset password.');
   }
-}
-
-async function role(name, role){
+};
+cmds.role = async function(name, role){
   if(!name || !role){
     console.log('error: arguments required.');
     return;
@@ -76,8 +75,8 @@ async function role(name, role){
   }catch(e){
     console.log('Failed to update role.');
   }
-}
-
+};
+// --
 const args = process.argv.slice(2);
 const cmd = args.shift();
 switch(cmd){
@@ -85,12 +84,14 @@ switch(cmd){
   case 'del':
   case 'reset':
   case 'role':
-    eval(cmd).apply(this, args);
+    cmds[cmd].apply(this, args);
     break;
   case undefined:
     console.log('error: arguments required.');
     process.exit(1);
+    break;
   default:
     console.log(`error: command '${args[0]}' is not supported.`);
     process.exit(1);
+    break;
 }
