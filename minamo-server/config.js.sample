@@ -5,12 +5,12 @@ const path = require('path');
 module.exports = {
   proto: 'http',
   domain: 'minamo.io',
-  repo_path: process.env.MINAMO_REPOS_PATH || path.resolve('repos'),
+  repo_path: process.env.MINAMO_REPOS_PATH || path.join(__dirname, 'repos'),
   http_port: 3000,
   git_port: 7000,
   redis_port: 16379,
-  data_dir: path.resolve('data'),
-  userdb: path.join(path.resolve('data'), 'userdb.json'),
+  data_dir: path.join(__dirname, 'data'),
+  userdb: path.join(__dirname, 'data', 'userdb.json'),
 
   // GitHub appid
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '',
