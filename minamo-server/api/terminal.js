@@ -5,7 +5,7 @@ const pty = require('node-pty')
     , bluebird = require('bluebird')
     , tar = require('tar-stream')
     , config = require('../config')
-    , Docker = require('../lib/tools/docker')
+    , Docker = require('../lib/container/docker')
     , docker = bluebird.promisifyAll(new Docker());
 
 function waitStream(stream, json){

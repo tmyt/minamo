@@ -21,8 +21,8 @@ module.exports = function(kvs){
       if(req.query.key !== hmac(config.secret || 'minamo.cloud', repo)){
         return res.sendStatus(400);
       }
-      const tools = appReq('./lib/tools');
-      tools.build(repo);
+      const container = appReq('./lib/container');
+      container.build(repo);
       kvs.resetHost(`${repo}.${config.domain}`);
       return res.sendStatus(200);
     });

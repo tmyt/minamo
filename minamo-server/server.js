@@ -13,7 +13,7 @@ const appReq = require('app-require')
     , config = appReq('./config')
     , RedisServer = require('./lib/kvs')
     , userDb = new(require('./lib/auth/userdb'))(config.userdb)
-    , netmask = require('./lib/netmask')
+    , netmask = require('./lib/network/netmask')
     , getFileProps = require('./lib/fileprops');
 // app instance
 const app = express()
@@ -142,7 +142,7 @@ const gitComplexAuth = function(req, res, next){
 githttp.use('/', gitComplexAuth, git);
 git.on('post-receive', async (repo, changes) => {
   const name = repo.name.split('/').reverse()[0];
-  const tools = appReq('./lib/tools');
+  const container = appReq('./lib/container');
   fs.readFile(path.join(config.repo_path, `${name}.env`), (err, json) => {
     const env = JSON.parse(json);
     const changedRefs = changes.filter(x => x.ref.startsWith('refs/heads/'))
@@ -152,7 +152,7 @@ git.on('post-receive', async (repo, changes) => {
       return; // ignore. push ref is not current branch
     }
     kvs.resetHost(`${name}.${config.domain}`);
-    tools.build(name);
+    container.build(name);
   });
 });
 

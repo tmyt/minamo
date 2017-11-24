@@ -17,7 +17,7 @@ const Docker = require('dockerode')
 
 const config = appReq('./config')
     , userDb = new(appReq('./lib/auth/userdb'))(config.userdb)
-    , tools = appReq('./lib/tools');
+    , container = appReq('./lib/container');
 
 const ContainerRegexpString = '[a-z][a-z0-9-]*[a-z0-9]';
 const ContainerRegexp = new RegExp(`^${ContainerRegexpString}\$`);
@@ -88,7 +88,7 @@ class api {
       if(!name || !ContainerRegexp.test(name)) return false;
       const repo = path.join(config.repo_path, name);
       if(!pathExists(repo)) return false;
-      return await tools.isRunning(name);
+      return await container.isRunning(name);
     });
     require('./sysinfo')(io);
     // install
@@ -177,7 +177,7 @@ class api {
       return;
     }
     const root = path.dirname(require.main.filename);
-    const templatePath = path.join(root, '/lib/templates/' + template + '.tar.gz');
+    const templatePath = path.join(root, '/data/templates/' + template + '.tar.gz');
     const initFunc = function(templ, cb){
       init(repo, true, templ, err => {
         if(cb) cb();
@@ -204,7 +204,7 @@ class api {
       res.status(404).send('error: service not found');
     }else{
       this.kvs.delHost(`${name}.${config.domain}`);
-      tools.terminate(name, true);
+      container.terminate(name, true);
       await fs.removeAsync(repo);
       await fs.removeAsync(repo + '.env');
       res.send('destroy OK');
@@ -218,7 +218,7 @@ class api {
       res.status(404).send('error: service not found');
     }else{
       this.kvs.resetHost(`${name}.${config.domain}`);
-      tools.build(name);
+      container.build(name);
       res.send('start OK');
     }
   }
@@ -230,7 +230,7 @@ class api {
       res.status(404).send('error: service not found');
     }else{
       this.kvs.delHost(`${name}.${config.domain}`);
-      tools.terminate(name);
+      container.terminate(name);
       res.send('stop OK');
     }
   }
@@ -242,10 +242,10 @@ class api {
       res.status(404).send('error: service not found');
     }else{
       if(req.query.quick !== undefined || req.body.quick !== undefined){
-        tools.restart(name);
+        container.restart(name);
       }else{
         this.kvs.resetHost(`${name}.${config.domain}`);
-        tools.build(name);
+        container.build(name);
       }
       res.send('restart OK');
     }
