@@ -57,22 +57,39 @@ async function reset(name){
   }
 }
 
-const args = process.argv.slice(2);
-if(args.length < 1){
-  console.log('error: arguments required.');
-  process.exit(1);
+async function role(name, role){
+  if(!name || !role){
+    console.log('error: arguments required.');
+    return;
+  }
+  if(role !== 'admin' && role !== 'user'){
+    console.log('error: role must be \'admin\' or \'user\'.');
+    return;
+  }
+  try{
+    if(!await userDb.findUser(name)){
+      console.log(`User ${name} is not exists`);
+    }else{
+      await userDb.updateRole(name, role);
+      console.log('Role updated.');
+    }
+  }catch(e){
+    console.log('Failed to update role.');
+  }
 }
 
-switch(args[0]){
+const args = process.argv.slice(2);
+const cmd = args.shift();
+switch(cmd){
   case 'add':
-    add.apply(this, args.slice(1));
-    break;
   case 'del':
-    del.apply(this, args.slice(1));
-    break;
   case 'reset':
-    reset.apply(this, args.slice(1));
+  case 'role':
+    eval(cmd).apply(this, args);
     break;
+  case undefined:
+    console.log('error: arguments required.');
+    process.exit(1);
   default:
     console.log(`error: command '${args[0]}' is not supported.`);
     process.exit(1);
