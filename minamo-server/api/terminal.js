@@ -4,6 +4,7 @@ const pty = require('node-pty')
     , crypto = require('crypto')
     , bluebird = require('bluebird')
     , tar = require('tar-stream')
+    , config = require('../config')
     , Docker = require('../lib/tools/docker')
     , docker = bluebird.promisifyAll(new Docker());
 
@@ -55,7 +56,7 @@ module.exports = function(io){
       OpenStdin: true,
       Tty: true,
       Cmd: [ '/init.sh', isFirstTime ],
-      Env: [ 'MM_CACHE_PATH=/tmp' ],
+      Env: [ 'MM_CACHE_PATH=/tmp', `MM_REMOTE_HOST=${config.proto}://${config.domain}` ],
       HostConfig: { AutoRemove: true, VolumesFrom: [ userData ] },
       NetworkingConfig: { EndpointsConfig: { 'shell': {} } }
     };

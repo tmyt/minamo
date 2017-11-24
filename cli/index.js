@@ -11,9 +11,6 @@ const util = require('util')
     , Table = require('easy-table')
     , SocketIo = require('socket.io-client')
 
-const scheme = 'https:'
-    , host = 'minamo.io';
-
 // --
 function cachePath(){
   if(process.env.MM_CACHE_PATH){
@@ -38,13 +35,47 @@ function token(){
     return request.cookie(`connect.sid=${cookie}`);
   });
 }
+function loadConfig(){
+  return new Promise(done => {
+    const cfg = path.join(cachePath(), 'config');
+    fs.readFile(cfg, 'utf-8', (err, content) => {
+      if(err){
+        return done({});
+      }
+      done(JSON.parse(content));
+    });
+  });
+}
+function saveConfig(cfg){
+  const confDir = cachePath()
+      , confPath = path.join(confDir, 'config');
+  return util.promisify(fs.mkdir)(confDir)
+    .catch(()=>{})
+    .then(_ => new Promise(done => {
+      fs.writeFile(confPath, JSON.stringify(cfg), 'utf-8', (err, content) => done());
+    }));
+}
+function remoteHost(){
+  return new Promise(done => {
+    if(process.env.MM_REMOTE_HOST){
+      return done(process.env.MM_REMOTE_HOST);
+    }
+    return loadConfig().then(c => {
+      if(!c.remoteHost){
+        console.log('Remote host is not configured.');
+        process.exit();
+      }
+      done(c.remoteHost);
+    });
+  });
+}
 function req(method, path, qs, form){
-  return token().then(cookie => {
+  return Promise.all([token(), remoteHost()]).then(cfg => {
     const j = request.jar();
-    j.setCookie(cookie, `${scheme}//${host}`);
+    j.setCookie(cfg[0], cfg[1]);
     return request({
       method, form, qs,
-      uri: `${scheme}//${host}${path}`,
+      uri: `${cfg[1]}${path}`,
       jar: j,
     });
   });
@@ -63,10 +94,11 @@ function del(path, args){
 }
 async function ws(path, extraHeaders){
   const cookie = await token();
+  const host = await remoteHost();
   const defaultHeaders = {
     Cookie: cookie,
   };
-  const socket = SocketIo(`${scheme}//${host}${path}`, {
+  const socket = SocketIo(`${host}${path}`, {
     autoConnect: false,
     reconnection: false,
     extraHeaders: Object.assign(defaultHeaders, extraHeaders || {})
@@ -91,9 +123,10 @@ async function ws(path, extraHeaders){
 async function login(){
   const username = await read({prompt: 'Username: '});
   const password = await read({prompt: 'Password: ', silent: true});
+  const host = await remoteHost();
   const resp = await request({
     method: 'POST',
-    uri: `${scheme}//${host}/auth/local?_redir=%2Foob`,
+    uri: `${host}/auth/local?_redir=%2Foob`,
     form: {username, password}
   });
   if(resp.headers.location === '/oob'){
@@ -323,6 +356,19 @@ async function logstream(){
   // initialize session
   socket.open();
 }
+async function config(key, value){
+  const cfg = await loadConfig();
+  if(!key){
+    console.log(cfg);
+  }else{
+    if(value){
+      cfg[key] = value;
+    }else{
+      delete cfg[key];
+    }
+    await saveConfig(cfg);
+  }
+}
 function help(){
   console.log('usage: mm <command>');
   console.log('<command> = login | list | status | create | destroy |');
@@ -346,6 +392,7 @@ switch(cmd){
   case 'env':
   case 'attach':
   case 'logstream':
+  case 'config':
     eval(cmd).apply(this, args);
     break;
   default:
