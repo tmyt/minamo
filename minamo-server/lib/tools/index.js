@@ -147,7 +147,7 @@ class Tools{
     logger.emit(dockerfile);
     logger.emit('Pulling image...');
     const pullStream = await docker.pullAsync(`node:${version}`);
-    logger.emit(pullStream);
+    logger.emit(pullStream, true);
     await waitForStreamEndAsync(pullStream);
     const buildStream = await docker.buildImageAsync(buildContext, {t: `minamo/${repo}:latest`, rm: true, forcerm: true});
     logger.emit(buildStream, true);
