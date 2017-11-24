@@ -160,6 +160,7 @@ git.on('post-receive', async (repo, changes) => {
 server.listen(config.http_port || 3000, '127.0.0.1');
 githttp.listen(config.git_port || 7000, '127.0.0.1');
 kvs.listen(config.redis_port || 16379, '127.0.0.1');
+fs.mkdir('/tmp/minamo', (err) => {});
 console.log('I: minamo service started');
 
 async function handleReactRouter(req, res){
