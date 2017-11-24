@@ -6,7 +6,7 @@ export default class FooterComponent extends React.Component{
     return (
       <footer className='footer'>
         <Container>
-          <p className="text-muted">Powered by minamo.io</p>
+          <p className="text-muted">Powered by minamo.cloud</p>
         </Container>
       </footer>
     );

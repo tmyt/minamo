@@ -18,7 +18,7 @@ module.exports = function(kvs){
     }
     fs.readFile(path.join(config.repo_path, repo), (err) => {
       if(err) return res.sendStatus(400);
-      if(req.query.key !== hmac(config.secret || 'minamo.io', repo)){
+      if(req.query.key !== hmac(config.secret || 'minamo.cloud', repo)){
         return res.sendStatus(400);
       }
       const tools = appReq('./lib/tools');

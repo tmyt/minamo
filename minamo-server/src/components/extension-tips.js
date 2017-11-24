@@ -8,7 +8,7 @@ export default class ExtensionTipsComponent extends React.Component{
     super(props);
     this.popover = (
       <Popover title='Tips'>
-        <a href={CrxPath} target='_blank'>minamo.io Terminal Extension</a> more better terminal experience!
+        <a href={CrxPath} target='_blank'>minamo.cloud Terminal Extension</a> more better terminal experience!
       </Popover>
     );
   }

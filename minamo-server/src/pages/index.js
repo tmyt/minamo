@@ -9,7 +9,7 @@ export default class IndexComponent extends React.Component {
     return (
       <PageRoot>
         <Jumbotron>
-          <h1>minamo.io</h1>
+          <h1>minamo.cloud</h1>
           <p>private PaaS platform for you</p>
           <ConsoleButtonComponent />
         </Jumbotron>

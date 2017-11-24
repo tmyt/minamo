@@ -1,14 +1,14 @@
 {
   "manifest_version": 2,
-  "name": "minamo.io Terminal Extension",
+  "name": "minamo.cloud Terminal Extension",
   "version": "0.0.5",
-  "author": "minamo.io development team",
+  "author": "minamo.cloud development team",
   "background": {
     "scripts": [ "main.js" ],
     "persistent": false
   },
   "content_scripts": [{
-    "matches": [ "https://minamo.io/*" ],
+    "matches": [ "https://*/*", "http://*/*" ],
     "js": [ "content_script.js" ],
     "run_at": "document_end"
   }],

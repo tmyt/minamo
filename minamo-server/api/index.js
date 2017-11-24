@@ -134,7 +134,7 @@ class api {
       };
       if(stat.isFile()){
         statuses[files[i]].repo = 'external';
-        statuses[files[i]].key = hmac(config.secret || 'minamo.io', files[i]);
+        statuses[files[i]].key = hmac(config.secret || 'minamo.cloud', files[i]);
       }
       for(let j = 0; j < containers.length; ++j){
         if(!containers[j] || !containers[j].Names) continue;

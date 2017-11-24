@@ -42,7 +42,7 @@ export default class HeaderComponent extends React.Component {
           <Container>
             <Navbar.Header>
               <Navbar.Brand>
-                <Link to='/'>minamo.io</Link>
+                <Link to='/'>minamo.cloud</Link>
               </Navbar.Brand>
               <button className='navbar-toggle collapsed' type='button' data-toggle='collapse' data-target='#navbar-main' ref={e=>this.expandButton = e}>
                 <Hamburger />
