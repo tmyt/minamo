@@ -67,7 +67,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSession({
   store: sessionStore,
-  secret: 'kuroshio',
+  secret: config.secret,
   resave: false,
   saveUninitialized: false
 }));
