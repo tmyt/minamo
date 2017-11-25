@@ -12,7 +12,7 @@ dependencies:
     - npm install
 compile:
   override:
-    - npm run build
+    - cp config.js.sample config.js && npm run build
 test:
   override:
     - npm run eslint
