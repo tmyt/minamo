@@ -90,7 +90,7 @@ app.use(passport.session());
 app.use('/auth', appReq('./lib/auth'));
 io.use(passportSocketIo.authorize({
   cookieParser: cookieParser,
-  secret: 'kuroshio',
+  secret: config.secret,
   store: sessionStore,
   // accept all request at this time.
   // but controled in delegated namespace.
