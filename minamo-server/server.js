@@ -5,9 +5,9 @@ const express = require('express')
     , http = require('http')
     , SocketIo = require('socket.io')
     , path = require('path')
-    , os = require('os')
     , fs = require('fs')
-    , expressGit = require('express-git');
+    , expressGit = require('express-git')
+    , networkInterfaces = require('./lib/network/interfaces');
 // app modules
 const appReq = require('app-require')
     , config = appReq('./config')
@@ -132,7 +132,7 @@ const gitBasicAuth = basicAuth((user, pass, next) => {
 const gitComplexAuth = function(req, res, next){
   // accept access from container
   const xRealIp = req.headers['x-real-ip'];
-  const iface = os.networkInterfaces().docker0.filter(x => x.family === 'IPv4')[0];
+  const iface = networkInterfaces().docker0.ipv4[0];
   if(iface && xRealIp && netmask(xRealIp, iface.address, iface.netmask)){
     next();
     return true;
