@@ -3,18 +3,26 @@
 const exec = require('child_process').exec;
 
 class RamUsage{
+  constructor(){
+    this.wide = false;
+    exec('free --help', (err, out) => {
+      if(out.indexOf('-w')){
+        this.wide = true;
+      }
+    });
+  }
   exec(){
     return new Promise(resolve => {
-      exec('free', (err, out) => resolve(out.toString()));
+      exec(`free ${this.wide ? '-w' : ''}`, (err, out) => resolve(out.toString()));
     });
   }
   next(){
     return this.exec().then(out => {
       const lines = out.replace(/ +/g, ' ').split('\n');
       const phy = lines[1].split(' ').map(Number);
-      const swap = lines[3].split(' ').map(Number);
+      const swap = (lines[3] ? lines[3] : lines[2]).split(' ').map(Number);
       return {
-        used: (phy[2] - phy[4] - phy[5] - phy[6]) / 1024,
+        used: (this.wide ? (phy[2] - phy[4]) : (phy[2] - phy[4] - phy[5] - phy[6])) / 1024,
         free: phy[3] / 1024,
         shared: phy[4] / 1024,
         buffers: phy[5] / 1024,
