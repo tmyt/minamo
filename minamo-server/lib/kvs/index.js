@@ -104,7 +104,11 @@ class Kvs
     }
   }
   keys(res, pattern){
-    const re = new RegExp('^' + escapeRegExp(pattern).replace('\\*', '.*'));
+    if(!pattern){
+      res.write('-ERROR\r\n');
+      return;
+    }
+    const re = new RegExp('^' + escapeRegExp(pattern).replace(/\\\*/g, '.*') + '$');
     const k = Object.keys(this.hosts).filter(s => re.test(s));
     res.write(`*${k.length}\r\n`);
     for(let i = 0; i < k.length; ++i){
