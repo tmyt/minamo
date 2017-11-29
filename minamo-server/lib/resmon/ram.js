@@ -6,9 +6,7 @@ class RamUsage{
   constructor(){
     this.wide = false;
     exec('free --help', (err, out) => {
-      if(out.indexOf('-w')){
-        this.wide = true;
-      }
+      this.wide = out.includes('-w');
     });
   }
   exec(){
