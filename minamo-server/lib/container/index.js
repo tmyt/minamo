@@ -95,7 +95,6 @@ class Tools{
     }
     // prepare building
     const port = ~~(Math.random() * 32768) + 3000;
-    const buildContext = `/tmp/minamo-${port}.tar`;
     // get docker0 ip addr
     const docker0 = networkInterfaces()['docker0'].ipv4[0].address;
     // listup extra packages
