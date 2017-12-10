@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "minamo.cloud Terminal Extension",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "minamo.cloud development team",
   "background": {
     "scripts": [ "main.js" ],
