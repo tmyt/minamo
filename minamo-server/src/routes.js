@@ -18,14 +18,14 @@ const NotFoundRoute = () => (
   <Route component={NotFound} />
 );
 const AppComponentRoute = (props) => (
-  <Route path={props.path}>
-    <AppComponent>
+  <AppComponent>
+    <Route path={props.path}>
       <Switch>
         {props.children}
         <NotFoundRoute />
       </Switch>
-    </AppComponent>
-  </Route>
+    </Route>
+  </AppComponent>
 );
 
 const Shell = loadable(() => System.import('./pages/shell'));
