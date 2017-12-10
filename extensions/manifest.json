@@ -15,6 +15,7 @@
   "browser_action": {
   },
   "permissions": [
-    "tabs"
-  ]
+    "tabs", "storage"
+  ],
+  "options_page": "options.html"
 }

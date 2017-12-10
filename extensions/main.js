@@ -8,7 +8,7 @@ function openTerminal(url){
     url: url,
     type: 'popup',
     width: 800,
-    height: 480
+    height: 480,
   });
 }
 
@@ -17,5 +17,17 @@ extension().runtime.onMessage.addListener(function(e, sender, sendResponse){
 });
 
 extension().browserAction.onClicked.addListener(() => {
-  openTerminal('https://minamo.io/console/terminal_popup');
+  extension().storage.local.get("default_uri", value => {
+    const uri = value.default_uri;
+    if(!uri){
+      extension().windows.create({
+        url: extension().extension.getURL("options.html"),
+        type: 'popup',
+        width: 320,
+        height: 480,
+      });
+    }else{
+      openTerminal(uri);
+    }
+  });
 });
