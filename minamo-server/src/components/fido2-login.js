@@ -9,7 +9,7 @@ import '../lib/webauthn.js';
 
 export default class Fido2LoginComponent extends React.Component{
   sign(challenge){
-    const q = qs(this.context.router.location.search, ['_redir']);
+    const q = qs(this.context.router.route.location.search, ['_redir']);
     navigator.authentication.getAssertion(challenge.c)
     .then(result => {
       const uri = '/auth/fido2?'
