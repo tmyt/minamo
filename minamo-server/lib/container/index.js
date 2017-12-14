@@ -95,7 +95,6 @@ class Tools{
     }
     // prepare building
     const port = ~~(Math.random() * 32768) + 3000;
-    const buildContext = `/tmp/minamo-${port}.tar`;
     // get docker0 ip addr
     const docker0 = networkInterfaces()['docker0'].ipv4[0].address;
     // listup extra packages
@@ -138,9 +137,6 @@ class Tools{
     context.entry({name: 'Dockerfile'}, dockerfile);
     context.entry({name: 'run.sh'}, runSh);
     context.finalize();
-    const writer = fs.createWriteStream(buildContext);
-    context.pipe(writer);
-    await waitForStreamEndAsync(context);
     // Start docker build
     logger.emit('====================');
     logger.emit('Building with');
@@ -149,7 +145,7 @@ class Tools{
     const pullStream = await docker.pullAsync(`node:${version}`);
     logger.emit(pullStream, true);
     await waitForStreamEndAsync(pullStream);
-    const buildStream = await docker.buildImageAsync(buildContext, {t: `minamo/${repo}:latest`, rm: true, forcerm: true});
+    const buildStream = await docker.buildImageAsync(context, {t: `minamo/${repo}:latest`, rm: true, forcerm: true});
     logger.emit(buildStream, true);
     await waitForStreamEndAsync(buildStream);
     // LOG('Docker build exited with ${?}')
@@ -159,8 +155,6 @@ class Tools{
     await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, VolumesFrom: [ `${repo}-data` ], Links: links });
     await docker.getContainer(repo).startAsync();
     logger.emit('started');
-    // cleanup context
-    await fs.unlinkAsync(buildContext);
   }
 
   async terminate(repo, destroy){
