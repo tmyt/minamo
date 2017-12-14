@@ -1,7 +1,8 @@
 'use strict';
 
 const express = require('express')
-    , passport = require('passport');
+    , passport = require('passport')
+    , config = require('../../config');
 
 function authRouter(provider){
   const authenticate = (req, res, next) => {
@@ -35,7 +36,7 @@ function authRouter(provider){
 const router = express.Router();
 router.use('/', authRouter('github'), authRouter('twitter'), authRouter('local'), authRouter('fido2'));
 // fido2 challenge
-const hmacSecret = 'secret';
+const hmacSecret = config.secret;
 router.get('/fido2/challenge',
   (req, res) => res.send(require('passport-fido2').challenge(hmacSecret)));
 
