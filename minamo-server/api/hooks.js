@@ -16,14 +16,15 @@ module.exports = function(kvs){
     if(!repo.match(/^[a-z][a-z0-9-]*[a-z0-9]$/)){
       return res.sendStatus(400);
     }
-    fs.readFile(path.join(config.repo_path, repo), (err) => {
+    fs.readFile(path.join(config.repo_path, repo), async (err) => {
       if(err) return res.sendStatus(400);
       if(req.query.key !== hmac(config.secret || 'minamo.cloud', repo)){
         return res.sendStatus(400);
       }
       const container = appReq('./lib/container');
-      container.build(repo);
+      await container.build(repo);
       kvs.resetHost(`${repo}.${config.domain}`);
+      await container.removeStaging(repo);
       return res.sendStatus(200);
     });
   };

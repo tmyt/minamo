@@ -53,20 +53,17 @@ class Tools{
     if(type.isFile()){
       repoUri = await fs.readFileAsync(`${config.repo_path}/${repo}`);
     }
-    // stopping flag
+    // prepareing flag
     await fs.mkdirpAsync('/tmp/minamo').catch(()=>{});
+    await fs.writeFileAsync(`/tmp/minamo/${repo}.prep`, '');
+    // move old container to staging
     const cont = docker.getContainer(repo);
     if(await containerExistsAsync(cont)){
-      logger.emit('stopping...');
+      logger.emit('rename old container...');
       // remove current container & image
-      await fs.writeFileAsync(`/tmp/minamo/${repo}.term`, '');
-      await cont.stopAsync().catch(()=>{});
-      await cont.removeAsync().catch(()=>{});
-      await docker.getImage(`minamo/${repo}`).removeAsync().catch(()=>{});
-      await fs.unlinkAsync(`/tmp/minamo/${repo}.term`);
+      await cont.renameAsync({name: `${repo}-staging`}).catch(()=>{});
+      await docker.getImage(`minamo/${repo}`).tagAsync({repo: `minamo/${repo}-staging`}).catch(()=>{});
     }
-    // prepareing flag
-    await fs.writeFileAsync(`/tmp/minamo/${repo}.prep`, '');
     try{
       await this.buildAndRun(repo, repoUri);
     }catch(e){ console.log(e); }
@@ -155,6 +152,17 @@ class Tools{
     await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, VolumesFrom: [ `${repo}-data` ], Links: links });
     await docker.getContainer(repo).startAsync();
     logger.emit('started');
+  }
+
+  async removeStaging(repo){
+    const cont = docker.getContainer(`${repo}-staging`);
+    if(await containerExistsAsync(cont)){
+      logger.emit('remove old container...');
+      // remove current container & image
+      await cont.stopAsync().catch(()=>{});
+      await cont.removeAsync().catch(()=>{});
+      await docker.getImage(`minamo/${repo}-staging`).removeAsync().catch(()=>{});
+    }
   }
 
   async terminate(repo, destroy){

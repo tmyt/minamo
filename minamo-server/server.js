@@ -143,7 +143,7 @@ githttp.use('/', gitComplexAuth, git);
 git.on('post-receive', async (repo, changes) => {
   const name = repo.name.split('/').reverse()[0];
   const container = appReq('./lib/container');
-  fs.readFile(path.join(config.repo_path, `${name}.env`), (err, json) => {
+  fs.readFile(path.join(config.repo_path, `${name}.env`), async (err, json) => {
     const env = JSON.parse(json);
     const changedRefs = changes.filter(x => x.ref.startsWith('refs/heads/'))
       .map(x => x.ref.substring('refs/heads/'.length));
@@ -151,8 +151,9 @@ git.on('post-receive', async (repo, changes) => {
     if(!changedRefs.includes(targetBranch)){
       return; // ignore. push ref is not current branch
     }
+    await container.build(name);
     kvs.resetHost(`${name}.${config.domain}`);
-    container.build(name);
+    await container.removeStaging(name);
   });
 });
 

@@ -211,14 +211,15 @@ class api {
     }
   }
 
-  start(req, res){
+  async start(req, res){
     const { name, repo } = checkParams(req, res);
     if(!name) return;
     if(!pathExists(repo)){
       res.status(404).send('error: service not found');
     }else{
+      await container.build(name);
       this.kvs.resetHost(`${name}.${config.domain}`);
-      container.build(name);
+      await container.removeStaging(name);
       res.send('start OK');
     }
   }
@@ -235,7 +236,7 @@ class api {
     }
   }
 
-  restart(req, res){
+  async restart(req, res){
     const { name, repo } = checkParams(req, res);
     if(!name) return;
     if(!pathExists(repo)){
@@ -244,8 +245,9 @@ class api {
       if(req.query.quick !== undefined || req.body.quick !== undefined){
         container.restart(name);
       }else{
+        await container.build(name);
         this.kvs.resetHost(`${name}.${config.domain}`);
-        container.build(name);
+        await container.removeStaging(name);
       }
       res.send('restart OK');
     }
