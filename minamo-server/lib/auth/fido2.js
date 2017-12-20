@@ -7,6 +7,7 @@ const appReq = require('app-require')
 
 module.exports = new Fido2Strategy({
   passReqToCallback: true,
+  hmacSecret: config.secret,
   readProfile: async (id, callback) => {
     const key = await userDb.getPublicKeyForId(id);
     if(!key) return callback('key does not exists', null, null);
