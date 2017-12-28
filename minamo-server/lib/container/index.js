@@ -86,7 +86,7 @@ class Tools{
     if(!engine.match('^[0-9.]+$')) engine = '';
     const version = engine || 'latest';
     // remove container if disable zero-downtime deploy
-    if(!!extraEnv['MINAMO_DISABLE_ZDD']){
+    if(extraEnv['MINAMO_DISABLE_ZDD']){
       await fs.writeFileAsync(`/tmp/minamo/${repo}.term`, '');
       await this.removeStaging(repo);
       await fs.unlinkAsync(`/tmp/minamo/${repo}.term`);
