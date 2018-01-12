@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
   proto: 'http',
   domain: 'example.com',
-  repo_path: process.env.MINAMO_REPOS_PATH || path.join(__dirname, 'repos'),
+  repo_path: process.env.MINAMO_REPOS_PATH || path.join(__dirname, 'data/repos'),
   http_port: 3000,
   git_port: 7000,
   redis_port: 16379,
