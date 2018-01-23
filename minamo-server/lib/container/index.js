@@ -91,6 +91,8 @@ class Tools{
       await this.removeStaging(repo);
       await fs.unlinkAsync(`/tmp/minamo/${repo}.term`);
     }
+    // optional container argument
+    const restartPolicy = extraEnv['MINAMO_RESTART_POLICY'] || '';
     // create data container
     const dataCont = docker.getContainer(`${repo}-data`);
     if(!await containerExistsAsync(dataCont)){
@@ -155,7 +157,8 @@ class Tools{
     // run container
     logger.emit(`Starting container ${repo}`);
     const links = (extraEnv['MINAMO_LINKS'] || '').split(',').filter(s => !!s).map(s => `${s}:${s}`);
-    await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, VolumesFrom: [ `${repo}-data` ], Links: links });
+    const policy = restartPolicy ? { Name: restartPolicy } : undefined;
+    await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, VolumesFrom: [ `${repo}-data` ], Links: links, RestartPolicy: policy });
     await docker.getContainer(repo).startAsync();
     logger.emit('started');
   }
