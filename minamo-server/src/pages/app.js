@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import HeaderComponent from '../components/header';
 import FooterComponent from '../components/footer';
 import IntegratedShell from '../components/ish';
+import Meta from '../components/meta';
 
 export default class AppComponent extends React.Component {
   constructor(){
@@ -29,8 +30,17 @@ export default class AppComponent extends React.Component {
     window.removeEventListener('resize', this.handleResize);
   }
   getChildContext(){
+    const config = {};
+    if(this.context.router.staticContext){
+      // here is server side render
+      config.site = this.context.router.staticContext.config.title;
+    }else{
+      // here is client side render
+      config.site = Meta.site;
+    }
     return {
       viewSize: this.state.viewSize,
+      config: config,
     };
   }
   handleResize(){
@@ -69,4 +79,8 @@ export default class AppComponent extends React.Component {
 }
 AppComponent.childContextTypes = {
   viewSize: PropTypes.string,
+  config: PropTypes.object,
+};
+AppComponent.contextTypes = {
+  router: PropTypes.object,
 };

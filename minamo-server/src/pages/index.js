@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Jumbotron } from 'react-bootstrap';
 
 import PageRoot from '../components/page-root';
@@ -9,7 +10,7 @@ export default class IndexComponent extends React.Component {
     return (
       <PageRoot>
         <Jumbotron>
-          <h1>minamo.cloud</h1>
+          <h1>{this.context.config.site}</h1>
           <p>private PaaS platform for you</p>
           <ConsoleButtonComponent />
         </Jumbotron>
@@ -17,3 +18,6 @@ export default class IndexComponent extends React.Component {
     );
   }
 }
+IndexComponent.contextTypes = {
+  config: PropTypes.object,
+};

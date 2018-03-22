@@ -174,9 +174,9 @@ async function handleReactRouter(req, res){
     }
   }
   */
-  const context = { profile: req.user };
+  const context = { profile: req.user, config };
   const app = (
-    <StaticRouter location={req.url} context={context} profile={req.user}>
+    <StaticRouter location={req.url} context={context}>
       <Routes server/>
     </StaticRouter>
   );
@@ -188,6 +188,7 @@ async function handleReactRouter(req, res){
       const metas = [
         ['mo:scheme', config.proto],
         ['mo:domain', config.domain],
+        ['mo:site', config.title],
       ];
       if(req.user){
         metas.push(['mo:user', req.user.username]);

@@ -12,6 +12,7 @@ module.exports = {
   data_dir: path.join(__dirname, 'data'),
   userdb: path.join(__dirname, 'data', 'userdb.json'),
   secret: '<secret here>',
+  title: 'minamo.cloud',
 
   // GitHub appid
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '',
