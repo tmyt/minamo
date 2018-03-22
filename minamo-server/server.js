@@ -6,6 +6,7 @@ const express = require('express')
     , SocketIo = require('socket.io')
     , path = require('path')
     , fs = require('fs')
+    , url = require('url')
     , expressGit = require('express-git')
     , networkInterfaces = require('./lib/network/interfaces');
 // app modules
@@ -139,7 +140,16 @@ const gitComplexAuth = function(req, res, next){
   }
   return gitBasicAuth(req, res, next);
 };
-githttp.use('/', gitComplexAuth, git);
+const gitFixUri = function(req, res, next){
+  const parsed = url.parse(req.url);
+  const match = parsed.pathname.match(/^\/([^\/]*?)\/(.*)/);
+  if(!match[1].endsWith('.git')){
+    parsed.pathname = `/${match[1]}.git/${match[2]}`;
+    req.url = url.format(parsed);
+  }
+  return next();
+};
+githttp.use('/', gitComplexAuth, gitFixUri, gitFixUri, git);
 git.on('post-receive', async (repo, changes) => {
   const name = repo.name.split('/').reverse()[0];
   const container = appReq('./lib/container');
