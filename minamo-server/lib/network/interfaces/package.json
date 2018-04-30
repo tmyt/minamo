@@ -11,7 +11,7 @@
   "author": "tmyt",
   "license": "MIT",
   "devDependencies": {
-    "nan": "^2.8.0",
+    "nan": "^2.10.0",
     "node-gyp": "^3.6.2"
   },
   "dependencies": {
