@@ -3,11 +3,13 @@ import Terminal from 'xterm/dist/xterm';
 import Socket from 'socket.io-client';
 
 import PageRoot from '../components/page-root';
-import 'xterm/dist/addons/fit/fit';
+import * as fit from 'xterm/dist/addons/fit/fit';
+
+Terminal.applyAddon(fit);
 
 export default class LogStreamComponent extends React.Component{
   componentDidMount(){
-    const term = new Terminal(80, 30);
+    const term = new Terminal({cols: 80, rows: 30});
     term.open(document.getElementById('log'));
     term.fit();
     const socket = Socket('/log');

@@ -105,7 +105,7 @@
     "webpack": "^2.6.1",
     "webpack-bundle-size-analyzer": "^2.7.0",
     "webpack-subresource-integrity": "^0.9.0",
-    "xterm": "^2.7.0"
+    "xterm": "^3.3.0"
   },
   "babel": {
     "presets": [

@@ -2,7 +2,9 @@ import React from 'react';
 import Terminal from 'xterm/dist/xterm';
 import Socket from 'socket.io-client';
 import TerminalOpener from './terminal-opener';
-import 'xterm/dist/addons/fit/fit';
+import * as fit from 'xterm/dist/addons/fit/fit';
+
+Terminal.applyAddon(fit);
 
 export default class Xterm extends React.Component{
   documentKeyDown(e){
