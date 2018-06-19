@@ -6,13 +6,13 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "minamo-server/package.json" }}
       - run:
           name: Install packages
           command: npm install
           working_directory: minamo-server
       - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "minamo-server/package.json" }}
           paths:
             - minamo-server/node_modules
       - run:
