@@ -246,9 +246,9 @@ class api {
         container.restart(name);
       }else{
         await container.build(name);
-        this.kvs.resetHost(`${name}.${config.domain}`);
         await container.removeStaging(name);
       }
+      this.kvs.resetHost(`${name}.${config.domain}`);
       res.send('restart OK');
     }
   }
