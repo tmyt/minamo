@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/minamo-server
+    working_directory: ~/minamo-server/minamo-server
     docker:
       - image: circleci/node:9.11
     steps:
