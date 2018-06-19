@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/minamo-server/minamo-server
     docker:
       - image: circleci/node:9.11
     steps:
@@ -11,16 +10,19 @@ jobs:
       - run:
           name: Install packages
           command: npm install
+          working_directory: minamo-server
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
-            - node_modules
+            - minamo-server/node_modules
       - run:
           name: Copy default config
           command: cp config.js.sample config.js
+          working_directory: minamo-server
       - run:
           name: Run build
           command: npm run build
+          working_directory: minamo-server
   test:
     working_directory: ~/minamo-server
     docker:
@@ -29,6 +31,7 @@ jobs:
       - run:
           name: Run test
           command: npm run eslint
+          working_directory: minamo-server
 workflows:
   version: 2
   build_and_test:
