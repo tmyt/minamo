@@ -7,28 +7,28 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        key: dependency-cache-{{ checksum "package.json" }}
+          key: dependency-cache-{{ checksum "package.json" }}
       - run:
-        name: Install packages
-        command: npm install
+          name: Install packages
+          command: npm install
       - save_cache:
-        key: dependency-cache-{{ checksum "package.json" }}
-        paths:
-          - node_modules
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
       - run:
-        name: Copy default config
-        command: cp config.js.sample config.js
+          name: Copy default config
+          command: cp config.js.sample config.js
       - run:
-        name: Run build
-        command: npm run build
+          name: Run build
+          command: npm run build
   test:
     working_directory: ~/minamo-server
     docker:
       - image: circleci/node:9.11
     steps:
       - run:
-        name: Run test
-        command: npm run eslint
+          name: Run test
+          command: npm run eslint
 workflows:
   version: 2
   build_and_test:
