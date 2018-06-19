@@ -29,6 +29,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install eslint
+          command: npm i -g eslint eslint-plugin-react
+      - run:
           name: Run test
           command: npm run eslint
           working_directory: minamo-server
