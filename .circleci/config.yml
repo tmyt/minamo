@@ -24,10 +24,10 @@ jobs:
           command: npm run build
           working_directory: minamo-server
   test:
-    working_directory: ~/minamo-server
     docker:
       - image: circleci/node:9.11
     steps:
+      - checkout
       - run:
           name: Run test
           command: npm run eslint
@@ -37,6 +37,4 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test:
-          requires:
-            - build
+      - test
