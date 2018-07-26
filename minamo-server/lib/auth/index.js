@@ -34,7 +34,7 @@ function authRouter(provider){
 }
 
 const router = express.Router();
-router.use('/', authRouter('github'), authRouter('twitter'), authRouter('local'), authRouter('fido2'));
+router.use('/', authRouter('github'), authRouter('local'), authRouter('fido2'));
 // fido2 challenge
 const hmacSecret = config.secret;
 router.get('/fido2/challenge',

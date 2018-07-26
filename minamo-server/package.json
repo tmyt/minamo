@@ -55,7 +55,6 @@
     "passport-fido2": "0.0.3",
     "passport-github": "^1.0.0",
     "passport-local": "^1.0.0",
-    "passport-twitter": "^1.0.3",
     "passport.socketio": "^3.7.0",
     "prop-types": "^15.6.1",
     "pug": "^2.0.3",

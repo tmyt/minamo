@@ -294,14 +294,13 @@ class api {
   async getConnectedCredentials(req, res){
     const ids = await userDb.getConnectedSocialIds(req.user.username);
     res.send({
-      twitter: !!ids.twitter,
       github: !!ids.github
     });
   }
 
   async connectSocialId(req, res){
     const service = req.params.service;
-    if(service !== 'github' && service !== 'twitter'){
+    if(service !== 'github'){
       return res.send(400);
     }
     const uri = config.proto + '://' + config.domain

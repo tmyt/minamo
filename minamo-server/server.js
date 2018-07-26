@@ -44,11 +44,6 @@ const expressSession = require('express-session')
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
-if(config.TWITTER_CONSUMER_KEY && config.TWITTER_CONSUMER_SECRET){
-  passport.use(appReq('./lib/auth/twitter'));
-}else{
-  console.log('W: Twitter auth is not configured.');
-}
 if(config.GITHUB_CLIENT_ID && config.GITHUB_CLIENT_SECRET){
   passport.use(appReq('./lib/auth/github'));
 }else{

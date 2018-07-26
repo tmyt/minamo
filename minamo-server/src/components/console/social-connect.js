@@ -43,12 +43,12 @@ class SocialConnectButton extends React.Component{
 export default class SocialConnect extends React.Component{
   constructor(){
     super();
-    this.state = {twitter: false, github: false, loaded: false};
+    this.state = {github: false, loaded: false};
   }
   componentDidMount(){
     Http.get('/api/credentials/connected', {},
       ret => this.setState({
-        loaded: true, twitter: ret.twitter, github: ret.github
+        loaded: true, github: ret.github
       }),
       e => this.setState({ loaded: true, error: `Error: ${e}` })
     );
@@ -62,8 +62,7 @@ export default class SocialConnect extends React.Component{
     }
     return(
       <div>
-        <SocialConnectButton connected={this.state.twitter} service='twitter' label='Twitter'/>
-        <SocialConnectButton style={{marginLeft: '8px'}} connected={this.state.github} service='github' label='GitHub'/>
+        <SocialConnectButton connected={this.state.github} service='github' label='GitHub'/>
       </div>
     );
   }

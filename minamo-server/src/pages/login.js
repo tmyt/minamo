@@ -13,10 +13,6 @@ class SocialLoginPane extends React.Component{
     return (
       <Col sm={6}>
         <h4 className='header'>social account</h4>
-        <Button bsStyle='primary' href={`/auth/twitter${args}`} block>
-          <FontAwesome icon='twitter' />
-          <span>Login with Twitter</span>
-        </Button>
         <Button bsStyle='primary' href={`/auth/github${args}`} block>
           <FontAwesome icon='github' />
           <span>Login with GitHub</span>
