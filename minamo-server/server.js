@@ -7,7 +7,7 @@ const express = require('express')
     , path = require('path')
     , fs = require('fs')
     , url = require('url')
-    , expressGit = require('express-git')
+    , expressGit = require('express-git2')
     , networkInterfaces = require('./lib/network/interfaces');
 // app modules
 const appReq = require('app-require')

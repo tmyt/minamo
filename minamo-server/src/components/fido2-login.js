@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import EdgeButton from './edge-button';
+import Fido2Button from './fido2-button';
 import FontAwesome from './font-awesome';
 import Http from './console/http-verb';
 import Toast from './toast';
 import qs from '../lib/querystring';
-import '../lib/webauthn.js';
 
 export default class Fido2LoginComponent extends React.Component{
   sign(challenge){
     const q = qs(this.context.router.route.location.search, ['_redir']);
-    navigator.authentication.getAssertion(challenge.c)
+    navigator.credentials.get(challenge.c)
     .then(result => {
       const uri = '/auth/fido2?'
         + `c=${challenge.c}&cs=${challenge.cs}&`
@@ -30,10 +29,10 @@ export default class Fido2LoginComponent extends React.Component{
   }
   render(){
     return(
-      <EdgeButton bsStyle='primary' onClick={this.authenticate.bind(this)} block>
+      <Fido2Button bsStyle='primary' onClick={this.authenticate.bind(this)} block>
         <FontAwesome icon='id-card' />
         <span>Login with FIDO 2.0</span>
-      </EdgeButton>
+      </Fido2Button>
     );
   }
 }

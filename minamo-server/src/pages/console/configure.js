@@ -5,7 +5,7 @@ import Dropzone from 'react-dropzone-component';
 import SocialConnect from '../../components/console/social-connect';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
-import EdgeButton from '../../components/edge-button';
+import Fido2Button from '../../components/fido2-button';
 import '../../lib/webauthn.js';
 
 export default class ConsoleConfigureComponent extends React.Component{
@@ -107,17 +107,31 @@ MinamoIdForm.contextTypes = {
 class Fido2Form extends React.Component{
   registerCredential(){
     const p = this.context.profile;
-    const account = { rpDisplayName: p.username, displayName: p.username, imageUri: p.avater };
-    const cryptoParams = [{ type: 'FIDO_2_0', algorithm: 'RSASSA-PKCS1-v1_5' }];
-    navigator.authentication.makeCredential(account, cryptoParams)
+    const account = { id: new Uint8Array(16), name: p.username, displayName: p.username, iconURL: p.avater };
+    const cryptoParams = [{ type: 'public-key', alg: -257 }];
+    const options = { publicKey: { rp: { name: 'minamo.io' }, user: account, pubKeyCredParams: cryptoParams } }
+    fetch('/auth/fido2/create')
+    .then(result => result.json())
+    .then(options => {
+      options.challenge = new Uint8Array(options.challenge);
+      options.user.id = new Uint8Array([].map.call(options.user.id, c => c.charCodeAt(0)));
+      return navigator.credentials.create({ publicKey: options })
+    })
     .then(result => {
-      const key = JSON.stringify(result.publicKey);
-      const id = result.credential.id;
-      Http.post('/api/credentials/fido/register', {key, id},
+      const obj = {
+        id: result.id,
+        rawId: Array.from(new Uint8Array(result.rawId)),
+        response: {
+          attestationObject: Array.from(new Uint8Array(result.response.attestationObject)),
+          clientDataJSON: Array.from(new Uint8Array(result.response.clientDataJSON)),
+        },
+      };
+      Http.post('/auth/fido2/register', {result: JSON.stringify(obj)},
         () => Toast.show('FIDO key registered', 'success'),
         () => Toast.show('Key registration failed', 'warning')
       );
-    });
+    })
+    .catch(console.log);
   }
   resetCredential(){
     window.indexedDB.deleteDatabase('_webauthn');
@@ -125,8 +139,8 @@ class Fido2Form extends React.Component{
   render(){
     return(
       <form>
-        <EdgeButton bsStyle='primary' onClick={this.registerCredential.bind(this)}>register</EdgeButton>
-        <EdgeButton style={{marginLeft: '8px'}} bsStyle='danger' onClick={this.resetCredential}>reset</EdgeButton>
+        <Fido2Button bsStyle='primary' onClick={this.registerCredential.bind(this)}>register</Fido2Button>
+        <Fido2Button style={{marginLeft: '8px'}} bsStyle='danger' onClick={this.resetCredential}>reset</Fido2Button>
       </form>
     );
   }

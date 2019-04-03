@@ -342,7 +342,7 @@ class api {
 
   async registerFidoCredentials(req, res){
     const id = req.body.id;
-    const key = JSON.parse(req.body.key);
+    const key = JSON.parse(req.body.result);
     try{
       await userDb.addPublicKey(req.user.username, key, id);
       res.sendStatus(200);

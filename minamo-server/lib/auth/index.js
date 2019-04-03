@@ -2,6 +2,7 @@
 
 const express = require('express')
     , passport = require('passport')
+    , fido2 = require('./fido2')
     , config = require('../../config');
 
 function authRouter(provider){
@@ -37,7 +38,13 @@ const router = express.Router();
 router.use('/', authRouter('github'), authRouter('local'), authRouter('fido2'));
 // fido2 challenge
 const hmacSecret = config.secret;
-router.get('/fido2/challenge',
-  (req, res) => res.send(require('passport-fido2').challenge(hmacSecret)));
-
+router.get('/fido2/get', (req, res) => {
+  fido2.getAssertionOptions(req, res);
+});
+router.get('/fido2/create', (req, res) => {
+  fido2.createAttestationOptions(req, res);
+});
+router.post('/fido2/register', async (req, res) => {
+  fido2.verifyAttestationResult(req, res);
+});
 module.exports = router;

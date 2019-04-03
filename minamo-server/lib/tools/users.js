@@ -76,6 +76,22 @@ cmds.role = async function(name, role){
     console.log('Failed to update role.');
   }
 };
+cmds['reset-fido2'] = async function(name){
+  if(!name){
+    console.log('error: arguments required.');
+    return;
+  }
+  try{
+    if(!await userDb.findUser(name)){
+      console.log(`User ${name} is not exists`);
+    }else{
+      await userDb.removeAllPublicKeysForUser(name);
+      console.log(`Remove pubkeys for ${name}`);
+    }
+  }catch(e){
+    console.log('Failed to clear fido2 pubkeys');
+  }
+};
 // --
 const args = process.argv.slice(2);
 const cmd = args.shift();
@@ -84,6 +100,7 @@ switch(cmd){
   case 'del':
   case 'reset':
   case 'role':
+  case 'reset-fido2':
     cmds[cmd].apply(this, args);
     break;
   case undefined:

@@ -84,6 +84,12 @@ class UserDB{
       type: 'fido2', id
     })).map(d => d.key)[0];
   }
+  async getPublicKeyIdsForUserId(userid){
+    return (await this._db.select({
+      type: 'fido2',
+      relative: userid,
+    })).map(d => d.id);
+  }
   async updateCredential(userid, password, newPassword){
     const where = {
       type: 'local',
@@ -149,7 +155,7 @@ class UserDB{
     });
     return true;
   }
-  async addPublicKey(userid, publicKey, id){
+  async addPublicKey(userid, id, publicKey){
     const socialId = (await this._db.select({
       type: 'fido2', id
     }))[0];
@@ -164,7 +170,13 @@ class UserDB{
   }
   async removePublicKey(userid, id){
     await this._db.delete({
-      type: 'fido2', username: userid, id
+      type: 'fido2', relative: userid, id
+    });
+    return true;
+  }
+  async removeAllPublicKeysForUser(userid){
+    await this._db.delete({
+      type: 'fido2', relative: userid
     });
     return true;
   }
