@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
+
 import Xterm from '../components/xterm';
 import DocumentTitle from 'react-document-title';
 import qs from '../lib/querystring';
 
-export default class PopupTerminalComponent extends React.Component{
+class PopupTerminalComponent extends React.Component{
   constructor(){
     super();
     this.state = { theme: undefined };
@@ -13,7 +15,7 @@ export default class PopupTerminalComponent extends React.Component{
     this.onUnload = this.onUnload.bind(this);
   }
   componentWillMount(){
-    const args = qs(this.context.router.route.location.search, ['theme']);
+    const args = qs(this.props.location.search, ['theme']);
     this.setState(args);
   }
   componentDidMount(){
@@ -70,7 +72,5 @@ export default class PopupTerminalComponent extends React.Component{
     );
   }
 }
-PopupTerminalComponent.contextTypes = {
-  router: PropTypes.object
-};
 
+export default withRouter(PopupTerminalComponent);

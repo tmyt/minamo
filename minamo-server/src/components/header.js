@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import Avatar from './avatar';
@@ -10,7 +10,7 @@ import ConsoleTabs from './console/tabs';
 import IntegratedShellButton from './ish-button';
 import isActive from '../lib/isactive';
 
-export default class HeaderComponent extends React.Component {
+class HeaderComponent extends React.Component {
   constructor(){
     super();
     this.onSelect = this.onSelect.bind(this);
@@ -30,7 +30,7 @@ export default class HeaderComponent extends React.Component {
   render(){
     let extraTabMenu = null;
     let adminTabItem = null;
-    if(this.context.router && isActive(this.context.router, '/console', true)){
+    if(this.props.location && isActive(this.props, '/console', true)){
       extraTabMenu = (<ConsoleTabs />);
     }
     if(this.context.profile && this.context.profile.role === 'admin'){
@@ -69,8 +69,9 @@ export default class HeaderComponent extends React.Component {
   }
 }
 HeaderComponent.contextTypes = {
-  router: PropTypes.object,
   isAuthenticated: PropTypes.bool,
   profile: PropTypes.object,
   config: PropTypes.object,
 };
+
+export default withRouter(HeaderComponent);

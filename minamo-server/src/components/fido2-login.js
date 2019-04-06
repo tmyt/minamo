@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 import Fido2Button from './fido2-button';
 import FontAwesome from './font-awesome';
 import Http from './console/http-verb';
 import Toast from './toast';
 import qs from '../lib/querystring';
 
-export default class Fido2LoginComponent extends React.Component{
+class Fido2LoginComponent extends React.Component{
   sign(challenge){
-    const q = qs(this.context.router.route.location.search, ['_redir']);
+    const q = qs(this.props.location.search, ['_redir']);
     navigator.credentials.get(challenge.c)
     .then(result => {
       const uri = '/auth/fido2?'
@@ -37,6 +38,7 @@ export default class Fido2LoginComponent extends React.Component{
   }
 }
 Fido2LoginComponent.contextTypes = {
-  router: PropTypes.object,
   profile: PropTypes.object
 };
+
+export default withRouter(Fido2LoginComponent);

@@ -14,8 +14,8 @@ QueryString.stringify = function(args){
   return '?' + qs.stringify(args);
 };
 
-QueryString.export = function(router, args){
-  const a = QueryString(router.route.location.search, args);
+QueryString.export = function(location, args){
+  const a = QueryString(location.search, args);
   return QueryString.stringify(a);
 };
 

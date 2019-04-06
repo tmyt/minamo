@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 
 import HeaderComponent from '../components/header';
 import FooterComponent from '../components/footer';
 import IntegratedShell from '../components/ish';
 import Meta from '../components/meta';
 
-export default class AppComponent extends React.Component {
+class AppComponent extends React.Component {
   constructor(){
     super();
     this.state = {viewSize: '', isISHVisible: false};
@@ -31,9 +32,9 @@ export default class AppComponent extends React.Component {
   }
   getChildContext(){
     const config = {};
-    if(this.context.router.staticContext){
+    if(this.props.staticContext){
       // here is server side render
-      config.site = this.context.router.staticContext.config.title;
+      config.site = this.props.staticContext.config.title;
     }else{
       // here is client side render
       config.site = Meta.site;
@@ -81,6 +82,5 @@ AppComponent.childContextTypes = {
   viewSize: PropTypes.string,
   config: PropTypes.object,
 };
-AppComponent.contextTypes = {
-  router: PropTypes.object,
-};
+
+export default withRouter(AppComponent);

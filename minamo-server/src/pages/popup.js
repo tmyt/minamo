@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
+
 import Meta from '../components/meta';
 
-export default class PopupComponent extends React.Component {
+class PopupComponent extends React.Component {
   constructor(){
     super();
   }
@@ -12,7 +14,7 @@ export default class PopupComponent extends React.Component {
   }
   getChildContext(){
     const profile = (typeof window === 'object'
-      ? this.getProfileInfo() : this.context.router.staticContext.profile)
+      ? this.getProfileInfo() : this.props.staticContext.profile)
       || {username: '', avatar: '', role: ''};
     return {
       isAuthenticated: !!(profile && profile.username), profile
@@ -22,10 +24,9 @@ export default class PopupComponent extends React.Component {
     return this.props.children;
   }
 }
-PopupComponent.contextTypes = {
-  router: PropTypes.object
-};
 PopupComponent.childContextTypes = {
   isAuthenticated: PropTypes.bool,
   profile: PropTypes.object,
 };
+
+export default withRouter(PopupComponent);

@@ -1,16 +1,15 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { Redirect, withRouter } from 'react-router-dom';
 import Meta from './meta';
 
-export default class Authorized extends React.Component{
+class Authorized extends React.Component{
   constructor(){
     super();
     this.state = { initialized: false, authorized: false, redirect: undefined };
   }
   componentWillMount(){
-    if(this.context.router.staticContext){
-      this.context.router.staticContext.authorizationRequired = true;
+    if(this.props.staticContext){
+      this.props.staticContext.authorizationRequired = true;
     }
   }
   componentDidMount(){
@@ -32,16 +31,16 @@ export default class Authorized extends React.Component{
     });
   }
   redirect(){
-    return `/login?_redir=${encodeURIComponent(this.context.router.route.location.pathname)}`;
+    return `/login?_redir=${encodeURIComponent(this.props.location.pathname)}`;
   }
   render(){
-    if(this.context.router.staticContext){
+    if(this.props.staticContext){
       // here is server side render
-      const profile = this.context.router.staticContext.profile;
+      const profile = this.props.staticContext.profile;
       if(profile && (!this.props.isAdmin || (profile.role === 'admin'))){
         return this.props.children;
       }else if(this.props.isAdmin){
-        this.context.router.staticContext.status = 404;
+        this.props.staticContext.status = 404;
         return null;
       }
       return <Redirect to={this.redirect()} />;
@@ -56,6 +55,5 @@ export default class Authorized extends React.Component{
     return <Redirect to={this.redirect()} />;
   }
 }
-Authorized.contextTypes = {
-  router: PropTypes.object,
-};
+
+export default withRouter(Authorized);

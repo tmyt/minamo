@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 
-export default class NotFound extends React.Component{
+class NotFound extends React.Component{
   render(){
-    if(this.context.router.staticContext){
-      this.context.router.staticContext.status = 404;
+    if(this.props.staticContext){
+      this.props.staticContext.status = 404;
       return null;
     }
     return <p>Not Found</p>;
   }
 }
-NotFound.contextTypes = {
-  router: PropTypes.object,
-};
+
+export default withRouter(NotFound);
