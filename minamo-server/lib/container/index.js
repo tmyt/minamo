@@ -129,7 +129,7 @@ class Tools{
                      + `RUN chmod 755 /service/run.sh\n`
                      + `WORKDIR /service/${repo}\n`
                      + `${extraCmd}\n`
-                     + `RUN echo ${docker0} git.${config.domain} >> /etc/hosts; su minamo -c "git clone ${repoUri} . --recursive && git checkout \$MINAMO_BRANCH_NAME"; \\\n`
+                     + `RUN echo ${docker0} git.${config.domain} >> /etc/hosts; su minamo -c "git clone ${repoUri} . --recursive && git checkout $MINAMO_BRANCH_NAME"; \\\n`
                      + `    su minamo -c "${pmInstall} ${pm} run minamo-preinstall ; ${pm} install ; ${pm} run minamo-postinstall || true"; \\\n`
                      + `    ls -l; node --version\n`
                      + `CMD ["/service/run.sh"]`;

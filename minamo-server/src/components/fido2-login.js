@@ -11,16 +11,16 @@ class Fido2LoginComponent extends React.Component{
   sign(challenge){
     const q = qs(this.props.location.search, ['_redir']);
     navigator.credentials.get(challenge.c)
-    .then(result => {
-      const uri = '/auth/fido2?'
-        + `c=${challenge.c}&cs=${challenge.cs}&`
-        + `authenticatorData=${result.authenticatorData}&`
-        + `clientData=${result.clientData}&`
-        + `signature=${result.signature}&`
-        + `id=${result.credential.id}`
-        + (q._redir ? `&_redir=${encodeURIComponent(q._redir)}` : '');
-      window.location.href = uri;
-    });
+      .then(result => {
+        const uri = '/auth/fido2?'
+          + `c=${challenge.c}&cs=${challenge.cs}&`
+          + `authenticatorData=${result.authenticatorData}&`
+          + `clientData=${result.clientData}&`
+          + `signature=${result.signature}&`
+          + `id=${result.credential.id}`
+          + (q._redir ? `&_redir=${encodeURIComponent(q._redir)}` : '');
+        window.location.href = uri;
+      });
   }
   authenticate(){
     Http.get('/auth/fido2/challenge', {},

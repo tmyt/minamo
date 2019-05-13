@@ -16,6 +16,5 @@ loadComponents().then(() => {
     <BrowserRouter>
       <Routes />
     </BrowserRouter>
-    ), document.getElementById('app')
-  );
+  ), document.getElementById('app'));
 });

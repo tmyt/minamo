@@ -4,7 +4,7 @@ import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
 
 const ContainerRegexpString = '[a-z][a-z0-9-]*[a-z0-9]';
-const ContainerRegexp = new RegExp(`^${ContainerRegexpString}\$`);
+const ContainerRegexp = new RegExp(`^${ContainerRegexpString}$`);
 
 export default class ConsoleCreateComponent extends React.Component{
   constructor(){

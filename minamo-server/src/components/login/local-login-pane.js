@@ -4,7 +4,6 @@ import { withRouter } from 'react-router';
 import qs from '../../lib/querystring';
 import Base64 from '../../lib/base64';
 
-import Http from '../console/http-verb';
 import FontAwesome from '../font-awesome';
 
 const Visibility = ({isVisible, children}) => isVisible ? children : null;
@@ -25,33 +24,33 @@ class LocalLoginPane extends React.Component{
     const params = new URLSearchParams();
     params.set('username', this.state.username);
     return fetch('/auth/fido2/get?' + params.toString())
-    .then(result => result.json())
-    .then(options => {
-      options.challenge = new Uint8Array(options.challenge).buffer;
-      options.allowCredentials.forEach(c => {
-        c.id = new Uint8Array([].map.call(Base64.decode(c.id), c => c.charCodeAt(0)))
-      });
-      return navigator.credentials.get({ publicKey: options });
-    })
-    .then(x => {
-      const obj = {
-        id: x.id,
-        rawId: Array.from(new Uint8Array(x.rawId)),
-        response: {
-          authenticatorData: Array.from(new Uint8Array(x.response.authenticatorData)),
-          clientDataJSON: Array.from(new Uint8Array(x.response.clientDataJSON)),
-          signature: Array.from(new Uint8Array(x.response.signature)),
-          userHandle: Array.from(new Uint8Array(x.response.userHandle)),
-        },
-      };
-      // put args
-      this.fido2form.id.value = this.state.username;
-      this.fido2form.result.value = JSON.stringify(obj);
-      this.fido2form.submit();
-      this.fido2form.id.value = ''
-      this.fido2form.result.value = '';
-    })
-    .then(x => false)
+      .then(result => result.json())
+      .then(options => {
+        options.challenge = new Uint8Array(options.challenge).buffer;
+        options.allowCredentials.forEach(c => {
+          c.id = new Uint8Array([].map.call(Base64.decode(c.id), c => c.charCodeAt(0)));
+        });
+        return navigator.credentials.get({ publicKey: options });
+      })
+      .then(x => {
+        const obj = {
+          id: x.id,
+          rawId: Array.from(new Uint8Array(x.rawId)),
+          response: {
+            authenticatorData: Array.from(new Uint8Array(x.response.authenticatorData)),
+            clientDataJSON: Array.from(new Uint8Array(x.response.clientDataJSON)),
+            signature: Array.from(new Uint8Array(x.response.signature)),
+            userHandle: Array.from(new Uint8Array(x.response.userHandle)),
+          },
+        };
+        // put args
+        this.fido2form.id.value = this.state.username;
+        this.fido2form.result.value = JSON.stringify(obj);
+        this.fido2form.submit();
+        this.fido2form.id.value = '';
+        this.fido2form.result.value = '';
+      })
+      .then(() => false);
   }
 
   handleChange(field){
@@ -68,15 +67,14 @@ class LocalLoginPane extends React.Component{
         return;
       }
       this.tryPublicKeyLogin()
-      .then(success => {
-        if(!success){
+        .then(success => {
+          if(!success){
+            this.setState({ phase: 1 });
+          }
+        })
+        .catch(() => {
           this.setState({ phase: 1 });
-        }
-      })
-      .catch(e => {
-        this.setState({ phase: 1 });
-      })
-    }else{
+        });
     }
   }
 
@@ -110,7 +108,7 @@ class LocalLoginPane extends React.Component{
             <Button bsStyle='primary' type='submit' block>Sign In</Button>
           </FormGroup>
         </form>
-        <form method='post' action={`/auth/fido2${args}`} ref={(ref) => { this.fido2form = ref }}>
+        <form method='post' action={`/auth/fido2${args}`} ref={(ref) => { this.fido2form = ref; }}>
           <input name='id' type='hidden' />
           <input name='result' type='hidden' />
         </form>

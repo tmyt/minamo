@@ -1,16 +1,22 @@
 module.exports = {
+  "parser": "babel-eslint",
+  "settings": {
+    "react": {
+      "version": "16.2",
+    },
+  },
   "env": {
     "es6": true,
     "node": true,
     "browser": true,
   },
   "extends": [
-      "eslint:recommended",
+    "eslint:recommended",
+//    "plugin:react/recommended",
   ],
   "parserOptions": {
-    "ecmaVersion": 8,
+    "ecmaVersion": 2018,
     "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
       "jsx": true
     },
     "sourceType": "module"
@@ -25,7 +31,8 @@ module.exports = {
       {
         "SwitchCase": 1,
         "VariableDeclarator": { "const": 2 },
-        "ArrayExpression": "first"
+        "ArrayExpression": "first",
+        "ignoredNodes": ['JSXElement', 'JSXElement > *', 'JSXAttribute', 'JSXIdentifier', 'JSXNamespacedName', 'JSXMemberExpression', 'JSXSpreadAttribute', 'JSXExpressionContainer', 'JSXOpeningElement', 'JSXClosingElement', 'JSXText', 'JSXEmptyExpression', 'JSXSpreadChild'],
       }
     ],
     "linebreak-style": [
@@ -45,9 +52,11 @@ module.exports = {
     "no-control-regex": 1,
     "react/jsx-uses-vars": "error",
     "react/jsx-uses-react": "error",
+    "react/jsx-indent-props": [2, "first"],
   },
   "globals": {
     "$": true,
     "toastr": true,
+    "System": true,
   }
 };

@@ -18,36 +18,34 @@ const strategy = new Fido2Strategy({
     callback(null, {});
   },
   readPublicKeyIdsForUser: (username, callback) => {
-    userDb.getPublicKeyIdsForUserId(username)
-    .then(ids => {
+    userDb.getPublicKeyIdsForUserId(username).then(ids => {
       callback(ids.map(id => ({
         id, type: 'public-key', transports: [ 'internal' ],
       })));
     });
   },
   readPublicKeyForId: (id, callback) => {
-    userDb.getPublicKeyForId(id)
-    .then(key => {
-      callback(key)
-    });
-  }}, async function(req, id, profile, done){
-    if(req.user && req.session.mode === 'connect'){
-      await userDb.addSocialId(req.user.username, profile.provider, profile.id);
-      return done(null, req.user);
-    }
-    process.nextTick(async function(){
-      const user = await userDb.authenticateWithFido2(id);
-      if(!user){
-        return done(null, false, {message: 'You are not permitted to access the requested resource.'});
-      }
-      return done(null, {
-        username: user.username,
-        role: user.role,
-        avatar: user.avatar
-      });
+    userDb.getPublicKeyForId(id).then(key => {
+      callback(key);
     });
   }
-);
+}, async function(req, id, profile, done) {
+  if(req.user && req.session.mode === 'connect'){
+    await userDb.addSocialId(req.user.username, profile.provider, profile.id);
+    return done(null, req.user);
+  }
+  process.nextTick(async function(){
+    const user = await userDb.authenticateWithFido2(id);
+    if(!user){
+      return done(null, false, {message: 'You are not permitted to access the requested resource.'});
+    }
+    return done(null, {
+      username: user.username,
+      role: user.role,
+      avatar: user.avatar
+    });
+  });
+});
 
 
 module.exports = strategy;

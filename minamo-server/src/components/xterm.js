@@ -93,7 +93,7 @@ export default class Xterm extends React.Component{
     }
     return (
       <div className={`${this.props.className||''} xterm-theme-default ${webkitClass}`} id='terminal'
-            ref={(div) => this.divTerminal = div} onDragOver={this.dragOver.bind(this)} onDrop={this.drop.bind(this)}>
+           ref={(div) => this.divTerminal = div} onDragOver={this.dragOver.bind(this)} onDrop={this.drop.bind(this)}>
         {this.props.children}
       </div>
     );

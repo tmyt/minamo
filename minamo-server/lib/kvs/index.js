@@ -11,7 +11,7 @@ const $ = require('bluebird').promisifyAll
     , docker = $(new Docker());
 
 function escapeRegExp(string) {
-  return string.replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
+  return string.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1');
 }
 
 class Kvs

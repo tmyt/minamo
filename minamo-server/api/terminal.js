@@ -8,19 +8,10 @@ const pty = require('node-pty')
     , Docker = require('../lib/container/docker')
     , docker = bluebird.promisifyAll(new Docker());
 
-function waitStream(stream, json){
+function waitStream(stream){
   return new Promise(done => {
-    stream.on('data', x => {
-      const str = x.toString();
-      if(json){
-        console.log(JSON.parse(str).status);
-      }else{
-        console.log(str);
-      }
-    });
-    stream.on('end', () => {
-      done();
-    });
+    stream.on('data', () => { });
+    stream.on('end', () => done());
   });
 }
 
@@ -42,7 +33,7 @@ module.exports = function(io){
       if(!await image.inspectAsync().catch(() => null)){
         // pull busybox
         const stream = await docker.pull('busybox');
-        await waitStream(stream, true);
+        await waitStream(stream);
       }
       await docker.createContainerAsync({Image: 'busybox', name: userData, Volumes: {'/home/user':{}}});
       isFirstTime = 'init';

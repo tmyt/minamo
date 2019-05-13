@@ -137,7 +137,7 @@ const gitComplexAuth = function(req, res, next){
 };
 const gitFixUri = function(req, res, next){
   const parsed = url.parse(req.url);
-  const match = parsed.pathname.match(/^\/([^\/]*?)\/(.*)/);
+  const match = parsed.pathname.match(/^\/([^/]*?)\/(.*)/);
   if(!match[1].endsWith('.git')){
     parsed.pathname = `/${match[1]}.git/${match[2]}`;
     req.url = url.format(parsed);

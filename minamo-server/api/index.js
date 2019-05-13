@@ -20,7 +20,7 @@ const config = appReq('./config')
     , container = appReq('./lib/container');
 
 const ContainerRegexpString = '[a-z][a-z0-9-]*[a-z0-9]';
-const ContainerRegexp = new RegExp(`^${ContainerRegexpString}\$`);
+const ContainerRegexp = new RegExp(`^${ContainerRegexpString}$`);
 
 const hmac = (key, data) => {
   return crypto.createHmac('sha1', key).update(data).digest('hex');
@@ -74,8 +74,8 @@ class api {
     priv.post('/credentials/:service/disconnect', this.disconnectSocialId);
     priv.post('/credentials/fido/register', this.registerFidoCredentials);
     priv.post('/users/profile/update', this.updateProfile);
-    priv.post('/users/avatar/upload', multer({dest: '/tmp/upload/'}).single('file'),
-              this.uploadAvatar);
+    priv.post('/users/avatar/upload',
+      multer({dest: '/tmp/upload/'}).single('file'), this.uploadAvatar);
     /* admin api */
     const admin = require('./admin')();
     priv.use(requireAdminRights, admin);
