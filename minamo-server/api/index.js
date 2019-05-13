@@ -7,7 +7,7 @@ const promisifyAll = require('bluebird').promisifyAll
     , crypto = require('crypto')
     , crc = require('crc').crc32
     , fs = promisifyAll(require('fs-extra'))
-    , tarball = promisifyAll(require('tarball-extract'))
+    , tar = require('tar')
     , init = require('git-init')
     , head = require('githead')
     , appReq = require('app-require');
@@ -192,7 +192,8 @@ class api {
     }else{
       const rand = Math.floor(Math.random() * 65535);
       const tmpl = '/tmp/minamo-' + rand + '/';
-      await tarball.extractTarballAsync(templatePath, tmpl);
+      await fs.mkdirAsync(tmpl);
+      await tar.extract({file: templatePath, cwd: tmpl});
       initFunc(tmpl, () => fs.remove(tmpl));
     }
   }

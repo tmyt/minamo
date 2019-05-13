@@ -65,15 +65,15 @@ module.exports = {
         use: [{
           loader: 'babel-loader',
           options: {
-            presets: ['react'],
-            plugins: ['babel-plugin-transform-object-rest-spread', 'babel-plugin-syntax-dynamic-import'],
+            presets: ['@babel/react'],
+            plugins: ['@babel/plugin-proposal-object-rest-spread', '@babel/plugin-syntax-dynamic-import'],
             babelrc: false,
           }
         }]
       },
       { test: /json3\.js/, use: 'imports-loader?define=>false' },
-      { test: /\.scss$/, use: ['style-loader', 'css-loader?minimize', 'postcss-loader', 'sass-loader'] },
-      { test: /\.css$/, use: ['style-loader', 'css-loader?minimize&-url', 'postcss-loader', 'remove-urlimport-loader'] },
+      { test: /\.scss$/, use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'] },
+      { test: /\.css$/, use: ['style-loader', 'css-loader?-url', 'postcss-loader', 'remove-urlimport-loader'] },
     ]
   },
   devtool: '#inline-source-map',
