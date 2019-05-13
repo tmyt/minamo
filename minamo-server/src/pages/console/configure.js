@@ -6,7 +6,6 @@ import SocialConnect from '../../components/console/social-connect';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
 import Fido2Button from '../../components/fido2-button';
-import '../../lib/webauthn.js';
 
 export default class ConsoleConfigureComponent extends React.Component{
   render(){
@@ -134,7 +133,6 @@ class Fido2Form extends React.Component{
     .catch(console.log);
   }
   resetCredential(){
-    window.indexedDB.deleteDatabase('_webauthn');
   }
   render(){
     return(
