@@ -130,6 +130,11 @@ div.container > div.row:last-child {
     & > div#main {
       min-height: calc(100% - 60px - 104px);
     }
+    & > header {
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+    }
     & > header.has-tabbar ~ div#main {
       min-height: calc(100% - 60px - 148px);
     }
