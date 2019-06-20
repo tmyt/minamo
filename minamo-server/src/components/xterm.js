@@ -139,8 +139,9 @@ export default class Xterm extends React.Component{
   }
   render(){
     let webkitClass = '';
-    if(typeof document !== 'undefined' && document.body.style.webkitAppearance !== undefined){
-      webkitClass = 'chrome';
+    if(typeof document !== 'undefined' && document.body.style.webkitAppearance !== undefined
+      && !navigator.userAgent.includes('Edge')) {
+        webkitClass = 'chrome';
     }
     const classNames = `${this.props.className||''} xterm-theme-default ${webkitClass}`;
     let buttons = undefined;
