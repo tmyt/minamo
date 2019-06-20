@@ -26,6 +26,7 @@ class PopupTerminalComponent extends React.Component{
     }
     window.addEventListener('beforeunload', this.onUnload);
     this.appendLinkHeader();
+    this.installServiceWorker();
     if(window.parent !== window){
       this.titleElement = window.parent.document.getElementById('ish-title');
     }
@@ -52,6 +53,11 @@ class PopupTerminalComponent extends React.Component{
     link.rel = 'manifest';
     document.head.appendChild(link);
     this.manfiestLink = link;
+  }
+  installServiceWorker(){
+    if(navigator && navigator.serviceWorker){
+      navigator.serviceWorker.register('/sw.js', {scope: '/shell'});
+    }
   }
   onResize(){
     this.xterm.divTerminal.style.height = window.innerHeight + 'px';

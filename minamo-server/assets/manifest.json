@@ -1,0 +1,21 @@
+{
+  "lang": "ja",
+  "name": "minamo.io web terminal",
+  "short_name": "minamo shell",
+  "background_color": "#000",
+  "icons": [{
+    "src": "/icon.144px.png",
+    "sizes": "144x144",
+    "type": "image/png"
+  }, {
+    "src": "/icon.192px.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }, {
+    "src": "/icon.512px.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }],
+  "start_url": "./shell",
+  "display": "standalone"
+}

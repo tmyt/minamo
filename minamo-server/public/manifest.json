@@ -1,8 +1,0 @@
-{
-  "lang": "ja",
-  "name": "minamo.io web terminal",
-  "short_name": "minamo shell",
-  "icons": [],
-  "start_url": "https://minamo.io/console/terminal_popup",
-  "display": "standalone"
-}
