@@ -7,10 +7,23 @@ import * as fit from 'xterm/dist/addons/fit/fit';
 Terminal.applyAddon(fit);
 
 export default class Xterm extends React.Component{
+  get ctrl() { return this.state.ctrl; }
+  set ctrl(x) { this.setState({ctrl: x}); }
+  get alt() { return this.state.alt; }
+  set alt(x) { this.setState({alt: x}); }
+  constructor(){
+    super();
+    this.toggleCtrl = () => this.toggle('ctrl');
+    this.toggleAlt = () => this.toggle('alt');
+    this.state = { ctrl: false, alt: false };
+  }
   documentKeyDown(e){
     if(!e.altKey && e.ctrlKey && e.shiftKey && e.key === 'C'){
       e.preventDefault();
+      this.copyBuffer.value = this.term.getSelection();
+      this.copyBuffer.select();
       document.execCommand('copy');
+      this.term.focus();
     }
     if(!e.altKey && e.ctrlKey && e.shiftKey && e.key === 'N' && this.props.isExported){
       e.preventDefault();
@@ -19,32 +32,63 @@ export default class Xterm extends React.Component{
       TerminalOpener.openPopup(this.props.theme, hasExtension);
     }
   }
-  loadTheme(){
+  loadTheme(term){
     switch(this.props.theme){
       case 'solarized-light':
-        System.import('../themes/solarized-light.scss');
+        // term.options.theme = System.import('../themes/solarized-light');
         break;
       case 'solarized-dark':
-        System.import('../themes/solarized-dark.scss');
+        // term.options.theme = System.import('../themes/solarized-dark');
         break;
+    }
+  }
+  toggle(key){
+    switch(key){
+      case 'ctrl':
+        this.ctrl = !this.ctrl;
+        break;
+      case 'alt':
+        this.alt = !this.alt;
+        break;
+    }
+    this.term.focus();
+  }
+  writeData(d){
+    if((this.ctrl || this.alt) && d.charCodeAt(0) < 128){
+      if(this.ctrl){
+        const code = d.toUpperCase().charCodeAt(0) - 0x40;
+        this.socket.emit('data', String.fromCharCode(code));
+        this.toggle('ctrl');
+      }else if(this.alt){
+        const ch = d.toLowerCase();
+        const code = ch.charCodeAt(0);
+        if(code <= 0x61 && 0x7a <= code){
+          this.socket.emit('data', String.fromCharCode(0x1b) + ch);
+          this.toggle('alt');
+        }else{
+          this.socket.emit('data', d);
+        }
+      }
+    }else{
+      this.socket.emit('data', d);
     }
   }
   componentDidMount(){
     // bind
     this.documentKeyDown = this.documentKeyDown.bind(this);
-    // load theme
-    if(this.props.theme !== 'default'){ this.loadTheme(); }
     // handle copy hotkey
     document.addEventListener('keydown', this.documentKeyDown);
     // activate terminal
     const term = new Terminal({cols: 80, rows: 30, theme: this.props.theme});
     const socket = Socket('/term');
     term.open(this.divTerminal, true);
-    term.on('data', d => socket.emit('data', d.replace(/\x0D\x0A/g, '\n')));
+    term.on('data', d => this.writeData(d.replace(/\x0D\x0A/g, '\n')));
     term.on('resize', d => socket.emit('resize', [d.cols, d.rows]));
     socket.on('data', d => term.write(d));
     socket.on('init', () => socket.emit('resize', [term.cols, term.rows]));
     term.fit();
+    term.focus();
+    // handle optional events
     if(this.props.isExported){
       window.addEventListener('resize', () => {
         window.requestAnimationFrame(() => term.fit());
@@ -57,7 +101,9 @@ export default class Xterm extends React.Component{
         socket.connect();
       });
     }
-    this.divTerminal.className += ` xterm-theme-${this.props.theme}`;
+    // load theme
+    // if(this.props.theme !== 'default'){ this.loadTheme(term); }
+    this.term = term;
     this.socket = socket;
     this.connected = true;
   }
@@ -86,15 +132,34 @@ export default class Xterm extends React.Component{
       this.props.onChangeTitle(s);
     }
   }
+  isMobile(){
+    if(!navigator) return false;
+    const ua = navigator.userAgent || '';
+    return ua.indexOf('iPhone') >= 0 || ua.indexOf('iPad') >= 0 || ua.indexOf('Android') >= 0;
+  }
   render(){
     let webkitClass = '';
     if(typeof document !== 'undefined' && document.body.style.webkitAppearance !== undefined){
       webkitClass = 'chrome';
     }
+    const classNames = `${this.props.className||''} xterm-theme-default ${webkitClass}`;
+    let buttons = undefined;
+    if(this.isMobile()){
+      buttons = (
+        <div id='terminal-buttons'>
+          <button className={this.ctrl ? 'active' : ''} onClick={this.toggleCtrl}>ctrl</button>
+          <button className={this.alt ? 'active' : ''} onClick={this.toggleAlt}>alt</button>
+        </div>
+      );
+    }
     return (
-      <div className={`${this.props.className||''} xterm-theme-default ${webkitClass}`} id='terminal'
-           ref={(div) => this.divTerminal = div} onDragOver={this.dragOver.bind(this)} onDrop={this.drop.bind(this)}>
-        {this.props.children}
+      <div className={classNames} id='terminal-host'>
+        <div className={classNames} id='terminal'ref={(div) => this.divTerminal = div}
+             onDragOver={this.dragOver.bind(this)} onDrop={this.drop.bind(this)}>
+          <input type='text' ref={(input) => this.copyBuffer = input} className='copy-buffer' />
+          {this.props.children}
+        </div>
+        {buttons}
       </div>
     );
   }
