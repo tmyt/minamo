@@ -9,9 +9,9 @@ const strategy = new Fido2Strategy({
   passReqToCallback: true,
   hmacSecret: config.secret,
   origin: 'https://minamo.io',
-  rpName: 'minamo.io',
-  rpId: 'minamo.io',
-  rpIcon: 'https://minamo.io/icon.png',
+  rpName: config.title,
+  rpId: config.title,
+  rpIcon: `${config.proto}://${config.domain}/icon.png`,
   readProfile: async (id, callback) => {
     const key = await userDb.getPublicKeyForId(id);
     if(!key) return callback('key does not exists', null, null);
@@ -42,7 +42,7 @@ const strategy = new Fido2Strategy({
     return done(null, {
       username: user.username,
       role: user.role,
-      avatar: user.avatar
+      avatar: user.avatar,
     });
   });
 });
@@ -71,6 +71,7 @@ module.exports.createAttestationOptions = function(req, res){
       displayName: username,
       id: username,
       name: username,
+      icon: `${config.proto}://${config.domain}${req.user.avatar}`,
     };
     res.send(opts);
   });

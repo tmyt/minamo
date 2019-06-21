@@ -187,7 +187,7 @@ async function handleReactRouter(req, res){
     </StaticRouter>
   );
   getLoadableState(app).then(async loadableState => {
-    const markup = renderToString(app).replace(/ class=""/g, '');
+    const markup = renderToString(app);
     if(context.url){
       res.redirect(302, context.url);
     }else if(!context.status || context.status === 200){
