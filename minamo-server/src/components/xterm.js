@@ -15,6 +15,7 @@ export default class Xterm extends React.Component{
     super();
     this.toggleCtrl = () => this.toggle('ctrl');
     this.toggleAlt = () => this.toggle('alt');
+    this.pressEsc = () => this.send(0x1b);
     this.state = { ctrl: false, alt: false };
   }
   documentKeyDown(e){
@@ -52,6 +53,10 @@ export default class Xterm extends React.Component{
         break;
     }
     this.term.focus();
+  }
+  send(ch){
+    this.term.focus();
+    this.socket.emit('data', String.fromCharCode(ch));
   }
   writeData(d){
     if((this.ctrl || this.alt) && d.charCodeAt(0) < 128){
@@ -148,6 +153,7 @@ export default class Xterm extends React.Component{
     if(this.isMobile()){
       buttons = (
         <div id='terminal-buttons'>
+          <button onClick={this.pressEsc}>esc</button>
           <button className={this.ctrl ? 'active' : ''} onClick={this.toggleCtrl}>ctrl</button>
           <button className={this.alt ? 'active' : ''} onClick={this.toggleAlt}>alt</button>
         </div>
