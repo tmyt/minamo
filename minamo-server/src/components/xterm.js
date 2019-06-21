@@ -62,7 +62,7 @@ export default class Xterm extends React.Component{
       }else if(this.alt){
         const ch = d.toLowerCase();
         const code = ch.charCodeAt(0);
-        if(code <= 0x61 && 0x7a <= code){
+        if(0x61 <= code && code <= 0x7a){
           this.socket.emit('data', String.fromCharCode(0x1b) + ch);
           this.toggle('alt');
         }else{
