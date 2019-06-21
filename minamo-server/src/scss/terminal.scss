@@ -39,10 +39,9 @@
     opacity: 0.7;
   }
 
-  &.popup {
+  .popup & {
     margin: 0;
     height: 100vh;
-    overflow: hidden;
   }
 
   .xterm-viewport {
@@ -64,7 +63,9 @@
     z-index: -1;
   }
 
-  &.chrome {
+  .chrome & {
+    overflow: hidden;
+
     .xterm-viewport {
       width: 8px;
     }

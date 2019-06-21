@@ -155,7 +155,7 @@ export default class Xterm extends React.Component{
     }
     return (
       <div className={classNames} id='terminal-host'>
-        <div className={classNames} id='terminal'ref={(div) => this.divTerminal = div}
+        <div id='terminal'ref={(div) => this.divTerminal = div}
              onDragOver={this.dragOver.bind(this)} onDrop={this.drop.bind(this)}>
           <input type='text' ref={(input) => this.copyBuffer = input} className='copy-buffer' />
           {this.props.children}
