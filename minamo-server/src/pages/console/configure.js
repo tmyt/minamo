@@ -105,16 +105,12 @@ MinamoIdForm.contextTypes = {
 // Form Component for FIDO2 Credential
 class Fido2Form extends React.Component{
   registerCredential(){
-    const p = this.context.profile;
-    const account = { id: new Uint8Array(16), name: p.username, displayName: p.username, iconURL: p.avater };
-    const cryptoParams = [{ type: 'public-key', alg: -257 }];
-    const publicKey = { publicKey: { rp: { name: 'minamo.io' }, user: account, pubKeyCredParams: cryptoParams } };
     fetch('/auth/fido2/create')
       .then(result => result.json())
       .then(options => {
         options.challenge = new Uint8Array(options.challenge);
         options.user.id = new Uint8Array([].map.call(options.user.id, c => c.charCodeAt(0)));
-        return navigator.credentials.create({ publicKey });
+        return navigator.credentials.create({ publicKey: options });
       })
       .then(result => {
         const obj = {
