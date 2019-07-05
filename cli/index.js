@@ -269,16 +269,32 @@ async function restart(...args){
     }
   }
 }
-async function logs(name){
+async function logs(...args){
+  let follow, name;
+  for(let i = 0; i < args.length; ++i){
+    if(args[i] == '-f'){
+      follow = 1;
+      continue;
+    }
+    name = args[i];
+  }
   if(!name){
-    console.log('usage: mm logs <name>');
+    console.log('usage: mm logs [-f] <name>');
     return;
   }
-  const resp = await get(`/api/services/${name}/logs`);
-  if(resp.statusCode === 200){
-    console.log(resp.body);
+  if(follow){
+    // connect
+    const socket = await ws('/services/logs', {'X-MINAMO-SERVICE': name});
+    socket.on('data', d => process.stdout.write(d));
+    // initialize session
+    socket.open();
   }else{
-    console.log(`error: ${resp.statusCode}`);
+    const resp = await get(`/api/services/${name}/logs`);
+    if(resp.statusCode === 200){
+      console.log(resp.body);
+    }else{
+      console.log(`error: ${resp.statusCode}`);
+    }
   }
 }
 async function env(...args){

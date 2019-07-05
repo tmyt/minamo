@@ -90,6 +90,13 @@ class api {
       if(!pathExists(repo)) return false;
       return await container.isRunning(name);
     });
+    require('./logs.js')(io, async (req) => {
+      const name = req.headers['x-minamo-service'];
+      if(!name || !ContainerRegexp.test(name)) return false;
+      const repo = path.join(config.repo_path, name);
+      if(!pathExists(repo)) return false;
+      return await container.isRunning(name);
+    });
     require('./sysinfo')(io);
     // install
     const app = express.Router();
