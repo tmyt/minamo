@@ -1,2 +1,2 @@
-import 'Umi/dist/css/bootstrap.css';
+import 'bootstrap-umi/dist/css/bootstrap.css';
 import './scss/minamo.scss';

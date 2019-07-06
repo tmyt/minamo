@@ -3,12 +3,29 @@ body {
   opacity: 1;
 }
 
+#app {
+  font-weight: 300;
+  font-family: -apple-system,BlinkMacSystemFont,ヒラギノ角ゴ ProN W3,Hiragino Kaku Gothic ProN,メイリオ,Meiryo,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+    font-family: -apple-system,BlinkMacSystemFont,ヒラギノ角ゴ ProN W3,Hiragino Kaku Gothic ProN,メイリオ,Meiryo,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+  }
+}
+
 .navbar {
   box-shadow: 0 0 5px 1px rgba(32, 45, 59, 0.5);
   border: 0;
+  padding: 20px 0px;
+  header.has-tabbar & {
+    box-shadow: none;
+  }
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
   .profile-image{
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 10%;
     margin: -11px 0px -10px 0px;
   }
@@ -24,14 +41,19 @@ body {
   }
 }
 
+#console-tab {
+  box-shadow: 0 0 5px 1px rgba(32, 45, 59, 0.5);
+}
+
 .nav-tabs li {
+  position: relative;
   &.active, & {
     a, a:hover, a:focus {
       border: 0;
       margin: 0;
     }
   }
-  &.active a:after {
+  & a.active:after {
     content: "";
     position: absolute;
     border-bottom: 3px solid #cc7a6f;
@@ -41,6 +63,10 @@ body {
   }
 }
 
+.nav-tabs .nav-link {
+  border: 0;
+}
+
 @media screen and (max-width: 767px){
   .nav.navbar-nav{
     margin-top: 10px;
@@ -48,7 +74,7 @@ body {
   }
 }
 
-.label, .btn.btn-danger, .btn.btn-primary {
+.badge, .btn.btn-danger, .btn.btn-primary {
   box-shadow: inset 0 -1.5px 0 rgba(0,0,0,0.18);
 }
 
@@ -67,7 +93,8 @@ html {
   height: 60px;
   background-color: #ecf0f1;
   .container .text-muted {
-    margin: 18px 0;
+    padding: 18px 0;
+    margin: 0;
     text-align: center;
   }
 }
@@ -128,7 +155,8 @@ div.container > div.row:last-child {
     -webkit-overflow-scrolling: touch;
 
     & > div#main {
-      min-height: calc(100% - 60px - 104px);
+      padding: 2em 0;
+      min-height: calc(100% - 60px - 80px);
     }
     & > header {
       position: sticky;
@@ -136,10 +164,18 @@ div.container > div.row:last-child {
       z-index: 9999;
     }
     & > header.has-tabbar ~ div#main {
-      min-height: calc(100% - 60px - 148px);
+      min-height: calc(100% - 60px - 120px);
     }
   }
 }
 
+span.fido2-not-supported {
+  cursor: not-allowed;
+  button.btn {
+    pointer-events: none;
+  }
+}
+
 // import sub-styles
-@import 'console', 'dropzone', 'login', 'logstream', 'opensans', 'terminal', 'ish'
+@import 'console', 'dropzone', 'login', 'logstream', 'opensans', 'terminal', 'ish';
+@import 'bs4_compat';

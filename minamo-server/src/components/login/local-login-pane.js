@@ -87,25 +87,25 @@ class LocalLoginPane extends React.Component{
           <input name='username' type='hidden' value={this.state.username} />
           <FormGroup className='vertical-grouped'>
             <Visibility isVisible={ this.state.phase == 0 }>
-              <InputGroup validationState={this.state.validation}>
-                <InputGroup.Addon>
-                  <FontAwesome icon='user' />
-                </InputGroup.Addon>
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <InputGroup.Text><FontAwesome icon='user' /></InputGroup.Text>
+                </InputGroup.Prepend>
                 <FormControl name='username' placeholder='Username' autoFocus={true}
                              value={this.state.username} onChange={this.handleChange('username')} />
               </InputGroup>
             </Visibility>
             <Visibility isVisible={ this.state.phase == 1 }>
               <InputGroup>
-                <InputGroup.Addon>
-                  <FontAwesome icon='key' />
-                </InputGroup.Addon>
+                <InputGroup.Prepend>
+                  <InputGroup.Text><FontAwesome icon='key' /></InputGroup.Text>
+                </InputGroup.Prepend>
                 <FormControl name='password' placeholder='Password' type='password' autoFocus={true} />
               </InputGroup>
             </Visibility>
           </FormGroup>
           <FormGroup>
-            <Button bsStyle='primary' type='submit' block>Sign In</Button>
+            <Button variant='primary' type='submit' block>Sign In</Button>
           </FormGroup>
         </form>
         <form method='post' action={`/auth/fido2${args}`} ref={(ref) => { this.fido2form = ref; }}>

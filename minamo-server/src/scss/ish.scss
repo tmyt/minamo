@@ -38,19 +38,17 @@
 }
 
 .btn.btn-primary.ish-button {
-  height: 34px;
-  margin: 23px 15px;
-  padding: 6px 13px;
+  margin: 0px 15px;
+  padding: 4px 12px;
   position: relative;
-  border: solid 1px #1a252f;
+  border: solid 1px rgba(255, 255, 255, 0.1);
   box-shadow: 0 0;
   color: #888;
   font-size: 14px;
-  &.visible-xs {
-    float: right;
-  }
-  &.hidden-xs {
-    float: left;
-    margin-right: 0px;
+  & i.fa {
+    height: 30px;
+    width: 30px;
+    font-size: 1.5rem;
+    color: #fff;
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-import { Alert, Panel, Row } from 'react-bootstrap';
+import { Alert, Card, Row } from 'react-bootstrap';
 import qs from '../lib/querystring';
 
 import PageRoot from '../components/page-root';
@@ -13,18 +13,21 @@ class LoginComponent extends React.Component{
     const title = (<h3>Sign In</h3>);
     const q = qs(this.props.location.search);
     const message = q._message
-      ? (<Alert bsStyle='danger'><strong>Error</strong> {q._message}</Alert>)
+      ? (<Alert variant='danger'><strong>Error</strong> {q._message}</Alert>)
       : null;
     return (
       <PageRoot title='login'>
         {message}
         <div className='center-block' id='login-container'>
-          <Panel header={title} bsStyle='primary'>
-            <Row>
-              <SocialLoginPane />
-              <LocalLoginPane />
-            </Row>
-          </Panel>
+          <Card header={title} variant='primary'>
+            <Card.Header>{title}</Card.Header>
+            <Card.Body>
+              <Row>
+                <SocialLoginPane />
+                <LocalLoginPane />
+              </Row>
+            </Card.Body>
+          </Card>
         </div>
       </PageRoot>
     );

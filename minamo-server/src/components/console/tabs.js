@@ -7,7 +7,7 @@ export default class ConsoleTabsComponent extends React.Component{
     return (
       <div id='console-tab'>
         <div className='container'>
-          <Nav bsStyle='tabs'>
+          <Nav as='ul' variant='tabs'>
             <TabItem to='#tab-statuses' default={true}>statuses</TabItem>
             <TabItem to='#tab-create'>create</TabItem>
             <TabItem to='#tab-configure'>configure</TabItem>

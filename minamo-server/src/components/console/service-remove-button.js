@@ -9,6 +9,6 @@ export default class ServiceRemoveButtonComponent extends React.Component{
     Http.del(`/api/services/${this.props.name}`);
   }
   render(){
-    return(<Button bsStyle="danger" onClick={this.onClick.bind(this)}>remove</Button>);
+    return(<Button variant="danger" onClick={this.onClick.bind(this)}>remove</Button>);
   }
 }

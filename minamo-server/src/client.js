@@ -5,7 +5,7 @@ import { loadComponents } from 'loadable-components';
 import Routes from './routes';
 import Meta from './components/meta';
 
-System.import('Umi/dist/js/bootstrap.js');
+System.import('bootstrap-umi/dist/js/bootstrap.js');
 
 if(Meta.components){
   window.__LOADABLE_COMPONENT_IDS__ = JSON.parse(Meta.components);

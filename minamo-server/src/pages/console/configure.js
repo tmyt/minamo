@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, FormGroup, FormControl, ControlLabel, Row, Col } from 'react-bootstrap';
+import { Button, Form, Row, Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone-component';
 import SocialConnect from '../../components/console/social-connect';
 import Http from '../../components/console/http-verb';
@@ -70,31 +70,35 @@ class MinamoIdForm extends React.Component{
         this.setState({avatar: res});
       }
     };
+    const props = {};
+    if(this.state.password){
+      if(this.isValidFormData()) props.isValid = true; else props.isInvalid = true;
+    }
     return(
-      <form onSubmit={this.handleSubmit}>
+      <Form onSubmit={this.handleSubmit}>
         <Row>
           <Col sm={8}>
-            <FormGroup>
-              <ControlLabel>Username</ControlLabel>
-              <FormControl disabled={true} value={this.context.profile.username}/>
-            </FormGroup>
-            <FormGroup validationState={this.getValidationState()}>
-              <ControlLabel>Password</ControlLabel>
-              <FormControl type='password' onChange={this.handleChange} value={this.state.password}/>
-              <FormControl.Feedback />
-            </FormGroup>
+            <Form.Group>
+              <Form.Label>Username</Form.Label>
+              <Form.Control disabled={true} value={this.context.profile.username}/>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Password</Form.Label>
+              <Form.Control type='password' onChange={this.handleChange} value={this.state.password} {...props}/>
+              <Form.Control.Feedback />
+            </Form.Group>
           </Col>
           <Col sm={4}>
-            <FormGroup>
-              <ControlLabel>Image</ControlLabel>
+            <Form.Group>
+              <Form.Label>Image</Form.Label>
               <div>
                 <Dropzone config={componentConfig} eventHandlers={eventHandlers} djsConfig={djsConfig}/>
               </div>
-            </FormGroup>
+            </Form.Group>
           </Col>
         </Row>
-        <Button bsStyle='primary' type='submit' disabled={!this.isValidFormData()}>update</Button>
-      </form>
+        <Button variant='primary' type='submit' disabled={!this.isValidFormData()}>update</Button>
+      </Form>
     );
   }
 }
@@ -133,8 +137,8 @@ class Fido2Form extends React.Component{
   render(){
     return(
       <form>
-        <Fido2Button bsStyle='primary' onClick={this.registerCredential.bind(this)}>register</Fido2Button>
-        <Fido2Button style={{marginLeft: '8px'}} bsStyle='danger' onClick={this.resetCredential}>reset</Fido2Button>
+        <Fido2Button variant='primary' onClick={this.registerCredential.bind(this)}>register</Fido2Button>
+        <Fido2Button variant='danger' onClick={this.resetCredential}>reset</Fido2Button>
       </form>
     );
   }
