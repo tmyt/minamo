@@ -141,7 +141,7 @@ class Fido2Form extends React.Component{
           () => { Toast.show('FIDO key registered', 'success'); this.updateKeys(); },
           () => Toast.show('Key registration failed', 'warning')
         );
-      })
+      });
   }
   updateKeys(){
     fetch('/api/credentials/fido/list')
