@@ -34,7 +34,7 @@ export default class UserAvatarComponent extends React.Component{
     if(this.context.viewSize === ''){
       return (
         <span>
-          <UserAvatar className='d-none d-md-block'/>
+          <UserAvatar className='d-none d-md-inline'/>
           <UserAvatarXs className='d-block d-md-none'/>
         </span>
       );
