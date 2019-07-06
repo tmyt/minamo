@@ -12,7 +12,7 @@ export default class IndexComponent extends React.Component {
         <Jumbotron>
           <h1>{this.context.config.site}</h1>
           <p>private PaaS platform for you</p>
-          <ConsoleButtonComponent />
+          <p><ConsoleButtonComponent /></p>
         </Jumbotron>
       </PageRoot>
     );

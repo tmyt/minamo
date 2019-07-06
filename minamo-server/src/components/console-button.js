@@ -10,7 +10,7 @@ export default class ConsoleButtonComponent extends React.Component{
   render(){
     return (
       <LinkContainer to={this.context.isAuthenticated ? '/console' : '/login'}>
-        <Button bsStyle='primary' bsSize='large'>{this.context.isAuthenticated ? 'console' : 'login'}</Button>
+        <Button variant='primary' size='lg'>{this.context.isAuthenticated ? 'console' : 'login'}</Button>
       </LinkContainer>
     );
   }

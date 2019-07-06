@@ -13,14 +13,7 @@ import isActive from '../lib/isactive';
 class HeaderComponent extends React.Component {
   constructor(){
     super();
-    this.onSelect = this.onSelect.bind(this);
     this.onClickISH = this.onClickISH.bind(this);
-  }
-  onSelect(){
-    const display = window.getComputedStyle(this.expandButton).display;
-    if(display === 'none') return;
-    if(this.navMain.className.indexOf('in') >= 0) return;
-    this.expandButton.click();
   }
   onClickISH(){
     if(typeof(this.props.onLaunchISH) === 'function'){
@@ -34,36 +27,49 @@ class HeaderComponent extends React.Component {
       extraTabMenu = (<ConsoleTabs />);
     }
     if(this.context.profile && this.context.profile.role === 'admin'){
-      adminTabItem = (<LinkContainer to='/admin'><NavItem>admin</NavItem></LinkContainer>);
+      adminTabItem = (
+        <LinkContainer to='/admin'>
+          <Nav.Item><Nav.Link href='/admin'>admin</Nav.Link></Nav.Item>
+        </LinkContainer>
+      );
     }
     return (
       <header className={extraTabMenu ? 'has-tabbar' : ''}>
-        <div className='navbar navbar-default navbar-static-top' id='header_nav'>
+        <Navbar expand='md' bg='primary' variant='dark' collapseOnSelect sticky={null}>
           <Container>
-            <Navbar.Header>
-              <Navbar.Brand>
-                <Link to='/'>{this.context.config.site}</Link>
-              </Navbar.Brand>
-              <button className='navbar-toggle collapsed' type='button' data-toggle='collapse' data-target='#navbar-main' ref={e=>this.expandButton = e}>
-                <Hamburger />
-              </button>
-              <IntegratedShellButton xs={true} onClick={this.onClickISH}/>
-            </Navbar.Header>
+            <LinkContainer to='/'>
+            <Navbar.Brand href='/'>{this.context.config.site}</Navbar.Brand>
+            </LinkContainer>
+            <span className='ml-auto d-block d-md-none'>
+              <IntegratedShellButton onClick={this.onClickISH} className='ml-auto' xs={true} />
+            </span>
+            <Navbar.Toggle aria-controls='navbar-main' />
             <Navbar.Collapse id='navbar-main'>
-              <div className='nav navbar-right' ref={e=>this.navMain=e}>
-                <IntegratedShellButton onClick={this.onClickISH}/>
+              <span className='d-block d-md-none'>
                 <Avatar visible={this.context.isAuthenticated}/>
-              </div>
-              <Nav navbar={true} onSelect={this.onSelect}>
-                <LinkContainer to='/console' exact={true}><NavItem>console</NavItem></LinkContainer>
-                <LinkContainer to='/console/logstream'><NavItem>log stream</NavItem></LinkContainer>
-                <LinkContainer to='/console/sysinfo'><NavItem>sysinfo</NavItem></LinkContainer>
+              </span>
+              <Nav className='mr-auto' variant='pills'>
+                <LinkContainer to='/console' exact={true}>
+                  <Nav.Item><Nav.Link href='/console'>console</Nav.Link></Nav.Item>
+                </LinkContainer>
+                <LinkContainer to='/console/logstream'>
+                  <Nav.Item><Nav.Link href='/console/logstream'>log stream</Nav.Link></Nav.Item>
+                </LinkContainer>
+                <LinkContainer to='/console/sysinfo'>
+                  <Nav.Item><Nav.Link href='/console/sysinfo'>sysinfo</Nav.Link></Nav.Item>
+                </LinkContainer>
                 {adminTabItem}
+              </Nav>
+              <Nav>
+                <span className='d-none d-md-inline'>
+                  <IntegratedShellButton onClick={this.onClickISH} className='ml-auto'/>
+                  <Avatar visible={this.context.isAuthenticated}/>
+                </span>
               </Nav>
             </Navbar.Collapse>
           </Container>
-          {extraTabMenu}
-        </div>
+        </Navbar>
+        {extraTabMenu}
       </header>
     );
   }

@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 class UserAvatar extends React.Component{
   render(){
     return (
-      <div className={`navbar-text ${this.props.className || ''}`}>
+      <span className={`${this.props.className || ''}`}>
         <img className='profile-image img-circle' src={this.context.profile.avatar} width='40' height='40' />
-      </div>
+      </span>
     );
   }
 }
@@ -17,10 +17,10 @@ UserAvatar.contextTypes = {
 class UserAvatarXs extends React.Component{
   render(){
     return (
-      <div className={`navbar-text ${this.props.className || ''}`}>
+      <span className={`navbar-text ${this.props.className || ''}`}>
         <img className='profile-image-xs img-circle' src={this.context.profile.avatar} width='28' height='28' />
         <a>{this.context.profile.username}</a>
-      </div>
+      </span>
     );
   }
 }
@@ -33,13 +33,13 @@ export default class UserAvatarComponent extends React.Component{
     if(!this.props.visible) return null;
     if(this.context.viewSize === ''){
       return (
-        <div style={{float: 'left'}}>
-          <UserAvatar className='hidden-xs'/>
-          <UserAvatarXs className='visible-xs'/>
-        </div>
+        <span>
+          <UserAvatar className='d-none d-md-block'/>
+          <UserAvatarXs className='d-block d-md-none'/>
+        </span>
       );
     }
-    return this.context.viewSize === 'xs'
+    return this.context.viewSize === 'xs' || this.context.viewSize === 'sm'
       ? <UserAvatarXs />
       : <UserAvatar />;
   }

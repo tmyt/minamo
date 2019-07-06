@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Glyphicon } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import FontAwesome from './font-awesome';
 
 export default class IntegratedShellButton extends React.Component {
   constructor(){
@@ -13,11 +14,11 @@ export default class IntegratedShellButton extends React.Component {
     }
   }
   render(){
-    const clazz = this.props.xs ? 'visible-xs' : 'hidden-xs';
+    const clazz = this.props.xs ? 'd-inline d-md-none' : 'd-none d-md-inline';
     if(!this.context.isAuthenticated) return null;
     return(
-      <Button bsStyle='primary' className={`${clazz} ish-button`} onClick={this.handleClick}>
-        <Glyphicon glyph='console' />
+      <Button variant='primary' className={`${clazz} ish-button`} onClick={this.handleClick}>
+        <FontAwesome icon='terminal' />
       </Button>
     );
   }

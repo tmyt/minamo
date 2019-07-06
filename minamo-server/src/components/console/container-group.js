@@ -23,12 +23,12 @@ export default class ContainerGroupComponent extends React.Component {
     if(this.context.viewSize === ''){
       return (
         <div>
-          <ContainerListSmallComponent className='visible-xs' data={this.state.data}/>
-          <ContainerListLargeComponent className='hidden-xs' data={this.state.data}/>
+          <ContainerListSmallComponent className='d-block d-md-none' data={this.state.data}/>
+          <ContainerListLargeComponent className='d-none d-md-block' data={this.state.data}/>
         </div>
       );
     }
-    const list = this.context.viewSize === 'xs'
+    const list = (this.context.viewSize === 'xs' || this.context.viewSize === 'sm')
       ? <ContainerListSmallComponent data={this.state.data}/>
       : <ContainerListLargeComponent data={this.state.data}/>;
     return (list);

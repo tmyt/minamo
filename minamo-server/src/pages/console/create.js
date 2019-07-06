@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, FormGroup, FormControl, ControlLabel, HelpBlock, Glyphicon } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
+import FontAwesome from '../../components/font-awesome';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
 
@@ -9,7 +10,7 @@ const ContainerRegexp = new RegExp(`^${ContainerRegexpString}$`);
 export default class ConsoleCreateComponent extends React.Component{
   constructor(){
     super();
-    this.state = { name: '', template: '', external: '', pending: false, available: false };
+    this.state = { name: '', template: '', external: '', pending: true, available: false };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.timerId = 0;
   }
@@ -18,23 +19,18 @@ export default class ConsoleCreateComponent extends React.Component{
     return ContainerRegexp.test(name);
   }
 
-  getValidationState(){
-    if(!this.state.name) return null;
-    if(this.state.pending) return 'warning';
-    return this.state.available && this.validateName(this.state.name) ? 'success' : 'error';
-  }
-
   getValidationHelp(){
-    if(this.getValidationState() !== 'error') return '';
+    if(!this.state.name || this.state.pending) return '';
+    if(!this.validateName(this.state.name)) return `error: service name should be ${ContainerRegexpString}`;
     if(!this.state.available) return `error: service name ${this.state.name} is already exists`;
-    return `error: service name should be ${ContainerRegexpString}`;
+    return '';
   }
 
   checkContainerName(name){
     clearTimeout(this.timerId);
-    this.setState({pending: true, available: true});
+    this.setState({pending: true, available: false});
     if(!this.validateName(name)){
-      this.setState({pending: false, available: true});
+      this.setState({pending: !name, available: false});
       return;
     }
     this.timerId = setTimeout(() => {
@@ -78,31 +74,34 @@ export default class ConsoleCreateComponent extends React.Component{
   }
 
   render(){
-    const loading = this.state.pending ? (<Glyphicon className='loading' glyph='refresh' />) : null;
+    const loading = this.state.pending ? (<FontAwesome className='loading' icon='sync' />) : null;
+    const props = {};
+    if(!this.state.pending){
+      if(this.state.available) props.isValid = true; else props.isInvalid = true;
+    }
     return (
       <div>
         <h2>Create containers</h2>
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup validationState={this.getValidationState()}>
-            <ControlLabel>Name</ControlLabel>
-            <FormControl value={this.state.name} onChange={this.handleChange('name')}/>
-            <FormControl.Feedback>{loading}</FormControl.Feedback>
-            <HelpBlock>{this.getValidationHelp()}</HelpBlock>
-          </FormGroup>
-          <FormGroup>
-            <ControlLabel>Template</ControlLabel>
-            <FormControl disabled={!this.isExternalRepository()} componentClass='select' onChange={this.handleChange('template')}>
+        <Form onSubmit={this.handleSubmit}>
+          <Form.Group>
+            <Form.Label>Name</Form.Label>
+            <Form.Control required value={this.state.name} onChange={this.handleChange('name')} {...props}/>
+            <Form.Control.Feedback type='invalid'>{this.getValidationHelp()}</Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Template</Form.Label>
+            <Form.Control noValidate disabled={!this.isExternalRepository()} as='select' onChange={this.handleChange('template')}>
               <option value=''>Blank</option>
               <option value='simple-webapi'>SimpleWebAPI</option>
               <option value='express-pug'>ExpressPug</option>
-            </FormControl>
-          </FormGroup>
-          <FormGroup>
-            <ControlLabel>External Repository (optional)</ControlLabel>
-            <FormControl value={this.state.external} onChange={this.handleChange('external')}/>
-          </FormGroup>
-          <Button bsStyle='primary' type='submit' disabled={this.getValidationState() !== 'success'}>create</Button>
-        </form>
+            </Form.Control>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>External Repository (optional)</Form.Label>
+            <Form.Control noValidate value={this.state.external} onChange={this.handleChange('external')}/>
+          </Form.Group>
+          <Button variant='primary' type='submit' disabled={!this.state.available}>create</Button>
+        </Form>
       </div>
     );
   }

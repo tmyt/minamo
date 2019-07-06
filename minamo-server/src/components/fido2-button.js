@@ -12,8 +12,8 @@ export default class Fido2Button extends React.Component{
     const className = this.props.block ? 'btn-block' : '';
     return (
       <OverlayTrigger rootClose placement='top' overlay={tooltip}>
-        <span style={{cursor: 'not-allowed'}} className={className}>
-          <Button style={{pointerEvents: 'none'}} disabled={true} {...this.props} />
+        <span className={`${className} fido2-not-supported`}>
+          <Button disabled={true} {...this.props} />
         </span>
       </OverlayTrigger>
     );

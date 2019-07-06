@@ -20,9 +20,7 @@
         border-top-right-radius: 0px;
         color: #eee;
       }
-    }
-    li.active {
-      a:focus, a:hover, a {
+      a.active:focus, a.active:hover, a.active {
         background-color: #2c3e50;
         border-color: #2c3e50;
         color: #fff;
@@ -44,3 +42,40 @@ dl.dl-horizontal > dd {
   margin-bottom: 22px;
 }
 
+#tab-statuses {
+  .card-group {
+    .card-header h4 {
+      margin-bottom: 0;
+      display: inline;
+      font-size: 18px;
+    }
+    .card-header {
+      position: relative;
+      a {
+        display: flex;
+        text-decoration: none;
+        color: inherit;
+      }
+    }
+    .card-body {
+      .dropdown {
+        display: inline;
+      }
+      .dropdown + button.btn {
+        margin-left: 8px;
+      }
+    }
+    .card {
+      margin-bottom: 15px;
+    }
+  }
+}
+
+#tab-configure form {
+  button.btn + button.btn {
+    margin-left: 8px;
+  }
+  span.fido2-not-supported + span.fido2-not-supported {
+    margin-left: 8px;
+  }
+}
