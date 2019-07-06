@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row, CardGroup, Card } from 'react-bootstrap';
+import { CardGroup, Card } from 'react-bootstrap';
 
 import ServiceStatus from './service-status';
 import ServiceLink from './service-link';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Popover, OverlayTrigger, Glyphicon } from 'react-bootstrap';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 import FontAwesome from './font-awesome';
 
 const CrxPath = 'https://chrome.google.com/webstore/detail/ppdhipnblajeianfgkcbneadiebfkped/';

@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Nav, Navbar } from 'react-bootstrap';
 import Avatar from './avatar';
 import Container from './container';
-import Hamburger from './hamburger';
 import ConsoleTabs from './console/tabs';
 import IntegratedShellButton from './ish-button';
 import isActive from '../lib/isactive';

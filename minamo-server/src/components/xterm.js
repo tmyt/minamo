@@ -33,7 +33,7 @@ export default class Xterm extends React.Component{
       TerminalOpener.openPopup(this.props.theme, hasExtension);
     }
   }
-  loadTheme(term){
+  loadTheme(/* term */){
     switch(this.props.theme){
       case 'solarized-light':
         // term.options.theme = System.import('../themes/solarized-light');
@@ -146,7 +146,7 @@ export default class Xterm extends React.Component{
     let webkitClass = '';
     if(typeof document !== 'undefined' && document.body.style.webkitAppearance !== undefined
       && !navigator.userAgent.includes('Edge')) {
-        webkitClass = 'chrome';
+      webkitClass = 'chrome';
     }
     const classNames = `${this.props.className||''} xterm-theme-default ${webkitClass}`;
     let buttons = undefined;

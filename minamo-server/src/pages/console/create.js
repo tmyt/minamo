@@ -74,7 +74,6 @@ export default class ConsoleCreateComponent extends React.Component{
   }
 
   render(){
-    const loading = this.state.pending ? (<FontAwesome className='loading' icon='sync' />) : null;
     const props = {};
     if(!this.state.pending){
       if(this.state.available) props.isValid = true; else props.isInvalid = true;
