@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
 import Http from './http-verb';
+import FontAwesome from '../font-awesome';
 
 class SocialConnectButton extends React.Component{
   constructor(){
@@ -31,10 +32,10 @@ class SocialConnectButton extends React.Component{
     const style = this.state.connected ? 'warning' : 'primary';
     return(
       <Form.Group>
-        <div>
-          <Form.Label>{this.props.label}</Form.Label>
-        </div>
-        <Button variant={style} onClick={this.handleClick}>{label}</Button>
+        <Button variant={style} onClick={this.handleClick} className='social-connect'>
+          {this.props.children}
+          <span>{label}</span>
+        </Button>
       </Form.Group>
     );
   }
@@ -62,7 +63,9 @@ export default class SocialConnect extends React.Component{
     }
     return(
       <div>
-        <SocialConnectButton connected={this.state.github} service='github' label='GitHub'/>
+        <SocialConnectButton connected={this.state.github} service='github'>
+          <FontAwesome icon='github' />
+        </SocialConnectButton>
       </div>
     );
   }
