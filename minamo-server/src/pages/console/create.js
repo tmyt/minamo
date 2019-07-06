@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Form } from 'react-bootstrap';
-import FontAwesome from '../../components/font-awesome';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
 
