@@ -6,12 +6,16 @@ import Base64 from '../../lib/base64';
 
 import FontAwesome from '../font-awesome';
 
-const Visibility = ({isVisible, children}) => isVisible ? children : null;
+const Visibility = ({isVisible, children}) => (
+  <div style={{ display: isVisible ? 'block' : 'none' }}>
+    {children}
+  </div>
+);
 
 class LocalLoginPane extends React.Component{
   constructor(){
     super();
-    this.state = { phase: 0 };
+    this.state = { phase: 0, username: '' };
     this.onSubmit = this.onSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -50,6 +54,7 @@ class LocalLoginPane extends React.Component{
         this.fido2form.id.value = '';
         this.fido2form.result.value = '';
       })
+      .catch(() => false)
       .then(() => false);
   }
 
@@ -84,8 +89,7 @@ class LocalLoginPane extends React.Component{
       <Col sm={6}>
         <h4 className='header'>minamo id</h4>
         <form method='post' action={`/auth/local${args}`} onSubmit={this.onSubmit}>
-          <input name='username' type='hidden' value={this.state.username} />
-          <FormGroup className='vertical-grouped'>
+          <FormGroup className='vertical-grouped' validationState={this.state.validation}>
             <Visibility isVisible={ this.state.phase == 0 }>
               <InputGroup>
                 <InputGroup.Prepend>
