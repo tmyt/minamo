@@ -73,6 +73,9 @@ class api {
     priv.get('/credentials/:service/connect', this.connectSocialId);
     priv.post('/credentials/:service/disconnect', this.disconnectSocialId);
     priv.post('/credentials/fido/register', this.registerFidoCredentials);
+    priv.get('/credentials/fido/list', this.getFidoCredentials);
+    priv.post('/credentials/fido/update', this.updateFidoCredential);
+    priv.post('/credentials/fido/remove', this.removeFidoCredential);
     priv.post('/users/profile/update', this.updateProfile);
     priv.post('/users/avatar/upload',
       multer({dest: '/tmp/upload/'}).single('file'), this.uploadAvatar);
@@ -353,6 +356,30 @@ class api {
     const key = JSON.parse(req.body.result);
     try{
       await userDb.addPublicKey(req.user.username, key, id);
+      res.sendStatus(200);
+    }catch(e){
+      res.sendStatus(500);
+    }
+  }
+
+  async getFidoCredentials(req, res){
+    const keys = (await userDb.getPublicKeys(req.user.username))
+      .map(k => ({ name: k.name, created_at: k.created_at, id: k.id }));
+    res.send(keys);
+  }
+
+  async updateFidoCredential(req, res){
+    try{
+      await userDb.updatePublicKeyName(req.user.username, req.body.id, req.body.name);
+      res.sendStatus(200);
+    }catch(e){
+      res.sendStatus(500);
+    }
+  }
+
+  async removeFidoCredential(req, res){
+    try{
+      await userDb.removePublicKey(req.user.username, req.body.id);
       res.sendStatus(200);
     }catch(e){
       res.sendStatus(500);

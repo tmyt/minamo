@@ -157,16 +157,31 @@ class UserDB{
   }
   async addPublicKey(userid, id, publicKey){
     const socialId = (await this._db.select({
-      type: 'fido2', id
+      type: 'fido2', relative: userid, id
     }))[0];
     if(socialId) return false;
     await this._db.insert({
       type: 'fido2',
       key: publicKey,
       relative: userid,
+      created_at: new Date().toISOString(),
+      name: `unnamed key-${new Date().toISOString()}`,
       id
     });
     return true;
+  }
+  async updatePublicKeyName(userid, id, name){
+    const where = {
+      type: 'fido2', relative: userid, id
+    };
+    const socialId = (await this._db.select(where))[0];
+    if(!socialId) return false;
+    socialId.name = name;
+    await this._db.update(socialId, where);
+    return true;
+  }
+  async getPublicKeys(userid){
+    return await this._db.select({ type: 'fido2', relative: userid });
   }
   async removePublicKey(userid, id){
     await this._db.delete({

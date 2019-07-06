@@ -68,7 +68,8 @@ export default class ModalEnv extends React.Component{
     this.setState({name, values});
     this.open();
   }
-  save(){
+  save(e){
+    e.preventDefault();
     const env = JSON.stringify(this.state.values.map(x => [ x.name, x.value ])
       .reduce((p, c) => ((p[c[0]] = c[1]), p), {}));
     Http.post(`/api/services/${this.state.name}/env/update`, {env},
@@ -103,7 +104,7 @@ export default class ModalEnv extends React.Component{
           <Modal.Title>Env config</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form>
+          <form onSubmit={this.save.bind(this)}>
             <Table>
               <thead>
                 <tr>

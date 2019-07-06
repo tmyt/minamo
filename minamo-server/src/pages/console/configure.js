@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Form, Row, Col } from 'react-bootstrap';
+import { Button, Form, Row, Col, Table } from 'react-bootstrap';
 import Dropzone from 'react-dropzone-component';
 import SocialConnect from '../../components/console/social-connect';
 import Http from '../../components/console/http-verb';
 import Toast from '../../components/toast';
 import Fido2Button from '../../components/fido2-button';
+import FontAwesome from '../../components/font-awesome';
+import ModalKeyName from '../../components/console/modal-key-name';
 
 export default class ConsoleConfigureComponent extends React.Component{
   render(){
@@ -108,6 +110,16 @@ MinamoIdForm.contextTypes = {
 
 // Form Component for FIDO2 Credential
 class Fido2Form extends React.Component{
+  constructor(){
+    super();
+    this.state = {keys: []};
+  }
+  componentWillMount(){
+    this.modalKeyName = (<ModalKeyName ref={x => this.modalKeyNameInstance = x} onUpdated={() => this.updateKeys()}/>);
+  }
+  componentDidMount(){
+    this.updateKeys();
+  }
   registerCredential(){
     fetch('/auth/fido2/create')
       .then(result => result.json())
@@ -126,20 +138,53 @@ class Fido2Form extends React.Component{
           },
         };
         Http.post('/auth/fido2/register', {result: JSON.stringify(obj)},
-          () => Toast.show('FIDO key registered', 'success'),
+          () => { Toast.show('FIDO key registered', 'success'); this.updateKeys(); },
           () => Toast.show('Key registration failed', 'warning')
         );
       })
-      .catch(console.log);
   }
-  resetCredential(){
+  updateKeys(){
+    fetch('/api/credentials/fido/list')
+      .then(result => result.json())
+      .then(keys => this.setState({keys}));
+  }
+  onEditClick(key){
+    this.modalKeyNameInstance.openWith(key);
+  }
+  onRemoveClick(key){
+    if(window.confirm(`Remove key "${key.name}"?`)){
+      Http.post('/api/credentials/fido/remove', {id: key.id},
+        () => { Toast.show(`FIDO key ${key.name} has removed`, 'success'); this.updateKeys(); },
+        () => Toast.show('Key remove faild', 'warning')
+      );
+    }
   }
   render(){
+    const keys = this.state.keys.map(key => {
+      return(
+        <tr key={key.id}>
+          <td>{key.name}</td>
+          <td>
+            <Button variant='outline-primary' onClick={() => this.onEditClick(key)}><FontAwesome icon='edit' /></Button>
+            <Button variant='outline-danger' onClick={() => this.onRemoveClick(key)}><FontAwesome icon='trash' /></Button>
+          </td>
+        </tr>
+      );
+    });
     return(
-      <form>
-        <Fido2Button variant='primary' onClick={this.registerCredential.bind(this)}>register</Fido2Button>
-        <Fido2Button variant='danger' onClick={this.resetCredential}>reset</Fido2Button>
-      </form>
+      <div>
+        <h4>Registered keys</h4>
+        <Table className='keys'>
+          <tbody>
+            {keys}
+          </tbody>
+        </Table>
+        <h4>Register new key</h4>
+        <form>
+          <Fido2Button variant='primary' onClick={this.registerCredential.bind(this)}>register</Fido2Button>
+        </form>
+        {this.modalKeyName}
+      </div>
     );
   }
 }
