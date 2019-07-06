@@ -1,8 +1,8 @@
 import React from 'react';
-import { Glyphicon } from 'react-bootstrap';
 import TerminalOpener from './terminal-opener';
 import ExtensionTips from './extension-tips';
 import ActiveEventHandler from './active-event';
+import FontAwesome from './font-awesome';
 
 export default class IntegratedShell extends React.Component {
   constructor(){
@@ -103,7 +103,7 @@ export default class IntegratedShell extends React.Component {
             <ExtensionTips visible={this.state.tipsVisible} />
             <TerminalOpener hasExtension={this.state.hasExtension}/>
             <button onClick={this.handleCloseISH}>
-              <Glyphicon glyph='remove' />
+              <FontAwesome icon='times' />
             </button>
           </div>
         </div>

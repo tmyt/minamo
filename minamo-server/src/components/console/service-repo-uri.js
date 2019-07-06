@@ -1,6 +1,7 @@
 import React from 'react';
-import { InputGroup, FormControl, Glyphicon } from 'react-bootstrap';
+import { InputGroup, Form } from 'react-bootstrap';
 import Meta from '../meta';
+import FontAwesome from '../font-awesome';
 
 export default class ServiceRepoUri extends React.Component{
   focus(e){
@@ -13,13 +14,15 @@ export default class ServiceRepoUri extends React.Component{
       this.repo = `${scheme}://${domain}/api/hooks/${this.props.name}?key=${this.props.authkey}`;
       return(
         <InputGroup>
-          <InputGroup.Addon><Glyphicon glyph='cloud-upload' /></InputGroup.Addon>
-          <FormControl readOnly value={this.repo} type='text' onFocus={this.focus} />
+          <InputGroup.Prepend>
+            <InputGroup.Text><FontAwesome icon='cloud-upload' /></InputGroup.Text>
+          </InputGroup.Prepend>
+          <Form.Control readOnly value={this.repo} type='text' onFocus={this.focus} />
         </InputGroup>
       );
     }
     return(
-      <FormControl readOnly value={this.repo} type='text' onFocus={this.focus} />
+      <Form.Control readOnly value={this.repo} type='text' onFocus={this.focus} />
     );
   }
 }

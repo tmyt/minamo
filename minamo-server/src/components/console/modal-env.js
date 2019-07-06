@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Modal, Table, FormControl, Glyphicon } from 'react-bootstrap';
+import { Button, Modal, Table, FormControl } from 'react-bootstrap';
 import Http from './http-verb';
 import Toast from '../toast';
+import FontAwesome from '../font-awesome';
 
 class EnvItem extends React.Component{
   constructor(props){
@@ -38,8 +39,8 @@ class EnvItem extends React.Component{
           <FormControl value={this.state.value} onChange={this.handleChange('value')}/>
         </td>
         <td>
-          <Button bsStyle='danger' className='form-control' onClick={this.handleRemove.bind(this)}>
-            <Glyphicon glyph='trash' />
+          <Button variant='danger' className='form-control' onClick={this.handleRemove.bind(this)}>
+            <FontAwesome icon='trash' />
           </Button>
         </td>
       </tr>
@@ -108,13 +109,14 @@ export default class ModalEnv extends React.Component{
                 <tr>
                   <th>name</th>
                   <th>value</th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
                 {fields}
                 <tr>
                   <td colSpan='3'>
-                    <Button onClick={this.handleAddRow.bind(this)} className='form-control'>add new</Button>
+                    <Button variant='outline-primary' onClick={this.handleAddRow.bind(this)} className='form-control'>add new</Button>
                   </td>
                 </tr>
               </tbody>
@@ -122,8 +124,8 @@ export default class ModalEnv extends React.Component{
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle='primary' onClick={this.save.bind(this)}>save</Button>
-          <Button onClick={this.close.bind(this)}>cancel</Button>
+          <Button variant='primary' onClick={this.save.bind(this)}>save</Button>
+          <Button variant='outline-primary' onClick={this.close.bind(this)}>cancel</Button>
         </Modal.Footer>
       </Modal>
     );

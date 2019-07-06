@@ -10,8 +10,8 @@ export default class TabItem extends React.Component{
   render(){
     const active = this.props.default ? 'active' : '';
     return (
-      <li className={active}>
-        <a href={this.props.to} data-toggle='tab' ref={e => this.link = e}>{this.props.children}</a>
+      <li className={'nav-item ' + active}>
+        <a className={'nav-link ' + active} href={this.props.to} data-toggle='tab' ref={e => this.link = e}>{this.props.children}</a>
       </li>
     );
   }

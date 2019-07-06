@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, Panel, Table, DropdownButton, Button, MenuItem, FormGroup, FormControl, Glyphicon, InputGroup } from 'react-bootstrap';
+import { Modal, Card, Table, Dropdown, DropdownButton, Button, Form, FormGroup, FormControl, InputGroup } from 'react-bootstrap';
+import FontAwesome from '../components/font-awesome';
 
 import PageRoot from '../components/page-root';
 import Http from '../components/console/http-verb';
@@ -62,19 +63,19 @@ class UserListRowBase extends React.Component{
     return(
       <InputGroup>
         <FormControl type='text' value={this.state.role} readOnly className='readonly-dropdown-input'/>
-        <DropdownButton componentClass={InputGroup.Button} pullRight id='user-role' onSelect={this.handleSelect} title=''>
-          <MenuItem eventKey={this.handleChangeRoleFor('admin')}>admin</MenuItem>
-          <MenuItem eventKey={this.handleChangeRoleFor('user')}>user</MenuItem>
+        <DropdownButton as={InputGroup.Button} id='user-role' onSelect={this.handleSelect} title=''>
+          <Dropdown.Item eventKey={this.handleChangeRoleFor('admin')}>admin</Dropdown.Item>
+          <Dropdown.Item eventKey={this.handleChangeRoleFor('user')}>user</Dropdown.Item>
         </DropdownButton>
       </InputGroup>
     );
   }
   getActionView(){
     return(
-      <DropdownButton bsStyle='primary' title='action' onSelect={this.handleSelect} id='user-action'>
-        <MenuItem eventKey={this.handleResetPassword}>reset password</MenuItem>
-        <MenuItem divider />
-        <MenuItem eventKey={this.handleDeleteUser}>delete user</MenuItem>
+      <DropdownButton variant='primary' title='action' onSelect={this.handleSelect} id='user-action'>
+        <Dropdown.Item eventKey={this.handleResetPassword}>reset password</Dropdown.Item>
+        <Dropdown.Divider />
+        <Dropdown.Item eventKey={this.handleDeleteUser}>delete user</Dropdown.Item>
       </DropdownButton>
     );
   }
@@ -96,17 +97,19 @@ class UserListRow extends UserListRowBase{
 class UserListPanel extends UserListRowBase{
   render(){
     return(
-      <Panel>
-        <dl className='dl-horizontal'>
-          <dt>username</dt>
-          <dd><span>{this.props.username}</span></dd>
-          <dt>password</dt>
-          <dd><span>{this.getPassword()}</span></dd>
-          <dt>role</dt>
-          <dd><span>{this.getRoleView()}</span></dd>
-        </dl>
-        {this.getActionView()}
-      </Panel>
+      <Card>
+        <Card.Body>
+          <dl className='dl-horizontal'>
+            <dt>username</dt>
+            <dd><span>{this.props.username}</span></dd>
+            <dt>password</dt>
+            <dd><span>{this.getPassword()}</span></dd>
+            <dt>role</dt>
+            <dd><span>{this.getRoleView()}</span></dd>
+          </dl>
+          {this.getActionView()}
+        </Card.Body>
+      </Card>
     );
   }
 }
@@ -116,13 +119,13 @@ class UserListNewUserRowBase extends React.Component{
     super();
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.state = {username: '', pending: false, available: false};
+    this.state = {username: '', pending: true, available: false};
   }
   handleChange(e){
     clearTimeout(this.timerId);
     this.setState({username: e.target.value});
     if(!e.target.value || e.target.value.length < 3){
-      this.setState({pending: false, available: true});
+      this.setState({pending: !e.target.value, available: false});
       return;
     }
     this.timerId = setTimeout(() => {
@@ -153,12 +156,18 @@ class UserListNewUserRowBase extends React.Component{
     return this.state.username.length >= 3 && this.state.available ? 'success' : 'error';
   }
   getUserNameView(){
-    const loading = this.state.pending ? (<Glyphicon className='loading' glyph='refresh' />) : null;
+    const loading = this.state.pending ? (<FontAwesome className='loading' icon='sync' />) : null;
+    const props = {};
+    if(!this.state.pending){
+      if(this.state.available) props.isValid = true; else props.isInvalid = true;
+    }
     return(
-      <FormGroup validationState={this.validate()}>
-        <FormControl type='text' placeholder='new username' value={this.state.username} onChange={this.handleChange}/>
-        <FormControl.Feedback>{loading}</FormControl.Feedback>
-      </FormGroup>
+      <Form noValidate>
+        <FormGroup>
+          <FormControl type='text' placeholder='new username' value={this.state.username} onChange={this.handleChange} {...props} />
+          <FormControl.Feedback>{loading}</FormControl.Feedback>
+        </FormGroup>
+      </Form>
     );
   }
 }
@@ -170,7 +179,7 @@ class UserListNewUserRow extends UserListNewUserRowBase{
         <td>{this.getUserNameView()}</td>
         <td><FormControl value={PasswordMask} disabled/></td>
         <td><FormControl value='user' disabled/></td>
-        <td><Button bsStyle='success' disabled={this.validate() !== 'success'} onClick={this.handleClick}>create</Button></td>
+        <td><Button variant='success' disabled={this.validate() !== 'success'} onClick={this.handleClick}>create</Button></td>
       </tr>
     );
   }
@@ -190,8 +199,8 @@ class UserListNewUserModal extends UserListNewUserRowBase{
   render(){
     return(
       <div>
-        <Button bsStyle='info' onClick={()=>this.setState({show:true})} className='button-mobile-primary-action'>
-          <Glyphicon glyph='plus' />
+        <Button variant='info' onClick={()=>this.setState({show:true})} className='button-mobile-primary-action'>
+          <FontAwesome icon='plus' />
         </Button>
         <Modal show={this.state.show} onHide={this.close.bind(this)}>
           <Modal.Header>
@@ -209,7 +218,7 @@ class UserListNewUserModal extends UserListNewUserRowBase{
             </dl>
           </Modal.Body>
           <Modal.Footer>
-            <Button bsStyle='success' disabled={this.validate() !== 'success'} onClick={this.handleClick}>create</Button>
+            <Button variant='success' disabled={this.validate() !== 'success'} onClick={this.handleClick}>create</Button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -238,7 +247,7 @@ class UserList extends React.Component{
   render(){
     return (
       <div>
-        <div className='hidden-xs'>
+        <div className='d-none d-md-block'>
           <Table hover>
             <thead>
               <tr>
@@ -255,7 +264,7 @@ class UserList extends React.Component{
             </tbody>
           </Table>
         </div>
-        <div className='visible-xs'>
+        <div className='d-block d-md-none'>
           {this.state.users.map(u => (
             <UserListPanel username={u.username} password={u.password} role={u.role} key={u.username} onDelete={this.handleDelete}/>
           ))}

@@ -17,9 +17,10 @@ class AppComponent extends React.Component {
   }
   componentDidMount(){
     // initialize media query
-    this.mqLg = window.matchMedia('(min-width: 1200px)');
-    this.mqMd = window.matchMedia('(min-width: 992px)');
-    this.mqSm = window.matchMedia('(min-width: 768px)');
+    this.mqXl = window.matchMedia('(min-width: 1200px)');
+    this.mqLg = window.matchMedia('(min-width: 992px)');
+    this.mqMd = window.matchMedia('(min-width: 768px)');
+    this.mqSm = window.matchMedia('(min-width: 576px)');
     this.handleResize();
     // handle events
     window.addEventListener('resize', this.handleResize);
@@ -46,7 +47,9 @@ class AppComponent extends React.Component {
   }
   handleResize(){
     let newSize = 'xs';
-    if(this.mqLg.matches){
+    if(this.mqXl.matches){
+      newSize = 'xl';
+    }else if(this.mqLg.matches){
       newSize = 'lg';
     }else if(this.mqMd.matches){
       newSize = 'md';

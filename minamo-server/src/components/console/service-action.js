@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 import Http from './http-verb';
@@ -45,9 +45,9 @@ export default class ServiceActionComponent extends React.Component{
     }
     commands.push('---', 'config');
     let items = commands.map((item,i) => item === '---'
-      ? (<MenuItem divider key={`---${i}`}/>)
-      : (<MenuItem eventKey={item} key={item}>{item}</MenuItem>));
-    return (<DropdownButton id={this.props.name} title="Action" onSelect={this.onSelect.bind(this)}>{items}</DropdownButton>);
+      ? (<Dropdown.Divider key={`---${i}`}/>)
+      : (<Dropdown.Item eventKey={item} key={item}>{item}</Dropdown.Item>));
+    return (<DropdownButton variant='outline-primary' id={this.props.name} title="Action" onSelect={this.onSelect.bind(this)}>{items}</DropdownButton>);
   }
 }
 ServiceActionComponent.contextTypes = {

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Popover, OverlayTrigger, Glyphicon } from 'react-bootstrap';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
+import FontAwesome from './font-awesome';
 
 const CrxPath = 'https://chrome.google.com/webstore/detail/ppdhipnblajeianfgkcbneadiebfkped/';
 
@@ -16,7 +17,7 @@ export default class ExtensionTipsComponent extends React.Component{
     if(!this.props.visible) return null;
     return(
       <OverlayTrigger trigger='click' rootClose placement='left' overlay={this.popover}>
-        <button><Glyphicon glyph='info-sign' /></button>
+        <button><FontAwesome icon='info-circle' /></button>
       </OverlayTrigger>
     );
   }

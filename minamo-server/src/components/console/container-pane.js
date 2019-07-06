@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row, PanelGroup, Panel } from 'react-bootstrap';
+import { CardGroup, Card } from 'react-bootstrap';
 
 import ServiceStatus from './service-status';
 import ServiceLink from './service-link';
@@ -16,33 +16,34 @@ export default class ContainerPaneComponent extends React.Component{
     const data = this.props.data;
     const status = new ContainerStatus(data.status);
     const header = (
-      <Row>
-        <Col xs={6}>
-          <h4 className="visible-xs-inline">{this.props.name}</h4>
-        </Col>
-        <Col xs={6} className="text-right">
+      <a data-toggle='collapse' className='text-body stretched-link text-decoration-none'
+         href={'#collapse-' + this.props.name} aria-expanded='true' aria-controls={'collapse-' + this.props.name}>
+        <h4>{this.props.name}</h4>
+        <div className='ml-auto'>
           <ServiceStatus status={status} />
-        </Col>
-      </Row>
+        </div>
+      </a>
     );
     return (
-      <PanelGroup>
-        <Panel header={header} collapsible>
-          <dl className="dl-horizontal">
-            <dt>service</dt>
-            <dd><ServiceLink service={this.props.name} /></dd>
-            <dt>head</dt>
-            <dd><ServiceHead head={data.head} external={data.repo==='external'} /></dd>
-            <dt>uptime</dt>
-            <dd><ServiceUptime created={new Date(data.created).toLocaleString()} uptime={data.uptime} /></dd>
-            <dt>repo</dt>
-            <dd><ServiceRepoUri name={this.props.name} authkey={data.key} /></dd>
-          </dl>
-          <ServiceAction name={this.props.name} status={status} />
-          <span> </span>
-          <ServiceRemoveButton name={this.props.name} />
-        </Panel>
-      </PanelGroup>
+      <CardGroup className='accordion'>
+        <Card>
+          <Card.Header>{header}</Card.Header>
+          <Card.Body className='collapse' id={'collapse-' + this.props.name}>
+            <dl className="dl-horizontal">
+              <dt>service</dt>
+              <dd><ServiceLink service={this.props.name} /></dd>
+              <dt>head</dt>
+              <dd><ServiceHead head={data.head} external={data.repo==='external'} /></dd>
+              <dt>uptime</dt>
+              <dd><ServiceUptime created={new Date(data.created).toLocaleString()} uptime={data.uptime} /></dd>
+              <dt>repo</dt>
+              <dd><ServiceRepoUri name={this.props.name} authkey={data.key} /></dd>
+            </dl>
+            <ServiceAction name={this.props.name} status={status} />
+            <ServiceRemoveButton name={this.props.name} />
+          </Card.Body>
+        </Card>
+      </CardGroup>
     );
   }
 }
