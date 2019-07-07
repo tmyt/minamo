@@ -71,9 +71,9 @@ app.use(csp({
   policies: {
     'default-src': [ csp.SELF ],
     'script-src': [ csp.SELF, config.cdn ],
-    'style-src': [ csp.INLINE, 'cdnjs.cloudflare.com' ],
+    'style-src': [ csp.INLINE, 'cdnjs.cloudflare.com', 'use.fontawesome.com' ],
     'img-src': [ csp.SELF, 'data:' ],
-    'font-src': [ csp.SELF, 'fonts.gstatic.com', 'cdnjs.cloudflare.com' ],
+    'font-src': [ csp.SELF, 'fonts.gstatic.com', 'use.fontawesome.com' ],
     'connect-src': [ csp.SELF, `${config.proto === 'https' ? 'wss' : 'ws'}://${config.domain}` ],
   }
 }));
@@ -209,6 +209,7 @@ async function handleReactRouter(req, res){
       }
       const preconnect = [
         '<https://fonts.gstatic.com>; rel=preconnect',
+        '<https://use.fontawesome.com>; rel=preconnect',
         '<https://cdnjs.cloudflare.com>; rel=preconnect',
       ];
       if(config.cdn){

@@ -89,7 +89,7 @@ class LocalLoginPane extends React.Component{
       <Col sm={6}>
         <h4 className='header'>minamo id</h4>
         <form method='post' action={`/auth/local${args}`} onSubmit={this.onSubmit}>
-          <FormGroup className='vertical-grouped' validationState={this.state.validation}>
+          <FormGroup className='vertical-grouped'>
             <Visibility isVisible={ this.state.phase == 0 }>
               <InputGroup>
                 <InputGroup.Prepend>

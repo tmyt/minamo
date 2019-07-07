@@ -166,7 +166,7 @@ class Fido2Form extends React.Component{
           <td>{key.name}</td>
           <td>
             <Button variant='outline-primary' onClick={() => this.onEditClick(key)}><FontAwesome icon='edit' /></Button>
-            <Button variant='outline-danger' onClick={() => this.onRemoveClick(key)}><FontAwesome icon='trash' /></Button>
+            <Button variant='outline-danger' onClick={() => this.onRemoveClick(key)}><FontAwesome icon='trash-alt' /></Button>
           </td>
         </tr>
       );

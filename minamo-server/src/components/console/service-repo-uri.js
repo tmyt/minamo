@@ -15,7 +15,7 @@ export default class ServiceRepoUri extends React.Component{
       return(
         <InputGroup>
           <InputGroup.Prepend>
-            <InputGroup.Text><FontAwesome icon='cloud-upload' /></InputGroup.Text>
+            <InputGroup.Text><FontAwesome icon='cloud-upload-alt' /></InputGroup.Text>
           </InputGroup.Prepend>
           <Form.Control readOnly value={this.repo} type='text' onFocus={this.focus} />
         </InputGroup>

@@ -8,7 +8,7 @@ function loadCss(uri){
   document.body.appendChild(link);
 }
 window.requestAnimationFrame(() => {
-  loadCss('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+  loadCss('https://use.fontawesome.com/releases/v5.9.0/css/all.css');
 });
 window.requestAnimationFrame(() => {
   loadCss('https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/min/dropzone.min.css');

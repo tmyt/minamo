@@ -64,7 +64,7 @@ export default class SocialConnect extends React.Component{
     return(
       <div>
         <SocialConnectButton connected={this.state.github} service='github'>
-          <FontAwesome icon='github' />
+          <FontAwesome icon='github' prefix='fab'/>
         </SocialConnectButton>
       </div>
     );

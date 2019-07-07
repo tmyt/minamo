@@ -12,7 +12,7 @@ class SocialLoginPane extends React.Component{
       <Col sm={6}>
         <h4 className='header'>social account</h4>
         <Button variant='primary' href={`/auth/github${args}`} block>
-          <FontAwesome icon='github' />
+          <FontAwesome icon='github' prefix='fab'/>
           <span>Login with GitHub</span>
         </Button>
       </Col>

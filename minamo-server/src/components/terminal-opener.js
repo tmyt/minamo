@@ -21,7 +21,7 @@ export default class TerminalOpenerComponent extends React.Component{
   render(){
     return (
       <button onClick={this.handleClick.bind(this)}>
-        <FontAwesome icon='external-link' />
+        <FontAwesome icon='external-link-alt' />
       </button>
     );
   }

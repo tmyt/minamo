@@ -40,7 +40,7 @@ class EnvItem extends React.Component{
         </td>
         <td>
           <Button variant='danger' className='form-control' onClick={this.handleRemove.bind(this)}>
-            <FontAwesome icon='trash' />
+            <FontAwesome icon='trash-alt' />
           </Button>
         </td>
       </tr>
