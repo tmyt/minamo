@@ -20,7 +20,10 @@ class UserListRowBase extends React.Component{
     this.setState({password: this.props.password, role: this.props.role});
   }
   handleSelect(key){
-    key();
+    switch(key){
+      case 'reset': return this.handleResetPassword();
+      case 'delete': return this.handleDeleteUser();
+    }
   } 
   handleResetPassword(){
     Http.post('/api/users/reset_password', {username: this.props.username},
@@ -70,9 +73,9 @@ class UserListRowBase extends React.Component{
   getActionView(){
     return(
       <DropdownButton variant='primary' title='action' onSelect={this.handleSelect} id='user-action'>
-        <Dropdown.Item eventKey={this.handleResetPassword}>reset password</Dropdown.Item>
+        <Dropdown.Item eventKey='reset'>reset password</Dropdown.Item>
         <Dropdown.Divider />
-        <Dropdown.Item eventKey={this.handleDeleteUser}>delete user</Dropdown.Item>
+        <Dropdown.Item eventKey='delete'>delete user</Dropdown.Item>
       </DropdownButton>
     );
   }
