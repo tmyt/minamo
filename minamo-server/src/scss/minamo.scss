@@ -176,6 +176,12 @@ span.fido2-not-supported {
   }
 }
 
+#admin {
+  .card {
+    margin-bottom: 16px;
+  }
+}
+
 // import sub-styles
 @import 'console', 'dropzone', 'login', 'logstream', 'opensans', 'terminal', 'ish';
 @import 'bs4_compat';

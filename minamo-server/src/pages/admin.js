@@ -241,7 +241,7 @@ class UserList extends React.Component{
   }
   render(){
     return (
-      <div>
+      <div id='admin'>
         <div className='d-none d-md-block'>
           <Table hover>
             <thead>
