@@ -46,15 +46,13 @@ class UserListRowBase extends React.Component{
     );
   }
   handleChangeRoleFor(role){
-    return () => {
-      Http.post('/api/users/role', {username: this.props.username, role},
-        () => {
-          this.setState({role});
-          Toast.show('User role updated', 'success');
-        },
-        () => Toast.show('Faild to change role', 'error')
-      );
-    };
+    Http.post('/api/users/role', {username: this.props.username, role},
+      () => {
+        this.setState({role});
+        Toast.show('User role updated', 'success');
+      },
+      () => Toast.show('Faild to change role', 'error')
+    );
   }
   getPassword(){
     return this.state.password || PasswordMask;
@@ -62,11 +60,10 @@ class UserListRowBase extends React.Component{
   getRoleView(){
     return(
       <InputGroup>
-        <FormControl type='text' value={this.state.role} readOnly className='readonly-dropdown-input'/>
-        <DropdownButton as={InputGroup.Button} id='user-role' onSelect={this.handleSelect} title=''>
-          <Dropdown.Item eventKey={this.handleChangeRoleFor('admin')}>admin</Dropdown.Item>
-          <Dropdown.Item eventKey={this.handleChangeRoleFor('user')}>user</Dropdown.Item>
-        </DropdownButton>
+        <Form.Control as='select' defaultValue={this.state.role} onChange={e => this.handleChangeRoleFor(e.target.value)}>
+          <option value='admin'>admin</option>
+          <option value='user'>user</option>
+        </Form.Control>
       </InputGroup>
     );
   }
@@ -156,7 +153,6 @@ class UserListNewUserRowBase extends React.Component{
     return this.state.username.length >= 3 && this.state.available ? 'success' : 'error';
   }
   getUserNameView(){
-    const loading = this.state.pending ? (<FontAwesome className='loading' icon='sync' />) : null;
     const props = {};
     if(!this.state.pending){
       if(this.state.available) props.isValid = true; else props.isInvalid = true;
@@ -165,7 +161,6 @@ class UserListNewUserRowBase extends React.Component{
       <Form noValidate>
         <FormGroup>
           <FormControl type='text' placeholder='new username' value={this.state.username} onChange={this.handleChange} {...props} />
-          <FormControl.Feedback>{loading}</FormControl.Feedback>
         </FormGroup>
       </Form>
     );
