@@ -10,8 +10,8 @@ export default class IndexComponent extends React.Component {
     return (
       <PageRoot>
         <Jumbotron>
-          <h1>{this.context.config.site}</h1>
-          <p>private PaaS platform for you</p>
+          <h1 className='display-3'>{this.context.config.site}</h1>
+          <p className='lead'>private PaaS platform for you</p>
           <p><ConsoleButtonComponent /></p>
         </Jumbotron>
       </PageRoot>
