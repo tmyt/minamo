@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, matchPath } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Nav, Navbar } from 'react-bootstrap';
 import Avatar from './avatar';
@@ -8,6 +8,12 @@ import Container from './container';
 import ConsoleTabs from './console/tabs';
 import IntegratedShellButton from './ish-button';
 import isActive from '../lib/isactive';
+
+const NavLink = withRouter(({location, to, exact, children}) => (
+  <Nav.Item className={ matchPath(location.pathname, { path: to, exact: !!exact }) ? 'active' : '' }>
+    <LinkContainer to={to} exact={exact}><Nav.Link href={to}>{children}</Nav.Link></LinkContainer>
+  </Nav.Item>
+));
 
 class HeaderComponent extends React.Component {
   constructor(){
@@ -26,11 +32,7 @@ class HeaderComponent extends React.Component {
       extraTabMenu = (<ConsoleTabs />);
     }
     if(this.context.profile && this.context.profile.role === 'admin'){
-      adminTabItem = (
-        <LinkContainer to='/admin'>
-          <Nav.Item><Nav.Link href='/admin'>admin</Nav.Link></Nav.Item>
-        </LinkContainer>
-      );
+      adminTabItem = (<NavLink to='/admin'>admin</NavLink>);
     }
     return (
       <header className={extraTabMenu ? 'has-tabbar' : ''}>
@@ -48,15 +50,9 @@ class HeaderComponent extends React.Component {
                 <Avatar visible={this.context.isAuthenticated}/>
               </span>
               <Nav className='mr-auto' variant='pills'>
-                <LinkContainer to='/console' exact={true}>
-                  <Nav.Item><Nav.Link href='/console'>console</Nav.Link></Nav.Item>
-                </LinkContainer>
-                <LinkContainer to='/console/logstream'>
-                  <Nav.Item><Nav.Link href='/console/logstream'>log stream</Nav.Link></Nav.Item>
-                </LinkContainer>
-                <LinkContainer to='/console/sysinfo'>
-                  <Nav.Item><Nav.Link href='/console/sysinfo'>sysinfo</Nav.Link></Nav.Item>
-                </LinkContainer>
+                <NavLink to='/console' exact={true}>console</NavLink>
+                <NavLink to='/console/logstream'>log stream</NavLink>
+                <NavLink to='/console/sysinfo'>sysinfo</NavLink>
                 {adminTabItem}
               </Nav>
               <Nav>
