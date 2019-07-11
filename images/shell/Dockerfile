@@ -2,7 +2,7 @@ FROM debian
 
 # Setup packages
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get -y upgrade && \
-    apt-get install -y ssh build-essential vim emacs nano tmux openssl curl python python3 ruby git sudo dnsutils whois wget && \
+    apt-get install -y locales locales-all ssh build-essential vim emacs nano tmux openssl curl python python3 ruby git sudo dnsutils whois wget && \
     apt-get autoclean
 RUN echo '%sudo ALL=NOPASSWD: ALL' >> /etc/sudoers
 RUN adduser user && usermod -a -G sudo user
