@@ -10,7 +10,7 @@ RUN adduser user && usermod -a -G sudo user
 # Install mm
 COPY minamo-cli-1.0.0.tgz /tmp
 COPY mm.sh /usr/bin/mm
-RUN export NODE_VERSION=v8.1.4 && \
+RUN export NODE_VERSION=v10.16.0 && \
     wget https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz -O /tmp/node-${NODE_VERSION}-linux-x64.tar.xz && \
     tar xf /tmp/node-${NODE_VERSION}-linux-x64.tar.xz -C /tmp && \
     mkdir /opt/node && \
