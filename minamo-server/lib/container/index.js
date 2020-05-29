@@ -116,9 +116,10 @@ class Tools{
     let pmInstall = '';
     if(extras['yarn']){
       pm = '~/.yarn/bin/yarn';
-      pmInstall = 'curl -o- -L https://yarnpkg.com/install.sh | bash; ';
+      pmInstall = '(curl -o- -L https://yarnpkg.com/install.sh | bash); ';
     }
     const extraCmd = extraEnv['MINAMO_EXTRA_CMD']  ? `RUN ${extraEnv['MINAMO_EXTRA_CMD']}` : '';
+    const extraStep = extraEnv['MINAMO_EXTRA_STEP'] ? `${extraEnv['MINAMO_EXTRA_STEP']} ;` : '';
     // generate Dockerfile
     const dockerfile = `FROM node:${version}\n`
                      + `ENV PORT=${port} MINAMO_BRANCH_NAME=master ${envString}\n`
@@ -130,7 +131,7 @@ class Tools{
                      + `WORKDIR /service/${repo}\n`
                      + `${extraCmd}\n`
                      + `RUN echo ${docker0} git.${config.domain} >> /etc/hosts; su minamo -c "git clone ${repoUri} . --recursive && git checkout $MINAMO_BRANCH_NAME"; \\\n`
-                     + `    su minamo -c "${pmInstall} ${pm} run minamo-preinstall ; ${pm} install ; ${pm} run minamo-postinstall || true"; \\\n`
+                     + `    su minamo -c "${pmInstall} ${pm} run minamo-preinstall ; ${pm} install ; ${extraStep} ${pm} run minamo-postinstall || true"; \\\n`
                      + `    ls -l; node --version\n`
                      + `CMD ["/service/run.sh"]`;
     // generate startup script
