@@ -182,6 +182,10 @@ span.fido2-not-supported {
   }
 }
 
+div.card-header h3 {
+  margin: 0;
+}
+
 // import sub-styles
 @import 'console', 'dropzone', 'login', 'logstream', 'opensans', 'terminal', 'ish';
 @import 'bs4_compat';

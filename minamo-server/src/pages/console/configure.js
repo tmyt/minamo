@@ -18,7 +18,7 @@ export default class ConsoleConfigureComponent extends React.Component{
         <MinamoIdForm />
         <h3>Connect social account</h3>
         <SocialConnect />
-        <h3>Register FIDO 2.0 credential</h3>
+        <h3>FIDO 2.0 credentials</h3>
         <Fido2Form />
       </div>
     );
@@ -77,30 +77,32 @@ class MinamoIdForm extends React.Component{
       if(this.isValidFormData()) props.isValid = true; else props.isInvalid = true;
     }
     return(
-      <Form onSubmit={this.handleSubmit}>
-        <Row>
-          <Col sm={8}>
-            <Form.Group>
-              <Form.Label>Username</Form.Label>
-              <Form.Control disabled={true} value={this.context.profile.username}/>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Password</Form.Label>
-              <Form.Control type='password' onChange={this.handleChange} value={this.state.password} {...props}/>
-              <Form.Control.Feedback />
-            </Form.Group>
-          </Col>
-          <Col sm={4}>
-            <Form.Group>
-              <Form.Label>Image</Form.Label>
-              <div>
-                <Dropzone config={componentConfig} eventHandlers={eventHandlers} djsConfig={djsConfig}/>
-              </div>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Button variant='primary' type='submit' disabled={!this.isValidFormData()}>update</Button>
-      </Form>
+      <div>
+        <Form onSubmit={this.handleSubmit}>
+          <Row>
+            <Col sm={8}>
+              <Form.Group>
+                <Form.Label>Username</Form.Label>
+                <Form.Control disabled={true} value={this.context.profile.username}/>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Password</Form.Label>
+                <Form.Control type='password' onChange={this.handleChange} value={this.state.password} {...props}/>
+                <Form.Control.Feedback />
+              </Form.Group>
+            </Col>
+            <Col sm={4}>
+              <Form.Group>
+                <Form.Label>Image</Form.Label>
+                <div>
+                  <Dropzone config={componentConfig} eventHandlers={eventHandlers} djsConfig={djsConfig}/>
+                </div>
+              </Form.Group>
+            </Col>
+          </Row>
+          <Button variant='primary' type='submit' disabled={!this.isValidFormData()}>update</Button>
+        </Form>
+      </div>
     );
   }
 }
@@ -173,13 +175,11 @@ class Fido2Form extends React.Component{
     });
     return(
       <div>
-        <h4>Registered keys</h4>
         <Table className='keys'>
           <tbody>
             {keys}
           </tbody>
         </Table>
-        <h4>Register new key</h4>
         <form>
           <Fido2Button variant='primary' onClick={this.registerCredential.bind(this)}>register</Fido2Button>
         </form>
