@@ -3,7 +3,7 @@
 const appReq = require('app-require')
     , config = appReq('./config')
     , userDb = new(require('./userdb'))(config.userdb)
-    , Fido2Strategy = require('passport-fido2').Strategy;
+    , Fido2Strategy = require('@tmyt/passport-fido2').Strategy;
 
 const strategy = new Fido2Strategy({
   passReqToCallback: true,
@@ -12,30 +12,38 @@ const strategy = new Fido2Strategy({
   rpName: config.title,
   rpId: config.title,
   rpIcon: `${config.proto}://${config.domain}/icon.png`,
-  readProfile: async (id, callback) => {
-    const key = await userDb.getPublicKeyForId(id);
-    if(!key) return callback('key does not exists', null, null);
+  readProfile: async (req, callback) => {
+    const key = await userDb.getPublicKeyForId(req.keyId);
+    if(!key) return callback('key does not exists', null);
     callback(null, {});
   },
   readPublicKeyIdsForUser: (username, callback) => {
-    userDb.getPublicKeyIdsForUserId(username).then(ids => {
-      callback(ids.map(id => ({
+    userDb.findUser(username).then(found => {
+      if(!found) return Promise.reject();
+      return userDb.getPublicKeyIdsForUserId(username);
+    }).then(ids => {
+      callback(null, ids.map(id => ({
         id, type: 'public-key', transports: [ 'internal' ],
       })));
+    }).catch(_ => {
+      callback('error', null);
     });
   },
   readPublicKeyForId: (id, callback) => {
-    userDb.getPublicKeyForId(id).then(key => {
-      callback(key);
+    return userDb.getPublicKeyForId(id)
+    .then(key => {
+      callback(null, key);
+    }).catch(_ => {
+      callback('error', null);
     });
   }
-}, async function(req, id, profile, done) {
+}, async function(req, ids, profile, done) {
   if(req.user && req.session.mode === 'connect'){
     await userDb.addSocialId(req.user.username, profile.provider, profile.id);
     return done(null, req.user);
   }
   process.nextTick(async function(){
-    const user = await userDb.authenticateWithFido2(id);
+    const user = await userDb.authenticateWithFido2(ids.keyId);
     if(!user){
       return done(null, false, {message: 'You are not permitted to access the requested resource.'});
     }
@@ -56,7 +64,6 @@ module.exports.getAssertionOptions = function(req, res){
   if(!req.query.username) return res.send(400);
   strategy.assertionOptions(req, req.query.username, (err, opts) => {
     if(err) return res.status(500).send(err);
-    req.session['user-id'] = req.query.username;
     res.send(opts);
   });
 };
