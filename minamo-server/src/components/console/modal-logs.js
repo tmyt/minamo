@@ -23,7 +23,7 @@ export default class ModalLogs extends React.Component{
           <Modal.Title>Logs</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FormControl componentClass='textarea' readOnly rows='15' value={this.state.logs} />
+          <FormControl as='textarea' readOnly rows='15' value={this.state.logs} />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.close.bind(this)}>close</Button>
