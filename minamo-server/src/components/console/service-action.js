@@ -47,7 +47,7 @@ export default class ServiceActionComponent extends React.Component{
     let items = commands.map((item,i) => item === '---'
       ? (<Dropdown.Divider key={`---${i}`}/>)
       : (<Dropdown.Item eventKey={item} key={item}>{item}</Dropdown.Item>));
-    return (<DropdownButton variant='outline-primary' id={this.props.name} title="Action" onSelect={this.onSelect.bind(this)}>{items}</DropdownButton>);
+    return (<DropdownButton variant='outline-primary' id={this.props.name} title="action" onSelect={this.onSelect.bind(this)}>{items}</DropdownButton>);
   }
 }
 ServiceActionComponent.contextTypes = {
