@@ -55,7 +55,7 @@
     "history": "^3.3.0",
     "ifstat": "^1.0.0",
     "loadable-components": "^0.3.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "node-pty": "^0.9.0",
