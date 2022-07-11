@@ -94,3 +94,8 @@
     opacity: 0;
   }
 }
+@supports (-webkit-touch-callout: none) {
+  body {
+    height: -webkit-fill-available;
+  }
+}

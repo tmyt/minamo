@@ -56,7 +56,9 @@ export default class ModalEnv extends React.Component{
    */
   constructor(props){
     super(props);
-    this.state = {showModal: false, name: '', values: props.values || []};
+    const values = (props.values || []).map((x, i) => ({...x, id: i}));
+    this.id = values.length;
+    this.state = {showModal: false, name: '', values};
   }
   close(){
     this.setState({showModal: false});
@@ -64,7 +66,9 @@ export default class ModalEnv extends React.Component{
   open(){
     this.setState({showModal: true});
   }
-  openWith(name, values){
+  openWith(name, sourceValues){
+    const values = (sourceValues || []).map((x, i) => ({...x, id: i}));
+    this.id = values.length;
     this.setState({name, values});
     this.open();
   }
@@ -91,13 +95,13 @@ export default class ModalEnv extends React.Component{
   }
   handleAddRow(){
     let values = this.state.values.slice(0);
-    values.push({name:'', value:''});
+    values.push({name:'', value:'', id: this.id++});
     this.setState({values});
   }
   render(){
-    const fields = this.state.values.map((x, i) => {
-      return (<EnvItem key={i} name={x.name} value={x.value} index={i} onChange={this.handleChange.bind(this)} onRemove={this.handleRemove.bind(this)} />);
-    });
+    const fields = this.state.values.map((x, i) => (
+      <EnvItem key={x.id} name={x.name} value={x.value} index={i} onChange={this.handleChange.bind(this)} onRemove={this.handleRemove.bind(this)} />
+    ));
     return (
       <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
         <Modal.Header>

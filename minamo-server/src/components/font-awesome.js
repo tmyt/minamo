@@ -8,3 +8,4 @@ export default class FontAwesome extends React.Component{
     );
   }
 }
+
