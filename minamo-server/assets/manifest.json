@@ -16,6 +16,8 @@
     "sizes": "512x512",
     "type": "image/png"
   }],
-  "start_url": "./shell",
+  "start_url": "https://minamo.io/shell",
+  "url": "https://minamo.io/shell",
+  "scope": "/shell",
   "display": "standalone"
 }
