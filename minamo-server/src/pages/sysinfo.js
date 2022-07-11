@@ -126,7 +126,7 @@ class NetGraph extends React.Component{
 export default class SysinfoComponent extends React.Component{
   constructor(){
     super();
-    this.state = {summary: {}, history: { short: {}, long: {}}};
+    this.state = {summary: {}, history: { short: {}, long: {}}, environment: {}};
   }
   componentDidMount(){
     const socket = Socket('/sysinfo');
@@ -134,6 +134,10 @@ export default class SysinfoComponent extends React.Component{
     socket.on('summary', d => this.onSummary(d));
     socket.on('history', d => this.onHistory(d));
     this.socket = socket;
+    // fetch envrionment info
+    fetch('/api/sysinfo/environment')
+    .then(ret => ret.json())
+    .then(environment => this.setState({ environment }));
   }
   componentWillUnmount(){
     if(!this.socket) return;
@@ -163,6 +167,21 @@ export default class SysinfoComponent extends React.Component{
     return(
       <PageRoot title='sysinfo'>
         <h2>System info</h2>
+        <Row>
+          <Col xs={12}><h3>Environment</h3></Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+            <dd>
+              <dt>Kernel</dt>
+              <dd>{this.state.environment.kernel || ''}</dd>
+              <dt>Node</dt>
+              <dd>{this.state.environment.node || ''}</dd>
+              <dt>Docker</dt>
+              <dd>{this.state.environment.docker || ''}</dd>
+            </dd>
+          </Col>
+        </Row>
         <Row>
           <Col xs={12}><h3>CPU</h3></Col>
         </Row>

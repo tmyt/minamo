@@ -10,7 +10,8 @@ const promisifyAll = require('bluebird').promisifyAll
     , tar = require('tar')
     , init = require('git-init')
     , head = require('githead')
-    , appReq = require('app-require');
+    , appReq = require('app-require')
+    , execSync = require('child_process').execSync;
 
 const Docker = require('dockerode')
     , docker = promisifyAll(new Docker());
@@ -79,6 +80,7 @@ class api {
     priv.post('/users/profile/update', this.updateProfile);
     priv.post('/users/avatar/upload',
       multer({dest: '/tmp/upload/'}).single('file'), this.uploadAvatar);
+    priv.get('/sysinfo/environment', this.getSystemEnvironment);
     /* admin api */
     const admin = require('./admin')();
     priv.use(requireAdminRights, admin);
@@ -388,6 +390,14 @@ class api {
 
   async uploadAvatar(req, res){
     res.send(req.file.filename);
+  }
+
+  getSystemEnvironment(req, res){
+    res.send({
+      kernel: execSync('uname -r').toString('utf8'),
+      node: process.version,
+      docker: execSync('docker --version').toString('utf8'),
+    });
   }
 
   wsStatuses(socket){
