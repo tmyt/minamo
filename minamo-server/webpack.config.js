@@ -8,16 +8,6 @@ const webpack = require('webpack')
     , UglifyEsPlugin = require('uglifyjs-webpack-plugin');
 
 let plugins = [
-  new HardSourceWebpackPlugin({
-    cacheDirectory: path.join(process.cwd(), '.cache/webpack/[confighash]'),
-    recordsPath: path.join(process.cwd(), '.cache/webpack/[confighash]/records.json'),
-    configHash: webpackConfig => require('node-object-hash')().hash(webpackConfig),
-    environmentHash: {
-      root: process.cwd(),
-      directories: ['node_modules'],
-      files: ['package.json'],
-    },
-  }),
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   }),
