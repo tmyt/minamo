@@ -41,7 +41,7 @@ class Tools{
 
   async build(repo){
     if(!repo) return;
-    let repoUri = `http://git.${config.domain}/${repo}.git`;
+    let repoUri = `https://git.${config.domain}/${repo}.git`;
     // check lock
     if((await fs.statAsync(`/tmp/minamo/${repo}.lock`).catch(()=>{}))){
       // locked
@@ -125,9 +125,8 @@ class Tools{
                      + `ENV PORT=${port} MINAMO_BRANCH_NAME=master ${envString}\n`
                      + `EXPOSE ${port}\n`
                      + `${pkgs}\n`
-                     + `RUN adduser minamo; mkdir -p /service/${repo}; chown -R minamo:minamo /service/\n`
                      + `ADD run.sh /service/run.sh\n`
-                     + `RUN chmod 755 /service/run.sh\n`
+                     + `RUN adduser minamo; mkdir -p /service/${repo}; chown -R minamo:minamo /service/; chmod 755 /service/run.sh\n`
                      + `WORKDIR /service/${repo}\n`
                      + `${extraCmd}\n`
                      + `RUN echo ${docker0} git.${config.domain} >> /etc/hosts; su minamo -c "git clone ${repoUri} . --recursive && git checkout $MINAMO_BRANCH_NAME"; \\\n`
