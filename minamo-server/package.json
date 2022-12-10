@@ -45,7 +45,7 @@
     "cookie-parser": "^1.4.4",
     "crc": "^3.8.0",
     "dockerode": "^2.5.8",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-csp-header": "^2.3.1",
     "express-git2": "git+https://github.com/tmyt/express-git2.git",
     "express-session": "^1.16.2",
