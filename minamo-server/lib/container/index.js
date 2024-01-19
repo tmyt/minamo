@@ -51,7 +51,7 @@ class Tools{
     // read external repo uri if available
     const type = (await fs.statAsync(`${config.repo_path}/${repo}`).catch(()=>{}));
     if(type.isFile()){
-      repoUri = await fs.readFileAsync(`${config.repo_path}/${repo}`);
+      repoUri = await fs.readFileAsync(`${config.repo_path}/${repo}`, 'utf8');
     }
     // prepareing flag
     await fs.mkdirpAsync('/tmp/minamo').catch(()=>{});
