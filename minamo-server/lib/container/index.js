@@ -120,9 +120,12 @@ class Tools{
     }
     const extraCmd = extraEnv['MINAMO_EXTRA_CMD']  ? `RUN ${extraEnv['MINAMO_EXTRA_CMD']}` : '';
     const extraStep = extraEnv['MINAMO_EXTRA_STEP'] ? `${extraEnv['MINAMO_EXTRA_STEP']} ;` : '';
+    const ignoreSsl = repoUri.startsWith(`https://git.${config.domain}/`);
+    const ignoreSslEnv = ignoreSsl ? 'ENV GIT_SSL_NO_VERIFY=true' : '';
     // generate Dockerfile
     const dockerfile = `FROM node:${version}\n`
                      + `ENV PORT=${port} MINAMO_BRANCH_NAME=master ${envString}\n`
+                     + `${ignoreSslEnv}\n`
                      + `EXPOSE ${port}\n`
                      + `${pkgs}\n`
                      + `ADD run.sh /service/run.sh\n`
