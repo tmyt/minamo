@@ -13,18 +13,24 @@ class Logger {
       }else{
         const stream = fs.createWriteStream(this.path, {flags: 'a'});
         if(json){
+          let buffer = "";
           str.on('data', s => {
-            const log = JSON.parse(s);
-            if(log.progressDetail){
-              let logs = '';
-              if(log.id) logs += `${log.id}: `;
-              if(log.status) logs += `${log.status} `;
-              if(log.progress) logs += `${log.progress}`;
-              stream.write(`${logs}\n`);
-            }else if(log.status){
-              stream.write(`${log.status}\n`);
-            }else{
-              stream.write(log.stream || '');
+            try {
+              const log = JSON.parse(buffer + s);
+              buffer = "";
+              if(log.progressDetail){
+                let logs = '';
+                if(log.id) logs += `${log.id}: `;
+                if(log.status) logs += `${log.status} `;
+                if(log.progress) logs += `${log.progress}`;
+                stream.write(`${logs}\n`);
+              }else if(log.status){
+                stream.write(`${log.status}\n`);
+              }else{
+                stream.write(log.stream || '');
+              }
+            } catch {
+              buffer += s;
             }
           });
         }else{
