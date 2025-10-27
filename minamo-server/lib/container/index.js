@@ -28,6 +28,15 @@ async function containerExistsAsync(container){
   return true;
 }
 
+async function volumeExistsAsync(volume){
+  try{
+    await volume.inspectAsync();
+  }catch(e){
+    return false;
+  }
+  return true;
+}
+
 class Tools{
   getRequiredPackages(extraEnv){
     const extraPackages = {};
@@ -94,9 +103,16 @@ class Tools{
     // optional container argument
     const restartPolicy = extraEnv['MINAMO_RESTART_POLICY'] || '';
     // create data container
+    const dataVol = docker.getVolume(`${repo}-data`);
     const dataCont = docker.getContainer(`${repo}-data`);
-    if(!await containerExistsAsync(dataCont)){
-      await docker.createContainerAsync({Image: 'busybox', name: `${repo}-data`, Volumes: {'/data':{}}});
+    let dataVolumeName = `${repo}-data`;
+    if(!await volumeExistsAsync(dataVol)){
+      if(!await containerExistsAsync(dataCont)){
+        await docker.createVolumeAsync({Name: `${repo}-data`});
+      }else{
+        const containerInspect = await dataCont.inspectAsync();
+        dataVolumeName = (containerInspect.Mounts || []).find(mount => mount.Type === 'volume').Name;
+      }
     }
     // prepare building
     const port = ~~(Math.random() * 32768) + 3000;
@@ -163,7 +179,8 @@ class Tools{
     logger.emit(`Starting container ${repo}`);
     const links = (extraEnv['MINAMO_LINKS'] || '').split(',').filter(s => !!s).map(s => `${s}:${s}`);
     const policy = restartPolicy ? { Name: restartPolicy } : undefined;
-    await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, VolumesFrom: [ `${repo}-data` ], Links: links, RestartPolicy: policy });
+    const binds = [`${dataVolumeName}:/data:rw`];
+    await docker.createContainerAsync({Image: `minamo/${repo}`, name: repo, HostConfig: { Binds: binds }, Links: links, RestartPolicy: policy });
     await docker.getContainer(repo).startAsync();
     logger.emit('started');
   }
